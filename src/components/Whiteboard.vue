@@ -1,15 +1,18 @@
+
+
 <template>
-    <div>
+    <div class="whiteboard">
       <!-- <h1 style="color: white">{{ message }}</h1> -->
       <canvas ref="canvas"></canvas>
-      <div>
+      <div class="tools">
         <button v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="color-box" :style="{backgroundColor: color}"></button>
-        <button @click="clearCanvas">Clear</button>
+        <button @click="clearCanvas" class="clear">Clear</button>
       </div>
     </div>
   </template>
   
   <script>
+  import "../assets/scss/pages/_whiteboard.scss"
   export default {
     data() {
       return {
@@ -82,25 +85,25 @@
       },
       draw(e) {
         if (!this.painting) return;
-  
+
         this.ctx.lineWidth = 10;
         this.ctx.lineCap = "round";
-  
+
         this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
         this.ctx.stroke();
-  
+
         this.ctx.beginPath();
         this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
       },
       mobileDraw(e) {
         if (!this.painting) return;
-  
+
         this.ctx.lineWidth = 10;
         this.ctx.lineCap = "round";
-  
+
         this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop);
         this.ctx.stroke();
-  
+
         this.ctx.beginPath();
         this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop);
       },

@@ -1,0 +1,23 @@
+.tools {
+  padding:20px 10px;
+  background-color: grey;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: auto;
+  right: 0;
+  display: grid;
+  grid-auto-flow: column;
+  height: fit-content;
+  gap: 10px;
+  justify-items: center;
+  .color-box {
+    border: unset;
+    margin: 0 !important;
+    width: 25px !important;
+    height: 25px !important;
+  }
+  .clear {
+    transform: rotateZ(-90deg);
+  }
+}
