@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1>{{ message }}</h1>
+      <!-- <h1 style="color: white">{{ message }}</h1> -->
       <canvas ref="canvas"></canvas>
       <div>
         <button v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="color-box" :style="{backgroundColor: color}"></button>
@@ -18,26 +18,49 @@
         canvas: null,
         ctx: null,
         colors: ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"],
+        deviceType: null,
       };
     },
     mounted() {
       this.canvas = this.$refs.canvas;
       this.ctx = this.canvas.getContext("2d");
-  
+
       // Set default stroke color
       this.ctx.strokeStyle = this.colors[0];
-  
+
       // Resize canvas
-      this.canvas.height = window.innerHeight * 0.6;
+      this.canvas.height = window.innerHeight * 0.9;
       this.canvas.width = window.innerWidth * 0.8;
-  
+
+      this.setDeviceType();
+      // console.log(this.deviceType)
       this.setupEventListeners();
     },
     methods: {
+      setDeviceType() {
+        const platform = navigator.userAgentData.platform.toLowerCase();
+        if (/(android|webos|iphone|ipad|ipod|blackberry|windows phone)/.test(platform)) {
+          this.deviceType = 'mobile';
+        } else if (/mac|win|linux/i.test(platform)) {
+          this.deviceType = 'desktop';
+        } else if (/tablet|ipad/i.test(platform)) {
+          this.deviceType = 'tablet';
+        } else {
+          this.deviceType = 'unknown';
+        }
+      },
       setupEventListeners() {
-        this.canvas.addEventListener("mousedown", this.startPainting);
-        this.canvas.addEventListener("mouseup", this.finishedPainting);
-        this.canvas.addEventListener("mousemove", this.draw);
+        // For desktop mouse
+        if (this.deviceType === 'desktop') {
+          this.canvas.addEventListener("mousedown", this.startPainting);
+          this.canvas.addEventListener("mouseup", this.finishedPainting);
+          this.canvas.addEventListener("mousemove", this.draw);
+        } else if (this.deviceType === 'mobile') {
+          // For mobile touch
+          this.canvas.addEventListener("touchstart", this.startPainting);
+          this.canvas.addEventListener("touchend", this.finishedPainting);
+          this.canvas.addEventListener("touchmove", this.mobileDraw);
+        }
       },
       changeColor(color) {
         this.ctx.strokeStyle = color;
@@ -47,7 +70,11 @@
       },
       startPainting(e) {
         this.painting = true;
-        this.draw(e);
+        if (this.deviceType === 'desktop') {
+          this.draw(e);
+        } else if (this.deviceType === 'mobile') {
+          this.mobileDraw(e)
+        }
       },
       finishedPainting() {
         this.painting = false;
@@ -64,6 +91,18 @@
   
         this.ctx.beginPath();
         this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
+      },
+      mobileDraw(e) {
+        if (!this.painting) return;
+  
+        this.ctx.lineWidth = 10;
+        this.ctx.lineCap = "round";
+  
+        this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop);
+        this.ctx.stroke();
+  
+        this.ctx.beginPath();
+        this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop);
       },
     },
   };
