@@ -4,7 +4,7 @@ import VideoViewer from '@/components/VideoViewer.vue'
 
 <template>
   <div class="slideshow">
-    <VideoViewer />
+    <VideoViewer/>
   </div>
 </template>
 

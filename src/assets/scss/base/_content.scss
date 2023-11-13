@@ -1,0 +1,84 @@
+h1,h2,h3,h4,h5,h6{
+    font-family: $ff_1;
+    letter-spacing: -3px;
+    font-weight: 400;
+}
+
+h1 {
+    font-size:  70px;
+    line-height: 75px;
+    margin: 0;
+
+    @include media('<=medium') {
+        font-size: 45px;
+        line-height: 50px;
+    }
+}
+
+h2 {
+    font-size: 55px;
+    line-height: 55px;
+    margin: 0;
+
+    @include media('<=medium') {
+        font-size: 35px;
+        line-height: 42px;
+    }
+}
+
+h3 {
+    font-size: 40px;
+    line-height: 45px;
+
+    @include media('<=medium') {
+        font-size: 30px;
+        line-height: 40px;
+    }
+}
+
+h4 {
+    font-size: 34px;
+    line-height: 40px;
+
+    @include media('<=medium') {
+        font-size: 24px;
+        line-height: 30px;
+    }
+}
+
+h5{
+    font-size: 24px;
+    line-height: 30px;
+}
+
+h6{
+    font-size: 18px;
+    line-height: 25px;
+}
+
+
+.text {
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 400;
+    color: $color_font;
+
+    @include media('<=small') {
+        font-size: 14px;
+        line-height: 22px;
+    }
+}
+
+.line-wrapper{
+    overflow: hidden;
+}
+
+
+strong,
+strong * {
+    font-weight: 700 !important;
+}
+
+* {
+    outline: none;
+}
