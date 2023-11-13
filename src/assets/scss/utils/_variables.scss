@@ -1,0 +1,31 @@
+$breakpoints: (
+        'extra-small': 480px,
+        'small': 768px,
+        'medium': 992px,
+        'large': 1200px,
+        'extra-large': 1440px
+);
+
+//Couleurs
+$color_primary:#00ff00;
+$color_secondary:#ff00ff;
+
+$color_black:#000000;
+$color_white:#ffffff;
+$color_grey:#f0f0f0;
+
+
+$color_text: #1D1D1B;
+
+
+$color_valid:#7ab51d;
+$color_error:#ce341a;
+
+$ff_1           : Helvetica Neue, sans-serif; //Title
+$ff_2           : "HelveticaNeue-Light", sans-serif; //Content
+
+$flex-margins: 70px 0;
+
+$duration: .25s;
+$duration_quick: .15s;
+$bezier: cubic-bezier(0.45, 0, 0.55, 1);
