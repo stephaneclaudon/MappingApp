@@ -12,7 +12,7 @@
 
 ### Fichiers
 > Files names: FileName.ext --> PascalCase
-> 1 JS file / component
+
 
 # my-vue-app
 
