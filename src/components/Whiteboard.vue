@@ -17,7 +17,7 @@
         painting: false,
         canvas: null,
         ctx: null,
-        colors: ["#000000", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"],
+        colors: ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"],
       };
     },
     mounted() {
@@ -71,7 +71,7 @@
   
   <style scoped>
   canvas {
-    border: 1px solid #000;
+    border: 1px solid #fff;
   }
 
   .color-box {
