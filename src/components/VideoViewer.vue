@@ -1,5 +1,5 @@
 <template>
-    <video autoplay loop muted>
+    <video autoplay controls loop muted>
         <source src="/video1.mp4" type="video/mp4">
         Mets toi a jours connard
     </video>
@@ -8,6 +8,5 @@
 <style>
     video{
         width: 100%;
-        height: 100%;
     }
 </style>
