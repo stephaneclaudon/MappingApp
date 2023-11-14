@@ -1,23 +1,42 @@
+.whiteboard {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
 .tools {
-  padding:20px 10px;
-  background-color: grey;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  margin: auto;
-  right: 0;
+  padding:16px 8px;
+  background-color: rgb(209, 209, 209);
   display: grid;
-  grid-auto-flow: column;
+  grid-auto-flow: row;
   height: fit-content;
   gap: 10px;
   justify-items: center;
-  .color-box {
-    border: unset;
-    margin: 0 !important;
-    width: 25px !important;
-    height: 25px !important;
+  .box:not(:last-child){
+    margin-bottom: 8px;
   }
-  .clear {
-    transform: rotateZ(-90deg);
-  }
+}
+
+canvas {
+  border: 1px solid #fff;
+}
+
+.box {
+  // display: inline-block;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  border-radius: 50%;
+  border: unset;
+}
+
+.size-boxes-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: grey;
 }
