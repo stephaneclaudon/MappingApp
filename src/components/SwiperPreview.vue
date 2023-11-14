@@ -3,8 +3,9 @@
       :effect="'coverflow'"
       :grabCursor="true"
       :centeredSlides="true"
-      :slidesPerView="'auto'"
+      :slidesPerView="3"
       :loop="true"
+      :loopAdditionalSlides="2"
       :coverflowEffect="{
         rotate: 50,
         stretch: 0,
@@ -14,7 +15,7 @@
       }"
       :modules="modules"
       @swiperslidechange="onSlideChange"
-      class="mySwiper"
+      class="mySwiper swiper"
     >
       <swiper-slide>
         <router-link to="/vid/0">
@@ -110,11 +111,21 @@
   background-size: cover;
   width: 300px;
   height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.swiper-slide a {
+  display: block;
+  max-width: 100%;
+  width: fit-content;
+  height: 100%;
+}
 .swiper-slide img {
   display: block;
   width: 100%;
+  height: 100%;
 }
 
 </style>
