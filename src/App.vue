@@ -1,5 +1,49 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function parseResponse(data) {
+
+  console.log(data)
+  if (data === undefined || data === null) {
+    return
+  }
+
+  const value = data.VALUE[0]
+
+  if (value > 0.5) {
+    router.push({ path: '/' })
+  } else {
+    router.push({ path: '/whiteboard' })
+  }
+}
+
+async function fetchData() {
+  const xhr = new XMLHttpRequest();
+  await xhr.open("GET", "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1");
+  xhr.responseType = "json";
+
+  xhr.onload = () => {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      const data = xhr.response;
+      parseResponse(data)
+    } else {
+      console.error(`Error: ${xhr.status}`);
+    }
+  };
+
+  xhr.send();
+}
+
+function mounted() {
+    window.addEventListener('load', () => {
+      setInterval(fetchData, 1000)
+    })
+}
+
+mounted()
 </script>
 
 <template>
