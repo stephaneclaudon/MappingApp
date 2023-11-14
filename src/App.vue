@@ -4,8 +4,27 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-function parseResponse(data) {
+async function fetchConfig() {
+  try {
+    const response = await fetch('../config.json')
 
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération du fichier de configuration');
+    }
+
+    const config = await response.json();
+
+    return config;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+const config = await fetchConfig()
+console.log(config)
+
+function parseResponse(data) {
   console.log(data)
   if (data === undefined || data === null) {
     return
@@ -22,7 +41,7 @@ function parseResponse(data) {
 
 async function fetchData() {
   const xhr = new XMLHttpRequest();
-  await xhr.open("GET", "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1");
+  await xhr.open("GET", config.requestUrl);
   xhr.responseType = "json";
 
   xhr.onload = () => {
@@ -38,12 +57,17 @@ async function fetchData() {
 }
 
 function mounted() {
-    window.addEventListener('load', () => {
-      setInterval(fetchData, 1000)
-    })
+  console.log("helo")
+  window.onload = () => {
+    console.log("helo")
+    setInterval(fetchData, 1000)
+  }
 }
 
-mounted()
+if (config.mode === 0) {
+  mounted()
+}
+
 </script>
 
 <template>
