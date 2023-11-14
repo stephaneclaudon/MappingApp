@@ -1,6 +1,8 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import { useRouter } from 'vue-router';
+import { register } from 'swiper/element/bundle';
+register();
 
 const router = useRouter();
 
