@@ -26,8 +26,6 @@
     </swiper-container>
 
     <div class="platform" :style="{ backgroundColor: `${items[currentIndex].bgColor}`}">
-      <div class="elipsis" :style="{ backgroundColor: `${items[currentIndex].bgColor}`}">
-      </div>
     </div>
 
     <div style="position: absolute; bottom: 7rem; text-align: center;">
