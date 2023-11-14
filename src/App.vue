@@ -22,7 +22,9 @@ function parseResponse(data) {
 
 async function fetchData() {
   const xhr = new XMLHttpRequest();
-  await xhr.open("GET", config.requestUrl);
+  await xhr.open("GET", config.requestUrl, true);
+  xhr.withCredentials = true;
+  xhr.setRequestHeader("Content-Type", "application/json");
   xhr.responseType = "json";
 
   xhr.onload = () => {
@@ -38,11 +40,9 @@ async function fetchData() {
 }
 
 function mounted() {
-  console.log("helo")
-  window.onload = () => {
-    console.log("helo")
+  window.addEventListener("load", () => {
     setInterval(fetchData, 1000)
-  }
+  })
 }
 
 if (config.mode === 1) {
