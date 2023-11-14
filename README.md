@@ -1,3 +1,12 @@
+# Config.json
+
+- mode
+> 1 -> Start app **WITH** url fetch for auto-nav.
+> 0 -> Start app **WITHOUT** url fetch for auto-nav.
+
+- requestUrl
+> URL for auto-nav url fetch.
+
 # Nomenclature
 
 ### Branch name

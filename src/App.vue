@@ -1,28 +1,9 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { RouterView } from 'vue-router';
 import { useRouter } from 'vue-router';
+import config from '../config.json';
 
 const router = useRouter();
-
-async function fetchConfig() {
-  try {
-    const response = await fetch('../config.json')
-
-    if (!response.ok) {
-      throw new Error('Erreur lors de la récupération du fichier de configuration');
-    }
-
-    const config = await response.json();
-
-    return config;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
-
-const config = await fetchConfig()
-console.log(config)
 
 function parseResponse(data) {
   console.log(data)
@@ -64,7 +45,7 @@ function mounted() {
   }
 }
 
-if (config.mode === 0) {
+if (config.mode === 1) {
   mounted()
 }
 
