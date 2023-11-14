@@ -132,20 +132,23 @@ export default {
     draw(e) {
       if (!this.painting) return
 
-      console.log("canvas offset left", this.canvas.offsetLeft)
-      console.log("clientX", e.clientX)
-      console.log(this.ctx)
+      // console.log("canvas offset left", this.canvas.offsetTop)
+      // console.log("clientX", e.clientX)
+      // console.log(this.ctx)
+      // console.log(e)
 
-      this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+      this.ctx.lineTo(e.layerX - this.canvas.offsetLeft, e.layerY - this.canvas.offsetTop)
       this.ctx.stroke()
 
       this.ctx.beginPath()
-      this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+      this.ctx.moveTo(e.layerX - this.canvas.offsetLeft, e.layerY - this.canvas.offsetTop)
     },
     mobileDraw(e) {
       if (!this.painting) return
-      console.log("canvas offset left", this.canvas.offsetLeft)
-      console.log("clientX", e.touches[0].clientX)
+      // console.log("canvas offset left", this.canvas.offsetLeft)
+      // console.log("clientX", e.touches[0].clientX)
+      // console.log(e)
+
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
 
