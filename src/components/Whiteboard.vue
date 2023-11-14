@@ -12,11 +12,11 @@
       </div>
       <button @click="clearCanvas" class="clear">Clear</button>
     </div>
-    <div class="canvas-wrapper">
-      <canvas class="canvas" ref="canvas"></canvas>
 
-      <svg class="stickers" style="">
-      </svg>
+    <div class="canvas-wrapper">
+      
+      <svg class="stickers" style=""></svg>
+      <canvas class="canvas" ref="canvas"></canvas>
     </div>
   </div>
 </template>
@@ -52,7 +52,6 @@ export default {
     this.ctx = this.canvas.getContext("2d")
 
     // Set default stroke color
-    this.ctx.strokeStyle = this.colors[0]
 
     // Resize canvas
     this.canvas.height = window.innerHeight * 0.9
@@ -65,6 +64,10 @@ export default {
 
     this.initializeMap();
     this.buildStickers();
+
+    this.changeColor(this.colors[0])
+    this.changeSize(this.sizes[0])
+    this.ctx.lineCap = "round"
   },
   methods: {
     setDeviceType() {
@@ -93,12 +96,14 @@ export default {
       }
     },
     changeColor(color) {
+      console.log(color)
       this.ctx.strokeStyle = color
     },
     getPenColor(color) {
       return {backgroundColor: color}
     },
     changeSize(size) {
+      console.log(size)
       this.ctx.lineWidth = size
     },
     getPenSize(size) {
@@ -127,20 +132,22 @@ export default {
     draw(e) {
       if (!this.painting) return
 
-      // this.ctx.lineWidth = 10;
-      this.ctx.lineCap = "round"
+      // console.log("canvas offset left", this.canvas.offsetTop)
+      // console.log("clientX", e.clientX)
+      // console.log(this.ctx)
+      // console.log(e)
 
-      this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+      this.ctx.lineTo(e.layerX - this.canvas.offsetLeft, e.layerY - this.canvas.offsetTop)
       this.ctx.stroke()
 
       this.ctx.beginPath()
-      this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+      this.ctx.moveTo(e.layerX - this.canvas.offsetLeft, e.layerY - this.canvas.offsetTop)
     },
     mobileDraw(e) {
       if (!this.painting) return
-
-      this.ctx.lineWidth = 10;
-      this.ctx.lineCap = "round"
+      // console.log("canvas offset left", this.canvas.offsetLeft)
+      // console.log("clientX", e.touches[0].clientX)
+      // console.log(e)
 
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
