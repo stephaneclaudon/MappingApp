@@ -15,10 +15,9 @@
 @import 'layouts/navigation';
 @import 'layouts/header';
 @import 'layouts/footer';
-//@import 'layouts/forms';
-
-
 @import 'pages/home';
+
+//@import 'layouts/forms';
 //@import 'pages/whiteboard';
 
 
@@ -29,10 +28,6 @@ body {
     width: 100vw;
     overflow-x: hidden;
     margin: 0;
-    div {
-        width: fit-content;
-        position: relative;
-    }
 }
 
 
@@ -41,3 +36,10 @@ h1 {
     line-height: 1.1;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
