@@ -1,4 +1,45 @@
 {
-  "mode": 1,
-  "requestUrl": "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1"
+  "mode": 0,
+  "requestUrl": "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1",
+  "sliderImages": [
+    "/thumbnails/0.jpg",
+    "/thumbnails/1.jpg",
+    "/thumbnails/2.jpg",
+    "/thumbnails/3.jpg",
+    "/thumbnails/4.jpg",
+    "/thumbnails/5.jpg",
+    "/thumbnails/6.jpg",
+    "/thumbnails/7.jpg"
+  ],
+  "videos": [],
+  "canvasColors": [
+    "#FFFFFF",
+    "#FF0000",
+    "#00FF00",
+    "#0000FF",
+    "#FFFF00",
+    "#FF00FF",
+    "#00FFFF"
+  ],
+  "canvasBrushSizes": [
+    12,
+    16,
+    20, 
+    4,
+    28
+  ],
+  "canvasStickers": [
+    "src/assets/Group.png",
+    "src/assets/major.png",
+    "src/assets/cs2.png",
+    "src/assets/Vector.png",
+    "src/assets/Vector-1.png",
+    "https://img.icons8.com/dusk/64/000000/department.png",
+    "https://img.icons8.com/dusk/64/000000/organization.png",
+    "https://img.icons8.com/dusk/64/000000/small-business.png",
+    "https://img.icons8.com/dusk/64/000000/company.png",
+    "https://img.icons8.com/clouds/100/musescore.png",
+    "https://img.icons8.com/color/48/star-trek-xindi-insectoid-olaen-heavy-strike-wing-escort.png",
+    "https://img.icons8.com/3d-fluency/94/3d-fluency-mixer.png"
+  ]
 }
