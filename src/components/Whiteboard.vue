@@ -3,6 +3,11 @@
     <!-- <h1 style="color: white">{{ message }}</h1> -->
     
     <div class="tools">
+      <p style="border: 1px solid red;">stickers</p>
+
+      <input v-model="isStickersOn" type="checkbox" id="switch"/>
+      <label for="switch">{{ isStickersOn }}</label>
+
       <div class="size-boxes-container">
         <button v-for="(size, index) in sizes" :key="index" @click="changeSize(size)" class="box"
                 :style="getPenSize(size)"></button>
@@ -11,11 +16,12 @@
         <button v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="box"
                 :style="getPenColor(color)"></button>
       </div>
-      <button @click="clearCanvas" class="clear">Clear</button>
+      <img src="../assets/bin.svg" alt="clear" class="clear"  @click="clearCanvas" />
     </div>
+
     <div class="canvas-wrapper">
       
-      <svg class="stickers" style=""></svg>
+      <svg v-if="isStickersOn" class="stickers" style=""></svg>
       <canvas class="canvas" ref="canvas"></canvas>
     </div>
   </div>
@@ -46,14 +52,10 @@ export default {
           "src/assets/Vector.png",
           "src/assets/Vector-1.png",
         "https://img.icons8.com/dusk/64/000000/department.png",
-        "https://img.icons8.com/dusk/64/000000/organization.png",
-        "https://img.icons8.com/dusk/64/000000/small-business.png",
-        "https://img.icons8.com/dusk/64/000000/company.png",
-        "https://img.icons8.com/clouds/100/musescore.png",
-        "https://img.icons8.com/color/48/star-trek-xindi-insectoid-olaen-heavy-strike-wing-escort.png",
-        "https://img.icons8.com/3d-fluency/94/3d-fluency-mixer.png"
 
-      ]
+      ],
+      isStickersOn: false,
+      checked: false,
     };
   },
   mounted() {
