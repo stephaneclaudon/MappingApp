@@ -26,6 +26,7 @@ import "../assets/scss/pages/_whiteboard.scss"
 import localforage from "localforage";
 import gsap from "gsap";
 import {Draggable} from 'gsap/Draggable';
+import config from '../../config.json'
 
 gsap.registerPlugin(Draggable)
 export default {
@@ -35,25 +36,11 @@ export default {
       painting: false,
       canvas: null,
       ctx: null,
-      colors: ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"],
-      sizes: [12, 16, 20, 24, 28],
+      colors: config.canvasColors,
+      sizes: config.canvasBrushSizes,
       deviceType: null,
       stickerCounter: 0,
-      icons: [
-          "src/assets/Group.png",
-          "src/assets/major.png",
-          "src/assets/cs2.png",
-          "src/assets/Vector.png",
-          "src/assets/Vector-1.png",
-        "https://img.icons8.com/dusk/64/000000/department.png",
-        "https://img.icons8.com/dusk/64/000000/organization.png",
-        "https://img.icons8.com/dusk/64/000000/small-business.png",
-        "https://img.icons8.com/dusk/64/000000/company.png",
-        "https://img.icons8.com/clouds/100/musescore.png",
-        "https://img.icons8.com/color/48/star-trek-xindi-insectoid-olaen-heavy-strike-wing-escort.png",
-        "https://img.icons8.com/3d-fluency/94/3d-fluency-mixer.png"
-
-      ]
+      icons: config.canvasStickers
     };
   },
   mounted() {
