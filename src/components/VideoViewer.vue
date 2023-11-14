@@ -1,13 +1,21 @@
-<template>
-    <video autoplay loop muted>
-        <source src="/video1.mp4" type="video/mp4">
-        Mets toi a jours connard
-    </video>
-</template>
+<script setup>
+import SwiperPreview from './SwiperPreview.vue';
+</script>
 
+<template>
+    <div class="sideShowContainer">
+      <SwiperPreview/>
+    </div>
+</template>
 <style>
-    video{
-        width: 100%;
-        height: 100%;
-    }
+
+  .sideShowContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90svh;
+  }
+
 </style>
+
