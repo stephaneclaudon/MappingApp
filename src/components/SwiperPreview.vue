@@ -5,7 +5,7 @@
       :effect="'coverflow'"
       :grabCursor="true"
       :centeredSlides="true"
-      :slidesPerView="2"
+      :slidesPerView="1"
       :loop="true"
       :loopAdditionalSlides="2"
       :coverflowEffect="{
@@ -28,9 +28,9 @@
     <div class="platform">
       
     </div>
-    <div style="position: absolute; bottom: 13rem; text-align: center;">
-      <h1 style="font-size: 6rem;">COUCOU</h1>
-      <p style="font-size: 2rem;">helo helo helo helo helo</p>
+    <div style="position: absolute; bottom: 7rem; text-align: center;">
+      <h1 style="font-size: 4.5rem;">COUCOU</h1>
+      <p style="font-size: 1.5rem;">helo helo helo helo helo</p>
     </div>
   </div>
 </template>
@@ -168,11 +168,11 @@ html, body {
 }
 .platform {
   width: 200vw;
-  height: 1000px;
+  height: 500px;
   background-color:rgba(218, 239, 255, 0.9);
   box-shadow: rgba(255, 255, 255, 0.7) 0px 10px 50px 4px;
   position: absolute;
-  bottom: -400px;
+  bottom: -100px;
   border-radius: 50%;
 }
 
