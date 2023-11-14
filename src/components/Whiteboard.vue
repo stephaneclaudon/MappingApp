@@ -40,10 +40,19 @@ export default {
       deviceType: null,
       stickerCounter: 0,
       icons: [
+          "src/assets/Group.png",
+          "src/assets/major.png",
+          "src/assets/cs2.png",
+          "src/assets/Vector.png",
+          "src/assets/Vector-1.png",
         "https://img.icons8.com/dusk/64/000000/department.png",
         "https://img.icons8.com/dusk/64/000000/organization.png",
         "https://img.icons8.com/dusk/64/000000/small-business.png",
-        "https://img.icons8.com/dusk/64/000000/company.png"
+        "https://img.icons8.com/dusk/64/000000/company.png",
+        "https://img.icons8.com/clouds/100/musescore.png",
+        "https://img.icons8.com/color/48/star-trek-xindi-insectoid-olaen-heavy-strike-wing-escort.png",
+        "https://img.icons8.com/3d-fluency/94/3d-fluency-mixer.png"
+
       ]
     };
   },
@@ -112,7 +121,7 @@ export default {
     clearCanvas() {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       let dragged = document.getElementsByClassName('dragged')
-      for (let i = dragged.length; i > 0 ; i = dragged.length) {
+      for (let i = dragged.length; i > 0; i = dragged.length) {
         dragged[0].remove()
 
       }
@@ -168,8 +177,8 @@ export default {
           "http://www.w3.org/2000/svg",
           "image"
       );
-      sticker.setAttributeNS(null, "height", "64");
-      sticker.setAttributeNS(null, "width", "64");
+      sticker.setAttributeNS(null, "height", "48");
+      sticker.setAttributeNS(null, "width", "48");
       sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", path);
       sticker.setAttributeNS(null, "x", "0");
       sticker.setAttributeNS(null, "y", 64 * i);
@@ -187,7 +196,6 @@ export default {
     },
     createDraggable(element) {
       Draggable.create(element, {
-        type: "x,y",
         bounds: document.querySelector(".canvas-wrapper"),
         edgeResistance: 1,
         onDragStart: () => {
@@ -204,6 +212,16 @@ export default {
             element.classList.add("dragged");
           }
         },
+        onPress: () => {
+          gsap.to(element, {
+            scale: 1.25,
+          })
+        },
+        onRelease: () => {
+          gsap.to(element, {
+            scale: 1,
+          })
+        },
         onDragEnd: () => {
           // Ensure this.map is initialized before calling setItem
           if (this.map) {
@@ -214,7 +232,7 @@ export default {
             });
           }
         },
-        onMove : () => {
+        onMove: () => {
           console.log(this.target)
         }
       });
@@ -228,7 +246,7 @@ export default {
       sticker.setAttributeNS(null, "height", "32");
       sticker.setAttributeNS(null, "width", "32");
       sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", src);
-      sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y})`);
+      sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(1.05)`);
       sticker.setAttributeNS(null, "visibility", "visible");
       sticker.classList.add("sticker");
       this.createDraggable(sticker);
