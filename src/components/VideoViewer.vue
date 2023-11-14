@@ -14,7 +14,6 @@ import SwiperPreview from './SwiperPreview.vue';
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 90svh;
   }
 
 </style>

@@ -1,9 +1,11 @@
 <template>
+  <div class="slideshow-container">
+
     <swiper-container
       :effect="'coverflow'"
       :grabCursor="true"
       :centeredSlides="true"
-      :slidesPerView="3"
+      :slidesPerView="2"
       :loop="true"
       :loopAdditionalSlides="2"
       :coverflowEffect="{
@@ -17,12 +19,20 @@
       @swiperslidechange="onSlideChange"
       class="mySwiper swiper"
     >
-      <swiper-slide v-for="slide in slides">
-        <router-link :to="route+slide.video">
-          <img :src="slide.image" />
+      <swiper-slide v-for="(item, index) in items" :key="index" style="padding: 2.5rem">
+        <router-link :to="item.path">
+          <img :src="item.imgSrc"  class="slideshow-img"/>
         </router-link>
-      </swiper-slide>
+      </swiper-slide>   
     </swiper-container>
+    <div class="platform">
+      
+    </div>
+    <div style="position: absolute; bottom: 13rem; text-align: center;">
+      <h1 style="font-size: 6rem;">COUCOU</h1>
+      <p style="font-size: 2rem;">helo helo helo helo helo</p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -50,7 +60,43 @@
       }
     },
     setup() {
+      const items = [
+          {
+            path: "/vid/0",
+            imgSrc: "/thumbnails/0.jpg"
+          },
+          {
+            path: "/vid/1",
+            imgSrc: "/thumbnails/1.jpg"
+          },
+          {
+            path: "/vid/2",
+            imgSrc: "/thumbnails/2.jpg"
+          },
+          {
+            path: "/vid/3",
+            imgSrc: "/thumbnails/3.jpg"
+          },
+          {
+            path: "/vid/4",
+            imgSrc: "/thumbnails/4.jpg"
+          },
+          {
+            path: "/vid/5",
+            imgSrc: "/thumbnails/5.jpg"
+          },
+          {
+            path: "/vid/6",
+            imgSrc: "/thumbnails/6.jpg"
+          },
+          {
+            path: "/vid/7",
+            imgSrc: "/thumbnails/7.jpg"
+          },
+        ]
+
       let currentIndex = 0
+
       const onSlideChange = () => {
         const swiperEl = document.getElementsByClassName('mySwiper');
         const oldIndex = currentIndex
@@ -66,13 +112,29 @@
       return {
         onSlideChange,
         modules: [EffectCoverflow, Pagination],
+        items
       };
     },
   };
 </script>
 
 <style>
-
+html, body {
+  height: 100vh!important;
+  width: 100vw!important;
+  overflow: hidden!important;
+}
+.slideshow-container {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("/slideshowBackgrounds/bg12.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .swiper {
   width: 100%;
   padding-top: 50px;
@@ -81,9 +143,9 @@
 
 .swiper-slide {
   background-position: center;
-  background-size: cover;
+  background-size: fill;
   width: 300px;
-  height: 300px;
+  height: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,6 +161,19 @@
   display: block;
   width: 100%;
   height: 100%;
+}
+.slideshow-img {
+  border-radius: 2rem;
+  box-shadow: rgba(255, 255, 255, 0.7) 0px 10px 50px 4px;
+}
+.platform {
+  width: 200vw;
+  height: 1000px;
+  background-color:rgba(218, 239, 255, 0.9);
+  box-shadow: rgba(255, 255, 255, 0.7) 0px 10px 50px 4px;
+  position: absolute;
+  bottom: -400px;
+  border-radius: 50%;
 }
 
 </style>
