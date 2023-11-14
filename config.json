@@ -1,17 +1,40 @@
 {
   "mode": 0,
   "requestUrl": "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1",
-  "sliderImages": [
-    "/thumbnails/0.jpg",
-    "/thumbnails/1.jpg",
-    "/thumbnails/2.jpg",
-    "/thumbnails/3.jpg",
-    "/thumbnails/4.jpg",
-    "/thumbnails/5.jpg",
-    "/thumbnails/6.jpg",
-    "/thumbnails/7.jpg"
+  "slides": [
+    {
+      "route": "/vid/0",
+      "image": "/thumbnails/0.jpg"
+    },
+    {
+      "route": "/vid/1",
+      "image": "/thumbnails/1.jpg"
+    },
+    {
+      "route": "/vid/2",
+      "image": "/thumbnails/2.jpg"
+    },
+    {
+      "route": "/vid/3",
+      "image": "/thumbnails/3.jpg"
+    },
+    {
+      "route": "/vid/4",
+      "image": "/thumbnails/4.jpg"
+    },
+    {
+      "route": "/vid/5",
+      "image": "/thumbnails/5.jpg"
+    },
+    {
+      "route": "/vid/6",
+      "image": "/thumbnails/6.jpg"
+    },
+    {
+      "route": "/vid/7",
+      "image": "/thumbnails/7.jpg"
+    }
   ],
-  "videos": [],
   "canvasColors": [
     "#FFFFFF",
     "#FF0000",
