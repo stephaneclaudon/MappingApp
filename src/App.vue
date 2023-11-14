@@ -24,7 +24,6 @@ async function fetchData() {
   const xhr = new XMLHttpRequest();
   await xhr.open("GET", config.requestUrl, true);
   xhr.withCredentials = true;
-  xhr.setRequestHeader("Content-Type", "application/json");
   xhr.responseType = "json";
 
   xhr.onload = () => {
