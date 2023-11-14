@@ -15,10 +15,8 @@ function parseResponse(data) {
 
   if (value > 0.5) {
     router.push({ path: '/' })
-    console.log("##### DEBUG high : ", value)
   } else {
     router.push({ path: '/whiteboard' })
-    console.log("##### DEBUG low : ", value)
   }
 }
 
@@ -32,7 +30,7 @@ async function fetchData() {
       const data = xhr.response;
       parseResponse(data)
     } else {
-      console.log(`Error: ${xhr.status}`);
+      console.error(`Error: ${xhr.status}`);
     }
   };
 
