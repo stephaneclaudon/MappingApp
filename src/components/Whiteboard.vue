@@ -1,6 +1,7 @@
 <template>
   <div class="whiteboard">
     <!-- <h1 style="color: white">{{ message }}</h1> -->
+    
     <div class="tools">
       <div class="size-boxes-container">
         <button v-for="(size, index) in sizes" :key="index" @click="changeSize(size)" class="box"
@@ -12,7 +13,6 @@
       </div>
       <button @click="clearCanvas" class="clear">Clear</button>
     </div>
-
     <div class="canvas-wrapper">
       
       <svg class="stickers" style=""></svg>
@@ -136,6 +136,8 @@ export default {
       } else if (this.deviceType === 'mobile') {
         this.mobileDraw(e)
       }
+      e.preventDefault()
+      e.stopPropagation()
     },
     finishedPainting() {
       this.painting = false
@@ -149,17 +151,20 @@ export default {
       // console.log(this.ctx)
       // console.log(e)
 
-      this.ctx.lineTo(e.layerX - this.canvas.offsetLeft, e.layerY - this.canvas.offsetTop)
+      this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
       this.ctx.stroke()
 
       this.ctx.beginPath()
-      this.ctx.moveTo(e.layerX - this.canvas.offsetLeft, e.layerY - this.canvas.offsetTop)
+      this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
     },
     mobileDraw(e) {
       if (!this.painting) return
       // console.log("canvas offset left", this.canvas.offsetLeft)
       // console.log("clientX", e.touches[0].clientX)
       // console.log(e)
+      
+      // console.log(this.ctx)
+      // console.log(this.canvas)
 
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
