@@ -67,7 +67,7 @@ export default {
     this.canvas.width = window.innerWidth * 0.8
 
     this.setDeviceType()
-    // console.log(this.deviceType)
+    console.log(this.deviceType)
     this.setupEventListeners()
 
 
@@ -97,6 +97,9 @@ export default {
         this.canvas.addEventListener("mousedown", this.startPainting)
         this.canvas.addEventListener("mouseup", this.finishedPainting)
         this.canvas.addEventListener("mousemove", this.draw)
+        this.canvas.addEventListener("touchstart", this.startPainting)
+        this.canvas.addEventListener("touchend", this.finishedPainting)
+        this.canvas.addEventListener("touchmove", this.mobileDraw)
       } else if (this.deviceType === 'mobile') {
         // For mobile touch
         this.canvas.addEventListener("touchstart", this.startPainting)
