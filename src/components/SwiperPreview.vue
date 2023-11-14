@@ -5,6 +5,7 @@
       :grabCursor="true"
       :centeredSlides="true"
       :slidesPerView="1"
+      :slidesPerView="1"
       :loop="true"
       :loopAdditionalSlides="2"
       :coverflowEffect="{
