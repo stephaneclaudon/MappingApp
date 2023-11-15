@@ -147,7 +147,7 @@ export default {
     },
     // Comparez le canvas actuel avec la version précédente
     compareCanvases() {
-
+      //todo : faire une recognition sur 1s et sur 2s pour être sûr
       // Effacez le canvas des différences
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height);
 
@@ -156,7 +156,6 @@ export default {
 
       // Parcourez tous les pixels
       for (let i = 0; i < currentImageData.data.length; i += 4) {
-        // Comparez les pixels entre les deux canvases
         if (
             currentImageData.data[i] !== prevImageData.data[i] ||
             currentImageData.data[i + 1] !== prevImageData.data[i + 1] ||
@@ -186,7 +185,7 @@ export default {
       const seconds = now.getSeconds().toString().padStart(2, '0');
       return `${hours}_${minutes}_${seconds}`;
     },
-    async downloadCanvas() {
+    async downloadCanvas(canvas) {
       var a = document.getElementById('download');
       var b = a.href;
       var date = new Date();
@@ -194,7 +193,7 @@ export default {
       var current_time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
       var date_time = current_date + " " + current_time;
       this.imageName = date_time.trim()
-      a.href = this.diffCanvas.toDataURL();
+      a.href = canvas.toDataURL();
 
       const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
       const maxPrediction = prediction.reduce((max, current) => (current.probability > max.probability ? current : max));
@@ -274,7 +273,7 @@ export default {
         // For mobile touch
         // this.canvas.addEventListener("touchstart", this.startPainting)
         this.canvas.addEventListener("touchend", this.finishedPainting)
-        this.canvas.addEventListener("touchmove", this.mobileDraw)
+        // this.canvas.addEventListener("touchmove", this.mobileDraw)
       }
     },
     changeColor(color) {
@@ -290,6 +289,7 @@ export default {
       return {width: size + 'px!important', height: size + 'px!important'}
     },
     clearCanvas() {
+      this.downloadCanvas(this.canvas);
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.prevCtx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height)
@@ -335,7 +335,7 @@ export default {
       // Configurez un nouveau minuteur pour déclencher la reconnaissance après 1 seconde
       this.drawingTimer = setTimeout(() => {
         this.predictTeachableMachine();
-        this.downloadCanvas()
+        this.downloadCanvas(this.diffCanvas)
 
       }, 1000);
     },
