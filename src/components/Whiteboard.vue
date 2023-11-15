@@ -45,7 +45,8 @@
       </div>
     </div>
 
-    <a href="yourImage.png" download="[imageName].png" id="download" style="pointer-events: none; display: none">Click here to download image</a>
+    <a href="yourImage.png" download="[imageName].png" id="download" style="pointer-events: none; display: none">Click
+      here to download image</a>
     <canvas></canvas>
   </div>
 </template>
@@ -74,11 +75,8 @@ export default {
       deviceType: null,
       stickerCounter: 0,
       icons: config.canvasStickers,
-      clickX: [],
-      clickY: [],
-      clickD: [],
       maxPredictions: 0,
-      imageName:"unset",
+      imageName: "unset",
     };
   },
   async mounted() {
@@ -102,7 +100,6 @@ export default {
     let stickersContainer = document.getElementsByClassName('stickers')[0]
 
     stickersContainer.classList.add(this.isStickersOn)
-    this.loadModel();
     await this.initTeachableMachine();
   },
   methods: {
@@ -157,7 +154,6 @@ export default {
     async predictTeachableMachine() {
       // Get image data from the canvas
       const imageData = this.$refs.canvas.toDataURL();
-      console.log('Image Data:', imageData);
 
       // Perform prediction using the Teachable Machine model
       const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
@@ -169,85 +165,11 @@ export default {
         document.getElementById("teachableMachineLabel" + i).innerHTML = classPrediction;
       }
     },
-    addUserGesture(x, y, dragging) {
-      this.clickX.push(x);
-      this.clickY.push(y);
-      this.clickD.push(dragging);
-    },
-    async loadModel() {
-
-      // load the model and metadata
-      // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-      // or files from your local hard drive
-      // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-      // model = await tmImage.load(modelURL, metadataURL);
-      // maxPredictions = model.getTotalClasses();
-    },
-
-    // preprocess the canvas
-    preprocessCanvas(image) {
-      // resize the input image to target size of (1, 28, 28)
-      let tensor = tf.browser.fromPixels(image)
-          .resizeNearestNeighbor([28, 28])
-          .mean(2)
-          .expandDims(2)
-          .expandDims()
-          .toFloat();
-      console.log(tensor.shape);
-      return tensor.div(255.0);
-    },
-
-    // predict function
-    async predictDigit() {
-      // get image data from canvas
-      var imageData = this.$refs.canvas.toDataURL();
-
-      // preprocess canvas
-      console.log(this.$refs.canvas)
-      console.log(imageData)
-      let tensor = this.preprocessCanvas(this.$refs.canvas);
-
-      // make predictions on the preprocessed image tensor
-      let predictions = await this.model.predict(tensor).data();
-
-      // get the model's prediction results
-      let results = Array.from(predictions);
-
-      // // display the predictions in chart
-      // this.displayChart(results);
-      // this.displayLabel(results);
-      const prediction = await model.predict(imageData);
-      for (let i = 0; i < maxPredictions; i++) {
-        const classPrediction =
-            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-
-      }
-      console.log(results);
-      let newResult
-      let newResultIndex
-      for (let i = 0; i < results.length; i++) {
-        if (results[i - 1]) {
-          if (newResult < results[i]) {
-            newResult = results[i]
-            newResultIndex = i
-          }
-        } else {
-          newResult = results[i]
-          newResultIndex = i
-
-        }
-      }
-      console.log(newResult)
-      console.log(newResultIndex)
-      document.getElementsByClassName('prediction-text')[0].innerHTML = "my prediction is " + newResultIndex;
-
-    },
     updateToolsState(isStickersOn) {
       let stickersContainer = document.getElementsByClassName('stickers')[0]
       stickersContainer.classList.remove(this.isStickersOn)
       this.isStickersOn = !isStickersOn
       stickersContainer.classList.add(this.isStickersOn)
-      console.log(this.isStickersOn)
     },
     setDeviceType() {
       const platform = navigator.userAgentData.platform.toLowerCase()
@@ -278,14 +200,12 @@ export default {
       }
     },
     changeColor(color) {
-      console.log(color)
       this.ctx.strokeStyle = color
     },
     getPenColor(color) {
       return {backgroundColor: color}
     },
     changeSize(size) {
-      console.log(size)
       this.ctx.lineWidth = size
     },
     getPenSize(size) {
@@ -299,17 +219,12 @@ export default {
         dragged[0].remove()
 
       }
-      },
+    },
     startPainting(e) {
       this.painting = true
       if (this.deviceType === 'desktop') {
-        this.addUserGesture(e.clientX - this.$refs.canvas.offsetLeft, e.clientY - this.$refs.canvas.offsetTop);
-
         this.draw(e);
       } else if (this.deviceType === 'mobile') {
-        let touch = e.touches[0];
-        this.addUserGesture(touch.clientX - this.$refs.canvas.offsetLeft, touch.clientY - this.$refs.canvas.offsetTop);
-
         this.mobileDraw(e)
       }
       e.preventDefault()
@@ -323,33 +238,19 @@ export default {
     draw(e) {
       if (!this.painting) return
 
-      // console.log("canvas offset left", this.canvas.offsetTop)
-      // console.log("clientX", e.clientX)
-      // console.log(this.ctx)
-      // console.log(e)
-
       this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
       this.ctx.stroke()
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
-      this.addUserGesture(e.clientX - this.$refs.canvas.offsetLeft, e.clientY - this.$refs.canvas.offsetTop, true);
     },
     mobileDraw(e) {
       if (!this.painting) return
-      // console.log("canvas offset left", this.canvas.offsetLeft)
-      // console.log("clientX", e.touches[0].clientX)
-      // console.log(e)
-
-      // console.log(this.ctx)
-      // console.log(this.canvas)
-
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      this.addUserGesture(e.touches[0].clientX - this.$refs.canvas.offsetLeft, e.touches[0].clientY - this.$refs.canvas.offsetTop, true);
     },
     initializeMap() {
       this.map = localforage.createInstance({
@@ -420,9 +321,6 @@ export default {
               y: element.getBoundingClientRect().y,
             });
           }
-        },
-        onMove: () => {
-          console.log(this.target)
         }
       });
     },
@@ -451,6 +349,4 @@ export default {
 
 
 };
-// import "../assets/js/digit-recognition.js"
-
 </script>
