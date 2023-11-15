@@ -25,14 +25,12 @@
         </router-link>
       </swiper-slide>   
     </swiper-container>
-
     <div class="platform" :style="{ backgroundColor: `${items[currentIndex].bgColor}`}">
     </div>
 
     <div style="position: absolute; bottom: 7rem; text-align: center;">
       <h1 style="font-size: 4.5rem;">{{ items[currentIndex].title }}</h1>
       <p style="font-size: 1.5rem;">helo helo helo helo helo</p>
-    </div>
     </div>
   </div>
 </template>
@@ -166,7 +164,6 @@ html, body {
   width: 100vw;
   height: 100vh;
   background-image: url("/thumbnails/1.jpg");
-  background-image: url("/thumbnails/1.jpg");
   background-repeat: no-repeat;
   background-size: cover; 
   background-position: center;
@@ -174,7 +171,6 @@ html, body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-position: center center;
   background-position: center center;
 }
 .swiper {
@@ -188,7 +184,6 @@ html, body {
   background-position: center;
   background-size: fill;
   width: 300px;
-  height: 500px;
   height: 500px;
   display: flex;
   align-items: center;
@@ -211,18 +206,12 @@ html, body {
   box-shadow: rgba(255, 255, 255, 0.7) 0px 0px 35px 4px;
 }
 .platform {
-  width: 170vw;
-  height: 370px;
-  width: 170vw;
-  height: 370px;
-  background-color: rgba(218, 239, 255, 1);
+  width: 200vw;
+  height: 500px;
+  background-color:rgba(218, 239, 255, 0.9);
   box-shadow: rgba(255, 255, 255, 0.7) 0px 10px 50px 4px;
   position: absolute;
-  bottom: 0;
-  border-top-right-radius: 50%;
-  border-top-left-radius: 50%;
-}
-  border-top-right-radius: 50%;
-  border-top-left-radius: 50%;
+  bottom: -100px;
+  border-radius: 50%;
 }
 </style>
