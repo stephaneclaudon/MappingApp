@@ -7,12 +7,14 @@
       <label for="switch"></label>
 
       <div class="brush-size-container">
-        <div class="brush-preview" :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
+        <div class="brush-preview"
+             :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
       </div>
 
       <div class="size-boxes-container slide-range-container">
         <div class="slide-container">
-          <input type="range" :min="brushSizes.min" :max="brushSizes.max" class="slider" v-model="rangeValue" @change="handleRangeChange">
+          <input type="range" :min="brushSizes.min" :max="brushSizes.max" class="slider" v-model="rangeValue"
+                 @change="handleRangeChange">
         </div>
       </div>
 
@@ -65,7 +67,8 @@ export default {
       diffCtx: null,
       brushSizes: brushSizes,
       rangeValue: brushSizes.default,
-      brushColor: config.canvas.colors[0]
+      brushColor: config.canvas.colors[0],
+      pinchStartDistance: 0,
     };
   },
   async mounted() {
@@ -311,9 +314,9 @@ export default {
         this.canvas.addEventListener("touchmove", this.mobileDraw)
       } else if (this.deviceType === 'mobile') {
         // For mobile touch
-        // this.canvas.addEventListener("touchstart", this.startPainting)
+        this.canvas.addEventListener("touchstart", this.startPainting)
         this.canvas.addEventListener("touchend", this.finishedPainting)
-        // this.canvas.addEventListener("touchmove", this.mobileDraw)
+        this.canvas.addEventListener("touchmove", this.mobileDraw)
       }
     },
     changeColor(color) {
@@ -348,6 +351,12 @@ export default {
 
     },
     startPainting(e) {
+      if (e.touches.length === 2) {
+        this.pinchStartDistance = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+        );
+      }
       this.painting = true
       if (this.deviceType === 'desktop') {
         this.draw(e);
@@ -390,6 +399,26 @@ export default {
       }, 1000);
     },
     mobileDraw(e) {
+      if (e.touches.length === 2) {
+        const pinchEndDistance = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+        );
+
+        const pinchScale = pinchEndDistance / pinchStartDistance;
+
+        // Adjust the sticker scale based on the pinch scale
+        this.stickerScale *= pinchScale;
+
+        // Apply the scale to the dragged sticker
+        const dragged = document.querySelector(".dragged");
+        if (dragged) {
+          gsap.set(dragged, { scale: 1.25 * this.stickerScale });
+        }
+
+        // Update the start distance for the next pinch event
+        this.pinchStartDistance = pinchEndDistance;
+      }
       if (!this.painting) return
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
@@ -452,7 +481,7 @@ export default {
         },
         onPress: () => {
           gsap.to(element, {
-            scale: 1.25,
+            scale: 1.25*this.stickerScale,
           })
         },
         onRelease: () => {
