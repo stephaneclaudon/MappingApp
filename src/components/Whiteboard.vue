@@ -24,6 +24,30 @@
       <svg class="stickers" style=""></svg>
       <canvas class="canvas" ref="canvas"></canvas>
     </div>
+
+    <div class="container mt-1">
+      <div class="digit-demo-container">
+        <h3>Hand Written Digit Recognition</h3>
+        <div class="flex-two">
+          <div class="canvas_box_wrapper">
+            <div class="col-12">
+              <button class="predict-button" @click="predictDigit">Predict</button>
+            </div>
+          </div>
+          <div id="label-container" class="teachable-machine-labels">
+            <button class="predict-button" @click="predictTeachableMachine">Predict</button>
+
+            <div v-for="(prediction, index) in maxPredictions" :key="index" class="teachable-machine-label"
+                 :id="'teachableMachineLabel' + index" style="color: white">{{ prediction }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="yourImage.png" download="[imageName].png" id="download" style="pointer-events: none; display: none">Click
+      here to download image</a>
+    <canvas></canvas>
   </div>
 </template>
 
@@ -32,7 +56,9 @@ import "../assets/scss/pages/_whiteboard.scss"
 import localforage from "localforage";
 import gsap from "gsap";
 import {Draggable} from 'gsap/Draggable';
-import config from '../../config.json'
+import config from '../../config.json';
+import * as tf from '@tensorflow/tfjs';
+import * as tmImage from '@teachablemachine/image';
 
 gsap.registerPlugin(Draggable)
 export default {
@@ -41,18 +67,19 @@ export default {
       message: "Drawing App",
       painting: false,
       isStickersOn: false,
-      toolsLabel:"Stickers",
+      toolsLabel: "Stickers",
       canvas: null,
       ctx: null,
       colors: config.canvas.colors,
       sizes: config.canvas.brushSizes,
       deviceType: null,
       stickerCounter: 0,
-      icons: config.canvas.stickers
-
+      icons: config.canvas.stickers,
+      maxPredictions: 0,
+      imageName: "unset",
     };
   },
-  mounted() {
+  async mounted() {
     this.canvas = this.$refs.canvas
     this.ctx = this.canvas.getContext("2d")
 
@@ -73,14 +100,76 @@ export default {
     let stickersContainer = document.getElementsByClassName('stickers')[0]
 
     stickersContainer.classList.add(this.isStickersOn)
+    await this.initTeachableMachine();
   },
   methods: {
+    downloadImage(imageName) {
+      const link = document.getElementById('download');
+      link.download = imageName;
+      link.click();
+    },
+    getFormattedTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      return `${hours}_${minutes}_${seconds}`;
+    },
+    async downloadCanvas() {
+      var a = document.getElementById('download');
+      var b = a.href;
+      var date = new Date();
+      var current_date = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+      var current_time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+      var date_time = current_date + " " + current_time;
+      this.imageName = date_time.trim()
+      a.href = document.getElementsByTagName('canvas')[0].toDataURL();
+
+      const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
+      const maxPrediction = prediction.reduce((max, current) => (current.probability > max.probability ? current : max));
+
+      // Obtenir le label de la prédiction avec la probabilité la plus élevée
+      const predictedLabel = maxPrediction.className;
+      const formattedTime = this.getFormattedTime();
+      const imageName = `${formattedTime}_prediction_${predictedLabel}.png`;
+      this.downloadImage(imageName);
+      a.href = b;
+    },
+    async initTeachableMachine() {
+      const URL = "src/assets/teachableModel/";
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
+
+      // load the model and metadata
+      this.teachableMachineModel = await tmImage.load(modelURL, metadataURL);
+      this.maxPredictions = this.teachableMachineModel.getTotalClasses();
+      await this.loopTeachableMachine()
+    },
+    async loopTeachableMachine() {
+      await this.predictTeachableMachine();
+      window.requestAnimationFrame(this.loopTeachableMachine);
+    },
+    // Loop function for Teachable Machine webcam
+    // Predict function for Teachable Machine webcam
+    async predictTeachableMachine() {
+      // Get image data from the canvas
+      const imageData = this.$refs.canvas.toDataURL();
+
+      // Perform prediction using the Teachable Machine model
+      const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
+
+      // Display predictions in the UI
+      for (let i = 0; i < this.maxPredictions; i++) {
+        const classPrediction =
+            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+        document.getElementById("teachableMachineLabel" + i).innerHTML = classPrediction;
+      }
+    },
     updateToolsState(isStickersOn) {
       let stickersContainer = document.getElementsByClassName('stickers')[0]
       stickersContainer.classList.remove(this.isStickersOn)
       this.isStickersOn = !isStickersOn
       stickersContainer.classList.add(this.isStickersOn)
-      console.log(this.isStickersOn)
     },
     setDeviceType() {
       const platform = navigator.userAgentData.platform.toLowerCase()
@@ -111,20 +200,19 @@ export default {
       }
     },
     changeColor(color) {
-      console.log(color)
       this.ctx.strokeStyle = color
     },
     getPenColor(color) {
       return {backgroundColor: color}
     },
     changeSize(size) {
-      console.log(size)
       this.ctx.lineWidth = size
     },
     getPenSize(size) {
       return {width: size + 'px!important', height: size + 'px!important'}
     },
     clearCanvas() {
+      this.downloadCanvas()
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       let dragged = document.getElementsByClassName('dragged')
       for (let i = dragged.length; i > 0; i = dragged.length) {
@@ -145,14 +233,10 @@ export default {
     finishedPainting() {
       this.painting = false
       this.ctx.beginPath()
+
     },
     draw(e) {
       if (!this.painting) return
-
-      // console.log("canvas offset left", this.canvas.offsetTop)
-      // console.log("clientX", e.clientX)
-      // console.log(this.ctx)
-      // console.log(e)
 
       this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
       this.ctx.stroke()
@@ -162,13 +246,6 @@ export default {
     },
     mobileDraw(e) {
       if (!this.painting) return
-      // console.log("canvas offset left", this.canvas.offsetLeft)
-      // console.log("clientX", e.touches[0].clientX)
-      // console.log(e)
-
-      // console.log(this.ctx)
-      // console.log(this.canvas)
-
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
 
@@ -244,9 +321,6 @@ export default {
               y: element.getBoundingClientRect().y,
             });
           }
-        },
-        onMove: () => {
-          console.log(this.target)
         }
       });
     },
