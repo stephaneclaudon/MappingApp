@@ -17,6 +17,7 @@
 - [ ] Implémenter une fonction de remplissage pour le canvas
 - [X] Fournir plus de choix de couleurs pour l'utilisateur
 - [ ] Effacer le trait automatiquement après un certain laps de temps
+- [ ] Faire disparaître un sticker lorsqu'il est relâché dans la zone des stickers et non dans le canvas
 
 ## Remarques supplémentaires
 - Assurez-vous que l'application est conviviale et réactive sur différents appareils.
