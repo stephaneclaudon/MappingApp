@@ -10,6 +10,14 @@
   .canvas-wrapper {
     // position: relative;
     display: flex;
+    .canvas {
+      border: 1px solid white;
+      //todo: need to center div but check conflict with draw on mobile JS
+      //position: absolute;
+      //left: 0;
+      //right: 0;
+      //margin: auto;
+    }
   }
 }
 

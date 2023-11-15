@@ -1,12 +1,12 @@
 <template>
   <div class="whiteboard">
     <!-- <h1 style="color: white">{{ message }}</h1> -->
-    
-    <div class="tools">
-      <p style="border: 1px solid red;">stickers</p>
 
-      <input v-model="isStickersOn" type="checkbox" id="switch"/>
-      <label for="switch">{{ isStickersOn }}</label>
+    <div class="tools">
+      <p>{{ toolsLabel }}</p>
+
+      <input v-model="isStickersOn" checked type="checkbox" id="switch" @click="updateToolsState(isStickersOn)"/>
+      <label for="switch"></label>
 
       <div class="size-boxes-container">
         <button v-for="(size, index) in sizes" :key="index" @click="changeSize(size)" class="box"
@@ -16,12 +16,12 @@
         <button v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="box"
                 :style="getPenColor(color)"></button>
       </div>
-      <img src="../assets/bin.svg" alt="clear" class="clear"  @click="clearCanvas" />
+      <img src="../assets/bin.svg" alt="clear" class="clear" @click="clearCanvas"/>
     </div>
 
     <div class="canvas-wrapper">
-      
-      <svg v-if="isStickersOn" class="stickers" style=""></svg>
+
+      <svg class="stickers" style=""></svg>
       <canvas class="canvas" ref="canvas"></canvas>
     </div>
   </div>
@@ -40,13 +40,16 @@ export default {
     return {
       message: "Drawing App",
       painting: false,
+      isStickersOn: false,
+      toolsLabel:"Stickers",
       canvas: null,
       ctx: null,
       colors: config.canvasColors,
       sizes: config.canvasBrushSizes,
       deviceType: null,
       stickerCounter: 0,
-      icons: config.canvasStickers
+      icons: config.canvasStickers,
+
     };
   },
   mounted() {
@@ -58,20 +61,27 @@ export default {
     // Resize canvas
     this.canvas.height = window.innerHeight * 0.9
     this.canvas.width = window.innerWidth * 0.8
-
     this.setDeviceType()
-    console.log(this.deviceType)
     this.setupEventListeners()
 
 
     this.initializeMap();
     this.buildStickers();
-
     this.changeColor(this.colors[0])
     this.changeSize(this.sizes[0])
     this.ctx.lineCap = "round"
+    let stickersContainer = document.getElementsByClassName('stickers')[0]
+
+    stickersContainer.classList.add(this.isStickersOn)
   },
   methods: {
+    updateToolsState(isStickersOn) {
+      let stickersContainer = document.getElementsByClassName('stickers')[0]
+      stickersContainer.classList.remove(this.isStickersOn)
+      this.isStickersOn = !isStickersOn
+      stickersContainer.classList.add(this.isStickersOn)
+      console.log(this.isStickersOn)
+    },
     setDeviceType() {
       const platform = navigator.userAgentData.platform.toLowerCase()
       if (/(android|webos|iphone|ipad|ipod|blackberry|windows phone)/.test(platform)) {
@@ -155,7 +165,7 @@ export default {
       // console.log("canvas offset left", this.canvas.offsetLeft)
       // console.log("clientX", e.touches[0].clientX)
       // console.log(e)
-      
+
       // console.log(this.ctx)
       // console.log(this.canvas)
 
@@ -174,6 +184,7 @@ export default {
       });
     },
     buildHandleSVG(parent, path, i) {
+
       const sticker = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "image"
@@ -188,6 +199,7 @@ export default {
       sticker.dataset.type = `sticker-${i}`;
       parent.appendChild(sticker);
       this.cloneHandleSVG(parent, `sticker-${i}`);
+
     },
     cloneHandleSVG(parent, type) {
       const source = document.querySelector(`[data-type="${type}"]`);
