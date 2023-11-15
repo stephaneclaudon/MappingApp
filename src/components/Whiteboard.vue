@@ -24,6 +24,29 @@
       <svg class="stickers" style=""></svg>
       <canvas class="canvas" ref="canvas"></canvas>
     </div>
+
+    <div class="container mt-1">
+      <div class="digit-demo-container">
+        <h3>Hand Written Digit Recognition</h3>
+        <div class="flex-two">
+          <div class="canvas_box_wrapper">
+            <div class="col-12">
+              <button class="predict-button" @click="predictDigit">Predict</button>
+            </div>
+          </div>
+          <div id="label-container" class="teachable-machine-labels">
+            <button class="predict-button" @click="predictTeachableMachine">Predict</button>
+
+            <div v-for="(prediction, index) in maxPredictions" :key="index" class="teachable-machine-label"
+                 :id="'teachableMachineLabel' + index" style="color: white">{{ prediction }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="yourImage.png" download="[imageName].png" id="download" style="pointer-events: none; display: none">Click here to download image</a>
+    <canvas></canvas>
   </div>
 </template>
 
@@ -32,7 +55,9 @@ import "../assets/scss/pages/_whiteboard.scss"
 import localforage from "localforage";
 import gsap from "gsap";
 import {Draggable} from 'gsap/Draggable';
-import config from '../../config.json'
+import config from '../../config.json';
+import * as tf from '@tensorflow/tfjs';
+import * as tmImage from '@teachablemachine/image';
 
 gsap.registerPlugin(Draggable)
 export default {
@@ -41,7 +66,7 @@ export default {
       message: "Drawing App",
       painting: false,
       isStickersOn: false,
-      toolsLabel:"Stickers",
+      toolsLabel: "Stickers",
       canvas: null,
       ctx: null,
       colors: config.canvasColors,
@@ -49,10 +74,14 @@ export default {
       deviceType: null,
       stickerCounter: 0,
       icons: config.canvasStickers,
-
+      clickX: [],
+      clickY: [],
+      clickD: [],
+      maxPredictions: 0,
+      imageName:"unset",
     };
   },
-  mounted() {
+  async mounted() {
     this.canvas = this.$refs.canvas
     this.ctx = this.canvas.getContext("2d")
 
@@ -73,8 +102,146 @@ export default {
     let stickersContainer = document.getElementsByClassName('stickers')[0]
 
     stickersContainer.classList.add(this.isStickersOn)
+    this.loadModel();
+    await this.initTeachableMachine();
   },
   methods: {
+    downloadImage(imageName) {
+      const link = document.getElementById('download');
+      link.download = imageName;
+      link.click();
+    },
+    getFormattedTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      return `${hours}_${minutes}_${seconds}`;
+    },
+    async downloadCanvas() {
+      var a = document.getElementById('download');
+      var b = a.href;
+      var date = new Date();
+      var current_date = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+      var current_time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+      var date_time = current_date + " " + current_time;
+      this.imageName = date_time.trim()
+      a.href = document.getElementsByTagName('canvas')[0].toDataURL();
+
+      const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
+      const maxPrediction = prediction.reduce((max, current) => (current.probability > max.probability ? current : max));
+
+      // Obtenir le label de la prédiction avec la probabilité la plus élevée
+      const predictedLabel = maxPrediction.className;
+      const formattedTime = this.getFormattedTime();
+      const imageName = `${formattedTime}_prediction_${predictedLabel}.png`;
+      this.downloadImage(imageName);
+      a.href = b;
+    },
+    async initTeachableMachine() {
+      const URL = "src/assets/teachableModel/";
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
+
+      // load the model and metadata
+      this.teachableMachineModel = await tmImage.load(modelURL, metadataURL);
+      this.maxPredictions = this.teachableMachineModel.getTotalClasses();
+      await this.loopTeachableMachine()
+    },
+    async loopTeachableMachine() {
+      await this.predictTeachableMachine();
+      window.requestAnimationFrame(this.loopTeachableMachine);
+    },
+    // Loop function for Teachable Machine webcam
+    // Predict function for Teachable Machine webcam
+    async predictTeachableMachine() {
+      // Get image data from the canvas
+      const imageData = this.$refs.canvas.toDataURL();
+      console.log('Image Data:', imageData);
+
+      // Perform prediction using the Teachable Machine model
+      const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
+
+      // Display predictions in the UI
+      for (let i = 0; i < this.maxPredictions; i++) {
+        const classPrediction =
+            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+        document.getElementById("teachableMachineLabel" + i).innerHTML = classPrediction;
+      }
+    },
+    addUserGesture(x, y, dragging) {
+      this.clickX.push(x);
+      this.clickY.push(y);
+      this.clickD.push(dragging);
+    },
+    async loadModel() {
+
+      // load the model and metadata
+      // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+      // or files from your local hard drive
+      // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+      // model = await tmImage.load(modelURL, metadataURL);
+      // maxPredictions = model.getTotalClasses();
+    },
+
+    // preprocess the canvas
+    preprocessCanvas(image) {
+      // resize the input image to target size of (1, 28, 28)
+      let tensor = tf.browser.fromPixels(image)
+          .resizeNearestNeighbor([28, 28])
+          .mean(2)
+          .expandDims(2)
+          .expandDims()
+          .toFloat();
+      console.log(tensor.shape);
+      return tensor.div(255.0);
+    },
+
+    // predict function
+    async predictDigit() {
+      // get image data from canvas
+      var imageData = this.$refs.canvas.toDataURL();
+
+      // preprocess canvas
+      console.log(this.$refs.canvas)
+      console.log(imageData)
+      let tensor = this.preprocessCanvas(this.$refs.canvas);
+
+      // make predictions on the preprocessed image tensor
+      let predictions = await this.model.predict(tensor).data();
+
+      // get the model's prediction results
+      let results = Array.from(predictions);
+
+      // // display the predictions in chart
+      // this.displayChart(results);
+      // this.displayLabel(results);
+      const prediction = await model.predict(imageData);
+      for (let i = 0; i < maxPredictions; i++) {
+        const classPrediction =
+            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+
+      }
+      console.log(results);
+      let newResult
+      let newResultIndex
+      for (let i = 0; i < results.length; i++) {
+        if (results[i - 1]) {
+          if (newResult < results[i]) {
+            newResult = results[i]
+            newResultIndex = i
+          }
+        } else {
+          newResult = results[i]
+          newResultIndex = i
+
+        }
+      }
+      console.log(newResult)
+      console.log(newResultIndex)
+      document.getElementsByClassName('prediction-text')[0].innerHTML = "my prediction is " + newResultIndex;
+
+    },
     updateToolsState(isStickersOn) {
       let stickersContainer = document.getElementsByClassName('stickers')[0]
       stickersContainer.classList.remove(this.isStickersOn)
@@ -125,18 +292,24 @@ export default {
       return {width: size + 'px!important', height: size + 'px!important'}
     },
     clearCanvas() {
+      this.downloadCanvas()
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       let dragged = document.getElementsByClassName('dragged')
       for (let i = dragged.length; i > 0; i = dragged.length) {
         dragged[0].remove()
 
       }
-    },
+      },
     startPainting(e) {
       this.painting = true
       if (this.deviceType === 'desktop') {
+        this.addUserGesture(e.clientX - this.$refs.canvas.offsetLeft, e.clientY - this.$refs.canvas.offsetTop);
+
         this.draw(e);
       } else if (this.deviceType === 'mobile') {
+        let touch = e.touches[0];
+        this.addUserGesture(touch.clientX - this.$refs.canvas.offsetLeft, touch.clientY - this.$refs.canvas.offsetTop);
+
         this.mobileDraw(e)
       }
       e.preventDefault()
@@ -145,6 +318,7 @@ export default {
     finishedPainting() {
       this.painting = false
       this.ctx.beginPath()
+
     },
     draw(e) {
       if (!this.painting) return
@@ -159,6 +333,7 @@ export default {
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+      this.addUserGesture(e.clientX - this.$refs.canvas.offsetLeft, e.clientY - this.$refs.canvas.offsetTop, true);
     },
     mobileDraw(e) {
       if (!this.painting) return
@@ -174,6 +349,7 @@ export default {
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+      this.addUserGesture(e.touches[0].clientX - this.$refs.canvas.offsetLeft, e.touches[0].clientY - this.$refs.canvas.offsetTop, true);
     },
     initializeMap() {
       this.map = localforage.createInstance({
@@ -275,4 +451,6 @@ export default {
 
 
 };
+// import "../assets/js/digit-recognition.js"
+
 </script>
