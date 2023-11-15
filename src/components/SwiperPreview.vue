@@ -26,11 +26,10 @@
       </swiper-slide>   
     </swiper-container>
     <div class="platform">
-      <div class="elipsis"></div>
-    </div>
-    <div style="position: absolute; bottom: 7rem; text-align: center;">
+      <div style="position: relative; top: 5rem; text-align: center;">
       <h1 style="font-size: 4.5rem;">COUCOU</h1>
       <p style="font-size: 1.5rem;">helo helo helo helo helo</p>
+    </div>
     </div>
   </div>
 </template>
@@ -127,13 +126,14 @@ html, body {
 .slideshow-container {
   width: 100vw;
   height: 100vh;
-  background-image: url("/slideshowBackgrounds/bg12.jpg");
+  background-image: url("/thumbnails/1.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-position: center center;
 }
 .swiper {
   width: 100%;
@@ -149,7 +149,6 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* border: 1px solid red; */
 }
 
 .swiper-slide a {
@@ -168,27 +167,13 @@ html, body {
   box-shadow: rgba(255, 255, 255, 0.7) 0px 10px 50px 4px;
 }
 .platform {
-  width: 100vw;
-  height: 350px;
+  width: 170vw;
+  height: 370px;
   background-color: rgba(218, 239, 255, 1);
-  /* background-color: transparent; */
   box-shadow: rgba(255, 255, 255, 0.7) 0px 10px 50px 4px;
   position: absolute;
   bottom: 0;
-  border-radius: 0;
+  border-top-right-radius: 50%;
+  border-top-left-radius: 50%;
 }
-
-.elipsis {
-  width: 150vw;
-  height: 200px;
-  position: absolute;
-  left: -25vw;
-  border-radius: 65% 65% 0 0;
-  margin-top: -50px;
-  background-color: rgba(218, 239, 255, 1);
-  /* -webkit-clip-path: ellipse(50% 8% at 50% 50%);
-  clip-path: ellipse(50% 8% at 50% 50%); */
-  /*border: 1px solid red */
-}
-
 </style>
