@@ -19,7 +19,7 @@
       <img src="../assets/bin.svg" alt="clear" class="clear" @click="clearCanvas"/>
     </div>
 
-    <div class="canvas-wrapper">      
+    <div class="canvas-wrapper">
       <div class="stickers-container">
         <svg class="stickers" style=""></svg>
       </div>
@@ -29,6 +29,24 @@
     <a href="yourImage.png" download="[imageName].png" id="download" style="pointer-events: none; display: none">Click
       here to download image</a>
     <canvas></canvas>
+    <div class="container mt-1">
+      <div class="digit-demo-container">
+        <div class="flex-two">
+          <div class="canvas_box_wrapper">
+            <div class="col-12">
+              <button class="predict-button" @click="predictDigit">Predict</button>
+            </div>
+          </div>
+          <div id="label-container" class="teachable-machine-labels">
+            <button class="predict-button" @click="predictTeachableMachine">Predict</button>
+            <div v-for="(prediction, index) in maxPredictions" :key="index" class="teachable-machine-label"
+                 :id="'teachableMachineLabel' + index" style="color: white">{{ prediction }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -59,21 +77,29 @@ export default {
       maxPredictions: 0,
       imageName: "unset",
       drawingTimer: null,
+
+      currentCtx: null,
+      prevCtx: null,
+      diffCtx: null,
     };
   },
   async mounted() {
+
+
     this.canvas = this.$refs.canvas
     this.ctx = this.canvas.getContext("2d")
 
+    this.currentCtx = this.canvas.getContext('2d');
     // Set default stroke color
 
-    // Resize canvas    
-    const whiteboard = document.getElementsByClassName('whiteboard')[0]
+    // Resize canvas
+    const
+        whiteboard = document.getElementsByClassName('whiteboard')[0]
 
     console.log(whiteboard)
 
     this.canvas.height = whiteboard.clientHeight
-    this.canvas.width =  whiteboard.clientHeight * (1080/1920)
+    this.canvas.width = whiteboard.clientHeight * (1080 / 1920)
 
 
     this.setDeviceType()
@@ -91,13 +117,63 @@ export default {
       const whiteboard = document.getElementsByClassName('whiteboard')[0]
       console.log("salut")
       this.canvas.height = whiteboard.clientHeight * 0.9
-      this.canvas.width =  whiteboard.clientHeight * 0.9 * (1080/1920)
+      this.canvas.width = whiteboard.clientHeight * 0.9 * (1080 / 1920)
     })
 
     stickersContainer.classList.add(this.isStickersOn)
     await this.initTeachableMachine();
+    this.prevCanvas = document.createElement('canvas');
+    this.prevCanvas.width = this.canvas.width;
+    this.prevCanvas.height = this.canvas.height;
+
+    this.prevCtx = this.prevCanvas.getContext('2d');
+    this.createDiffCanvas();
+    // Mettez à jour la version précédente du dessin initialement
+
+    this.updatePrevCanvas();
   },
   methods: {
+
+    // Mettez à jour la version précédente du dessin
+    updatePrevCanvas() {
+      const prevCtx = this.prevCanvas.getContext('2d');
+      prevCtx.drawImage(this.canvas, 0, 0);
+    },
+    createDiffCanvas() {
+      this.diffCanvas = document.createElement('canvas');
+      this.diffCanvas.width = this.canvas.width;
+      this.diffCanvas.height = this.canvas.height;
+      this.diffCtx = this.diffCanvas.getContext('2d');
+    },
+    // Comparez le canvas actuel avec la version précédente
+    compareCanvases() {
+
+      // Effacez le canvas des différences
+      this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height);
+
+      const currentImageData = this.currentCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      const prevImageData = this.prevCtx.getImageData(0, 0, this.prevCanvas.width, this.prevCanvas.height);
+
+      // Parcourez tous les pixels
+      for (let i = 0; i < currentImageData.data.length; i += 4) {
+        // Comparez les pixels entre les deux canvases
+        if (
+            currentImageData.data[i] !== prevImageData.data[i] ||
+            currentImageData.data[i + 1] !== prevImageData.data[i + 1] ||
+            currentImageData.data[i + 2] !== prevImageData.data[i + 2] ||
+            currentImageData.data[i + 3] !== prevImageData.data[i + 3]
+        ) {
+          // Si les pixels sont différents, dessinez-les sur le canvas des différences
+          this.diffCtx.fillStyle = `rgba(${currentImageData.data[i]}, ${currentImageData.data[i + 1]}, ${currentImageData.data[i + 2]}, ${currentImageData.data[i + 3] / 255})`;
+          this.diffCtx.fillRect((i / 4) % this.canvas.width, Math.floor(i / 4 / this.canvas.width), 1, 1);
+        }
+      }
+
+      // Utilisez le canvas des différences comme nécessaire
+      // Par exemple, vous pouvez afficher le canvas des différences dans une image
+      console.log(this.diffCanvas.toDataURL());
+    },
+
     downloadImage(imageName) {
       const link = document.getElementById('download');
       link.download = imageName;
@@ -118,7 +194,7 @@ export default {
       var current_time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
       var date_time = current_date + " " + current_time;
       this.imageName = date_time.trim()
-      a.href = document.getElementsByTagName('canvas')[0].toDataURL();
+      a.href = this.diffCanvas.toDataURL();
 
       const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
       const maxPrediction = prediction.reduce((max, current) => (current.probability > max.probability ? current : max));
@@ -149,14 +225,21 @@ export default {
     async predictTeachableMachine() {
       // Get image data from the canvas
       const imageData = this.$refs.canvas.toDataURL();
-
+      if (!this.diffCanvas) {
+        this.createDiffCanvas();
+      }
+      // Enregistrez le résultat de la comparaison dans le troisième canvas
+      this.compareCanvases();
       // Perform prediction using the Teachable Machine model
-      const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
+      const prediction = await this.teachableMachineModel.predict(this.diffCanvas);
 
+
+      // Mettez à jour la version précédente du dessin
+      this.updatePrevCanvas();
       // Display predictions in the UI
       for (let i = 0; i < this.maxPredictions; i++) {
         const classPrediction =
-            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            prediction[i].className + ": " + (prediction[i].probability.toFixed(2) * 100).toFixed(0) + "%";
         document.getElementById("teachableMachineLabel" + i).innerHTML = classPrediction;
       }
     },
@@ -207,13 +290,14 @@ export default {
       return {width: size + 'px!important', height: size + 'px!important'}
     },
     clearCanvas() {
-      this.downloadCanvas()
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      this.prevCtx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height)
       let dragged = document.getElementsByClassName('dragged')
       for (let i = dragged.length; i > 0; i = dragged.length) {
         dragged[0].remove()
-
       }
+      this.predictTeachableMachine();
     },
     startPainting(e) {
       this.painting = true
@@ -251,6 +335,8 @@ export default {
       // Configurez un nouveau minuteur pour déclencher la reconnaissance après 1 seconde
       this.drawingTimer = setTimeout(() => {
         this.predictTeachableMachine();
+        this.downloadCanvas()
+
       }, 500);
     },
     mobileDraw(e) {
