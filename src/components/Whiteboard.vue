@@ -337,7 +337,7 @@ export default {
         this.predictTeachableMachine();
         this.downloadCanvas()
 
-      }, 500);
+      }, 1000);
     },
     mobileDraw(e) {
       if (!this.painting) return
