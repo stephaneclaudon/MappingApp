@@ -1,16 +1,25 @@
+@import '../style.scss';
 @import 'block/tools';
 @import 'block/stickers';
 
 .whiteboard {
-  width: 100vw;
-  height: 100vh;
+  width: 100svw;
+  height: 100svh;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;  
+  align-items: center;
+
+  border: 5vw solid $color_primary;
+
   .canvas-wrapper {
     position: relative;
     display: flex;
+
+    .stickers-container{
+      width: 64px;
+    }
   }
+
 }
 

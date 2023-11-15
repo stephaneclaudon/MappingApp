@@ -13,9 +13,10 @@
       <button @click="clearCanvas" class="clear">Clear</button>
     </div>
 
-    <div class="canvas-wrapper">
-      
-      <svg class="stickers" style=""></svg>
+    <div class="canvas-wrapper">      
+      <div class="stickers-container">
+        <svg class="stickers" style=""></svg>
+      </div>
       <canvas class="canvas" ref="canvas"></canvas>
     </div>
   </div>
