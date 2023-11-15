@@ -6,7 +6,7 @@
 - [ ] Faire pivoter le sticker avec un geste à deux doigts
 - [ ] Ajouter un bouton pour la fonction retour en arrière
 - [ ] Examiner et corriger le problème où un simple toucher/clic ne produit aucune action
-- [ ] Revoir l'interface utilisateur pour afficher la taille et la couleur sélectionnées
+- [X] Revoir l'interface utilisateur pour afficher la taille et la couleur sélectionnées
 
 ## Corrections de bugs
 - [ ] Examiner et corriger le problème avec le coté gauche du canvas qui ne fonctionne pas au stickers déployé
