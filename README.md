@@ -1,3 +1,20 @@
+# Config.json
+
+- mode
+> 1 -> Start app **WITH** url fetch for auto-nav.  
+> 0 -> Start app **WITHOUT** url fetch for auto-nav.
+- requestUrl
+> URL for auto-nav url fetch.
+- sliderImages
+> images sources for slideshow.
+- videos
+> videos sources for slideshow.
+- canvasColors
+> colors for whiteboard brush.
+- canvasBrushSizes
+> brush sizes for whiteboard brush.
+- canvasStickers
+> stickers sources for whiteboard stickers.
 # Nomenclature
 
 ### Branch name

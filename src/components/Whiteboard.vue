@@ -32,6 +32,7 @@ import "../assets/scss/pages/_whiteboard.scss"
 import localforage from "localforage";
 import gsap from "gsap";
 import {Draggable} from 'gsap/Draggable';
+import config from '../../config.json'
 
 gsap.registerPlugin(Draggable)
 export default {
@@ -41,21 +42,11 @@ export default {
       painting: false,
       canvas: null,
       ctx: null,
-      colors: ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"],
-      sizes: [12, 16, 20, 24, 28],
+      colors: config.canvasColors,
+      sizes: config.canvasBrushSizes,
       deviceType: null,
       stickerCounter: 0,
-      icons: [
-          "src/assets/Group.png",
-          "src/assets/major.png",
-          "src/assets/cs2.png",
-          "src/assets/Vector.png",
-          "src/assets/Vector-1.png",
-        "https://img.icons8.com/dusk/64/000000/department.png",
-
-      ],
-      isStickersOn: false,
-      checked: false,
+      icons: config.canvasStickers
     };
   },
   mounted() {

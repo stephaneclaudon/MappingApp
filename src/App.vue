@@ -1,13 +1,13 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { RouterView } from 'vue-router';
 import { useRouter } from 'vue-router';
+import config from '../config.json'
 import { register } from 'swiper/element/bundle';
 register();
 
 const router = useRouter();
 
 function parseResponse(data) {
-
   console.log(data)
   if (data === undefined || data === null) {
     return
@@ -24,7 +24,8 @@ function parseResponse(data) {
 
 async function fetchData() {
   const xhr = new XMLHttpRequest();
-  await xhr.open("GET", "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1");
+  await xhr.open("GET", config.requestUrl, true);
+  xhr.withCredentials = true;
   xhr.responseType = "json";
 
   xhr.onload = () => {
@@ -40,12 +41,15 @@ async function fetchData() {
 }
 
 function mounted() {
-    window.addEventListener('load', () => {
-      setInterval(fetchData, 1000)
-    })
+  window.addEventListener("load", () => {
+    setInterval(fetchData, 1000)
+  })
 }
 
-mounted()
+if (config.mode === 1) {
+  mounted()
+}
+
 </script>
 
 <template>
