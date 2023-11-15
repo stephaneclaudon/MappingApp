@@ -1,23 +1,38 @@
+@import '../style.scss';
 @import 'block/tools';
 @import 'block/stickers';
 
 .whiteboard {
+  height: 100vh;
   display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: start;  
-  margin-top: 1rem;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 2vw solid $color_primary;
+  transition: all 0.3s ease-in-out;
+  
   .canvas-wrapper {
-    // position: relative;
     display: flex;
+
+    .stickers-container{
+      width: 64px;
+      height: 100%;
+    }
+
+    .stickers{
+      width: 100%;
+    }
     .canvas {
-      border: 1px solid white;
-      //todo: need to center div but check conflict with draw on mobile JS
-      position: absolute;
-      left: 0;
-      right: 0;
-      margin: auto;
+      background-color: $background_color_main;
+
+      border-bottom-left-radius: 50% 5%;
+      border-bottom-right-radius: 50% 5%;
     }
   }
 }
 
+.bg-primary{
+  background-color: $color_primary;
+}

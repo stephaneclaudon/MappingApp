@@ -1,7 +1,5 @@
 <template>
   <div class="whiteboard">
-    <!-- <h1 style="color: white">{{ message }}</h1> -->
-
     <div class="tools">
       <p>{{ toolsLabel }}</p>
 
@@ -20,35 +18,13 @@
     </div>
 
     <div class="canvas-wrapper">
-
-      <svg class="stickers" style=""></svg>
+      <div class="stickers-container">
+        <svg class="stickers" style=""></svg>
+      </div>
       <canvas class="canvas" ref="canvas"></canvas>
     </div>
-
-    <div class="container mt-1">
-      <div class="digit-demo-container">
-        <h3>Hand Written Digit Recognition</h3>
-        <div class="flex-two">
-          <div class="canvas_box_wrapper">
-            <div class="col-12">
-              <button class="predict-button" @click="predictDigit">Predict</button>
-            </div>
-          </div>
-          <div id="label-container" class="teachable-machine-labels">
-            <button class="predict-button" @click="predictTeachableMachine">Predict</button>
-
-            <div v-for="(prediction, index) in maxPredictions" :key="index" class="teachable-machine-label"
-                 :id="'teachableMachineLabel' + index" style="color: white">{{ prediction }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <a href="yourImage.png" download="[imageName].png" id="download" style="pointer-events: none; display: none">Click
-      here to download image</a>
-    <canvas></canvas>
   </div>
+  <a id="download"></a>
 </template>
 
 <script>
@@ -57,7 +33,6 @@ import localforage from "localforage";
 import gsap from "gsap";
 import {Draggable} from 'gsap/Draggable';
 import config from '../../config.json';
-import * as tf from '@tensorflow/tfjs';
 import * as tmImage from '@teachablemachine/image';
 
 gsap.registerPlugin(Draggable)
@@ -77,17 +52,29 @@ export default {
       icons: config.canvas.stickers,
       maxPredictions: 0,
       imageName: "unset",
+      drawingTimer: null,
+      recognitionCount: 0,
+      currentCtx: null,
+      prevCtx: null,
+      diffCtx: null,
     };
   },
   async mounted() {
+
+
     this.canvas = this.$refs.canvas
     this.ctx = this.canvas.getContext("2d")
 
+    this.currentCtx = this.canvas.getContext('2d');
     // Set default stroke color
 
     // Resize canvas
-    this.canvas.height = window.innerHeight * 0.9
-    this.canvas.width = window.innerWidth * 0.8
+    const
+        whiteboard = document.getElementsByClassName('whiteboard')[0]
+
+    this.canvas.height = whiteboard.clientHeight
+    this.canvas.width = this.canvas.height * (1080 / 1920)
+
     this.setDeviceType()
     this.setupEventListeners()
 
@@ -99,10 +86,98 @@ export default {
     this.ctx.lineCap = "round"
     let stickersContainer = document.getElementsByClassName('stickers')[0]
 
+    window.addEventListener('resize', () => {
+      const whiteboard = document.getElementsByClassName('whiteboard')[0]
+      this.canvas.height = whiteboard.clientHeight
+      this.canvas.width = this.canvas.height * (1080 / 1920)
+    })
+
     stickersContainer.classList.add(this.isStickersOn)
     await this.initTeachableMachine();
+    this.prevCanvas = document.createElement('canvas');
+    this.prevCanvas.width = this.canvas.width;
+    this.prevCanvas.height = this.canvas.height;
+    this.prevCtx = this.prevCanvas.getContext('2d');
+
+
+    this.prevTwoLastCanvas = document.createElement('canvas');
+    this.prevTwoLastCanvas.width = this.canvas.width;
+    this.prevTwoLastCanvas.height = this.canvas.height;
+
+    this.prevTwoLastCtx = this.prevTwoLastCanvas.getContext('2d');
+    this.createDiffCanvas();
+    // Mettez à jour la version précédente du dessin initialement
+
+    this.updatePrevCanvas();
   },
   methods: {
+
+    // Mettez à jour la version précédente du dessin
+    updatePrevCanvas() {
+      if (this.recognitionCount === 2) {
+        const prevTwoLastCtx = this.prevTwoLastCanvas.getContext('2d');
+        prevTwoLastCtx.drawImage(this.canvas, 0, 0);
+      }
+      const prevCtx = this.prevCanvas.getContext('2d');
+      prevCtx.drawImage(this.canvas, 0, 0);
+    },
+    createDiffCanvas() {
+      this.diffCanvas = document.createElement('canvas');
+      this.diffCanvas.width = this.canvas.width;
+      this.diffCanvas.height = this.canvas.height;
+      this.diffCtx = this.diffCanvas.getContext('2d');
+      this.diffTwoLastCanvas = document.createElement('canvas');
+      this.diffTwoLastCanvas.width = this.canvas.width;
+      this.diffTwoLastCanvas.height = this.canvas.height;
+      this.diffTwoLastCtx = this.diffTwoLastCanvas.getContext('2d');
+    },
+    // Comparez le canvas actuel avec la version précédente
+    compareCanvases() {
+      if (this.recognitionCount === 2) {
+        this.diffTwoLastCtx.clearRect(0, 0, this.diffTwoLastCanvas.width, this.diffTwoLastCanvas.height);
+        const currentImageData = this.currentCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        const prevTwoLastImageData = this.prevTwoLastCtx.getImageData(0, 0, this.prevTwoLastCanvas.width, this.prevTwoLastCanvas.height);
+        for (let i = 0; i < currentImageData.data.length; i += 4) {
+          if (
+              currentImageData.data[i] !== prevTwoLastImageData.data[i] ||
+              currentImageData.data[i + 1] !== prevTwoLastImageData.data[i + 1] ||
+              currentImageData.data[i + 2] !== prevTwoLastImageData.data[i + 2] ||
+              currentImageData.data[i + 3] !== prevTwoLastImageData.data[i + 3]
+          ) {
+            // Si les pixels sont différents, dessinez-les sur le canvas des différences
+            this.diffTwoLastCtx.fillStyle = `rgba(${currentImageData.data[i]}, ${currentImageData.data[i + 1]}, ${currentImageData.data[i + 2]}, ${currentImageData.data[i + 3] / 255})`;
+            this.diffTwoLastCtx.fillRect((i / 4) % this.canvas.width, Math.floor(i / 4 / this.canvas.width), 1, 1);
+          }
+        }
+      }
+
+
+      //todo : faire une recognition sur 1s et sur 2s pour être sûr
+      // Effacez le canvas des différences
+      this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height);
+
+      const currentImageData = this.currentCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      const prevImageData = this.prevCtx.getImageData(0, 0, this.prevCanvas.width, this.prevCanvas.height);
+
+      // Parcourez tous les pixels
+      for (let i = 0; i < currentImageData.data.length; i += 4) {
+        if (
+            currentImageData.data[i] !== prevImageData.data[i] ||
+            currentImageData.data[i + 1] !== prevImageData.data[i + 1] ||
+            currentImageData.data[i + 2] !== prevImageData.data[i + 2] ||
+            currentImageData.data[i + 3] !== prevImageData.data[i + 3]
+        ) {
+          // Si les pixels sont différents, dessinez-les sur le canvas des différences
+          this.diffCtx.fillStyle = `rgba(${currentImageData.data[i]}, ${currentImageData.data[i + 1]}, ${currentImageData.data[i + 2]}, ${currentImageData.data[i + 3] / 255})`;
+          this.diffCtx.fillRect((i / 4) % this.canvas.width, Math.floor(i / 4 / this.canvas.width), 1, 1);
+        }
+      }
+
+      // Utilisez le canvas des différences comme nécessaire
+      // Par exemple, vous pouvez afficher le canvas des différences dans une image
+      console.log(this.diffCanvas.toDataURL());
+    },
+
     downloadImage(imageName) {
       const link = document.getElementById('download');
       link.download = imageName;
@@ -115,7 +190,7 @@ export default {
       const seconds = now.getSeconds().toString().padStart(2, '0');
       return `${hours}_${minutes}_${seconds}`;
     },
-    async downloadCanvas() {
+    async downloadCanvas(canvas) {
       var a = document.getElementById('download');
       var b = a.href;
       var date = new Date();
@@ -123,7 +198,7 @@ export default {
       var current_time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
       var date_time = current_date + " " + current_time;
       this.imageName = date_time.trim()
-      a.href = document.getElementsByTagName('canvas')[0].toDataURL();
+      a.href = canvas.toDataURL();
 
       const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
       const maxPrediction = prediction.reduce((max, current) => (current.probability > max.probability ? current : max));
@@ -131,7 +206,7 @@ export default {
       // Obtenir le label de la prédiction avec la probabilité la plus élevée
       const predictedLabel = maxPrediction.className;
       const formattedTime = this.getFormattedTime();
-      const imageName = `${formattedTime}_prediction_${predictedLabel}.png`;
+      const imageName = `${formattedTime}_prediction_${predictedLabel}${this.recognitionCount}.png`;
       this.downloadImage(imageName);
       a.href = b;
     },
@@ -143,26 +218,44 @@ export default {
       // load the model and metadata
       this.teachableMachineModel = await tmImage.load(modelURL, metadataURL);
       this.maxPredictions = this.teachableMachineModel.getTotalClasses();
-      await this.loopTeachableMachine()
+      // await this.loopTeachableMachine()
     },
-    async loopTeachableMachine() {
-      await this.predictTeachableMachine();
-      window.requestAnimationFrame(this.loopTeachableMachine);
-    },
+    // async loopTeachableMachine() {
+    //   await this.predictTeachableMachine();
+    //   window.requestAnimationFrame(this.loopTeachableMachine);
+    // },
     // Loop function for Teachable Machine webcam
     // Predict function for Teachable Machine webcam
     async predictTeachableMachine() {
       // Get image data from the canvas
       const imageData = this.$refs.canvas.toDataURL();
+      if (!this.diffCanvas) {
+        this.createDiffCanvas();
+      }
+      // Incrémentez le compteur de reconnaissances
+      this.recognitionCount++;
+      // Enregistrez le résultat de la comparaison dans le troisième canvas
+      this.compareCanvases();
 
+      // Effectuez une comparaison toutes les deux reconnaissances
+      if (this.recognitionCount >= 2) {
+        this.updatePrevCanvas();
+        await this.downloadCanvas(this.diffTwoLastCanvas)
+
+        this.recognitionCount = 0;
+
+      }
       // Perform prediction using the Teachable Machine model
-      const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
+      const prediction = await this.teachableMachineModel.predict(this.diffCanvas);
 
+
+      // Mettez à jour la version précédente du dessin
+      this.updatePrevCanvas();
       // Display predictions in the UI
       for (let i = 0; i < this.maxPredictions; i++) {
         const classPrediction =
-            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-        document.getElementById("teachableMachineLabel" + i).innerHTML = classPrediction;
+            prediction[i].className + ": " + (prediction[i].probability.toFixed(2) * 100).toFixed(0) + "%";
+        // document.getElementById("teachableMachineLabel" + i).innerHTML = classPrediction;
       }
     },
     updateToolsState(isStickersOn) {
@@ -194,9 +287,9 @@ export default {
         this.canvas.addEventListener("touchmove", this.mobileDraw)
       } else if (this.deviceType === 'mobile') {
         // For mobile touch
-        this.canvas.addEventListener("touchstart", this.startPainting)
+        // this.canvas.addEventListener("touchstart", this.startPainting)
         this.canvas.addEventListener("touchend", this.finishedPainting)
-        this.canvas.addEventListener("touchmove", this.mobileDraw)
+        // this.canvas.addEventListener("touchmove", this.mobileDraw)
       }
     },
     changeColor(color) {
@@ -212,13 +305,16 @@ export default {
       return {width: size + 'px!important', height: size + 'px!important'}
     },
     clearCanvas() {
-      this.downloadCanvas()
+      this.recognitionCount = 0
+      this.downloadCanvas(this.canvas);
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      this.prevCtx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height)
       let dragged = document.getElementsByClassName('dragged')
       for (let i = dragged.length; i > 0; i = dragged.length) {
         dragged[0].remove()
-
       }
+      this.predictTeachableMachine();
     },
     startPainting(e) {
       this.painting = true
@@ -233,6 +329,7 @@ export default {
     finishedPainting() {
       this.painting = false
       this.ctx.beginPath()
+      this.resetDrawingTimer()
 
     },
     draw(e) {
@@ -243,6 +340,21 @@ export default {
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+
+      this.resetDrawingTimer();
+    },
+    resetDrawingTimer() {
+      // Effacez le minuteur existant s'il y en a un
+      if (this.drawingTimer) {
+        clearTimeout(this.drawingTimer);
+      }
+
+      // Configurez un nouveau minuteur pour déclencher la reconnaissance après 1 seconde
+      this.drawingTimer = setTimeout(() => {
+        this.predictTeachableMachine();
+        this.downloadCanvas(this.diffCanvas)
+
+      }, 1000);
     },
     mobileDraw(e) {
       if (!this.painting) return
@@ -251,6 +363,9 @@ export default {
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+      this.resetDrawingTimer();
+
+
     },
     initializeMap() {
       this.map = localforage.createInstance({

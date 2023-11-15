@@ -1,11 +1,11 @@
 @import 'base/normalize';
+@import 'utils/variables';
 @import 'base/typography';
 @import 'base/include-media';
 
 @import 'utils/functions';
 @import 'utils/mixins';
-@import 'utils/variables';
-
+@import 'base/content';
 
 @import 'components/buttons';
 @import 'components/container';
@@ -20,10 +20,8 @@
 //@import 'layouts/forms';
 //@import 'pages/whiteboard';
 
-
-
 body {
-    background-color: black;
+    background-color: $background_color_main;
     max-width: 100vw;
     width: 100vw;
     overflow-x: hidden;
