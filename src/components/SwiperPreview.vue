@@ -34,7 +34,6 @@
       <h1 style="font-size: 4.5rem;">{{ items[currentIndex].title }}</h1>
       <p style="font-size: 1.5rem;">helo helo helo helo helo</p>
     </div>
-    </div>
   </div>
 </template>
 
