@@ -6,10 +6,16 @@
       <input v-model="isStickersOn" checked type="checkbox" id="switch" @click="updateToolsState(isStickersOn)"/>
       <label for="switch"></label>
 
-      <div class="size-boxes-container">
-        <button v-for="(size, index) in sizes" :key="index" @click="changeSize(size)" class="box"
-                :style="getPenSize(size)"></button>
+      <div class="brush-size-container">
+        <div class="brush-preview" :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
       </div>
+
+      <div class="size-boxes-container slide-range-container">
+        <div class="slide-container">
+          <input type="range" :min="brushSizes.min" :max="brushSizes.max" class="slider" v-model="rangeValue" @change="handleRangeChange">
+        </div>
+      </div>
+
       <div class="size-boxes-container">
         <button v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="box"
                 :style="getPenColor(color)"></button>
@@ -35,6 +41,7 @@ import {Draggable} from 'gsap/Draggable';
 import config from '../../config.json';
 import * as tmImage from '@teachablemachine/image';
 
+let brushSizes = config.canvas.brushSizes;
 gsap.registerPlugin(Draggable)
 export default {
   data() {
@@ -46,7 +53,6 @@ export default {
       canvas: null,
       ctx: null,
       colors: config.canvas.colors,
-      sizes: config.canvas.brushSizes,
       deviceType: null,
       stickerCounter: 0,
       icons: config.canvas.stickers,
@@ -57,6 +63,9 @@ export default {
       currentCtx: null,
       prevCtx: null,
       diffCtx: null,
+      brushSizes: brushSizes,
+      rangeValue: brushSizes.default,
+      brushColor: config.canvas.colors[0]
     };
   },
   async mounted() {
@@ -82,7 +91,7 @@ export default {
     this.initializeMap();
     this.buildStickers();
     this.changeColor(this.colors[0])
-    this.changeSize(this.sizes[0])
+    this.changeSize(brushSizes.default)
     this.ctx.lineCap = "round"
     let stickersContainer = document.getElementsByClassName('stickers')[0]
 
@@ -111,7 +120,10 @@ export default {
     this.updatePrevCanvas();
   },
   methods: {
-
+    handleRangeChange(event) {
+      this.rangeValue = event.target.value;
+      this.changeSize(event.target.value);
+    },
     // Mettez à jour la version précédente du dessin
     updatePrevCanvas() {
       if (this.recognitionCount === 2) {
@@ -305,6 +317,7 @@ export default {
       }
     },
     changeColor(color) {
+      this.brushColor = color
       this.ctx.strokeStyle = color
     },
     getPenColor(color) {
@@ -481,7 +494,6 @@ export default {
       }
     }
   },
-
-
 };
+
 </script>

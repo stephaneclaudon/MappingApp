@@ -51,13 +51,11 @@
       "#FF00FF",
       "#00FFFF"
     ],
-    "brushSizes": [
-      12,
-      16,
-      20,
-      24,
-      28
-    ],
+    "brushSizes": {
+      "min": 1,
+      "default": 20,
+      "max": 48
+    },
     "stickers": [
       "src/assets/Group.png",
       "src/assets/major.png",
