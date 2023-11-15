@@ -3,20 +3,18 @@
 @import 'block/stickers';
 
 .whiteboard {
-  width: 100svw;
-  height: 100svh;
   display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: start;
-  margin-top: 1rem;
-
-  border: 5vw solid $color_primary;
 
   .canvas-wrapper {
     // position: relative;
     display: flex;
-  }
 
+    .stickers-container{
+      width: 64px;
+    }
+    .canvas {
+      border: 1px solid white;
+    }
+  }
 }
 

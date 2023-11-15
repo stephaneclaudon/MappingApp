@@ -28,7 +28,6 @@
 
     <div class="container mt-1">
       <div class="digit-demo-container">
-        <h3>Hand Written Digit Recognition</h3>
         <div class="flex-two">
           <div class="canvas_box_wrapper">
             <div class="col-12">
@@ -86,9 +85,12 @@ export default {
 
     // Set default stroke color
 
-    // Resize canvas
+    // Resize canvas    
+
     this.canvas.height = window.innerHeight * 0.9
-    this.canvas.width = window.innerWidth * 0.8
+    this.canvas.width =  window.innerHeight * 0.9 * (1080/1920)
+
+
     this.setDeviceType()
     this.setupEventListeners()
 
@@ -99,6 +101,12 @@ export default {
     this.changeSize(this.sizes[0])
     this.ctx.lineCap = "round"
     let stickersContainer = document.getElementsByClassName('stickers')[0]
+
+    window.addEventListener('resize', () => {
+      console.log("salut")
+      this.canvas.height = window.innerHeight * 0.9
+      this.canvas.width =  window.innerHeight * 0.9 * (1080/1920)
+    })
 
     stickersContainer.classList.add(this.isStickersOn)
     await this.initTeachableMachine();
