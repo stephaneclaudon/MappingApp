@@ -14,16 +14,15 @@
   justify-items: center;
   
   .box {
-    // display: inline-block;
     width: 25px;
     height: 25px;
-    cursor: pointer;
     border-radius: 50%;
     border: unset;
   }
   .box:not(:last-child) {
     margin-bottom: 8px;
   }
+
   .size-boxes-container {
     display: flex;
     flex-direction: column;
@@ -32,6 +31,24 @@
     padding: 8px;
     border-radius: 8px;
     background-color: grey;
+  }
+
+  .brush-size-container {
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide-range-container{
+    transform: rotate(-90deg);
+  }
+
+  .brush-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
   }
 
   .clear {
