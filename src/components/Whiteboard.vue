@@ -20,7 +20,13 @@
         <button v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="box"
                 :style="getPenColor(color)"></button>
       </div>
+      <div class="size-boxes-container">
+        <button @click="enableEraser" class="{ 'eraser-selected': isEraserSelected }">
+          Eraser
+        </button>
+      </div>
       <img src="../assets/bin.svg" alt="clear" class="clear" @click="clearCanvas"/>
+
     </div>
 
     <div class="canvas-wrapper">
@@ -65,7 +71,8 @@ export default {
       diffCtx: null,
       brushSizes: brushSizes,
       rangeValue: brushSizes.default,
-      brushColor: config.canvas.colors[0]
+      brushColor: config.canvas.colors[0],
+      isEraserSelected: false,
     };
   },
   async mounted() {
@@ -120,7 +127,30 @@ export default {
     this.updatePrevCanvas();
   },
   methods: {
+
+    enableEraser() {
+      this.isEraserSelected = true;
+    },
+    disableEraser() {
+      this.isEraserSelected = false;
+    },
+    erase(e) {
+      if (!this.painting) return;
+
+      // Use 'destination-out' to erase
+      this.ctx.globalCompositeOperation = 'destination-out';
+
+      const x = e.clientX - this.canvas.offsetLeft;
+      const y = e.clientY - this.canvas.offsetTop;
+
+      // Draw the actual eraser path
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, this.rangeValue/2+"px", 0, 2 * Math.PI);
+      this.ctx.fill();
+      this.ctx.stroke();
+    },
     handleRangeChange(event) {
+
       this.rangeValue = event.target.value;
       this.changeSize(event.target.value);
     },
@@ -317,6 +347,11 @@ export default {
       }
     },
     changeColor(color) {
+      if (this.isEraserSelected) {
+        // Switch back to default drawing mode
+        this.ctx.globalCompositeOperation = 'source-over';
+        this.disableEraser() // Reset eraser mode
+      }
       this.brushColor = color
       this.ctx.strokeStyle = color
     },
@@ -364,6 +399,9 @@ export default {
 
     },
     draw(e) {
+      if (this.isEraserSelected) {
+        this.erase(e);
+      }
       if (!this.painting) return
 
       this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
@@ -390,6 +428,9 @@ export default {
       }, 1000);
     },
     mobileDraw(e) {
+      if (this.isEraserSelected) {
+        this.erase(e.touches[0]);
+      }
       if (!this.painting) return
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
