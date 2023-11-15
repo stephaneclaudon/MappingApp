@@ -428,6 +428,9 @@ export default {
       }, 1000);
     },
     mobileDraw(e) {
+      if (this.isEraserSelected) {
+        this.erase(e.touches[0]);
+      }
       if (!this.painting) return
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
