@@ -6,4 +6,10 @@
     width: 64px;
     height: 90vh;
     transition: transform 100ms;
+    &.false {
+        display: none;
+    }
+    &.true {
+        display: block;
+    }
 }

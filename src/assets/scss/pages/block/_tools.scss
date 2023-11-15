@@ -1,35 +1,95 @@
 .tools {
-  padding:16px 8px;
+  padding: 16px 8px;
+  margin-right: 1rem;
   background-color: rgb(209, 209, 209);
-  display: grid;
-  grid-auto-flow: row;
-  height: fit-content;
-  gap: 10px;
+  // display: grid;
+  // grid-auto-flow: row;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  height: calc(100vh - 6rem);
+  border-radius: 12px;
+  gap: 8px;
   justify-items: center;
-  .box:not(:last-child){
+  .box {
+    // display: inline-block;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: unset;
+  }
+  .box:not(:last-child) {
     margin-bottom: 8px;
+  }
+  .size-boxes-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: grey;
+  }
+
+  .clear {
+    width: 32px;
+    height: auto;
+  }
+
+
+  label {
+    cursor: pointer;
+    width: 68px;
+    height: 35px;
+    background: grey;
+    display: block;
+    border-radius: 100px;
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 24px;
+      height: 24px;
+      background: #fff;
+      border-radius: 90px;
+      transition: 0.3s;
+    }
+  }
+
+  input {
+    &[type=checkbox] {
+      height: 0;
+      width: 0;
+      visibility: hidden;
+    }
+    &:checked + label {
+      background: #6bda55;
+
+      &:after {
+        left: calc(100% - 5px);
+        transform: translateX(-100%);
+      }
+
+      &:active:after {
+        width: 58px;
+      }
+    }
   }
 }
 
-canvas {
-  border: 1px solid #fff;
-}
 
-.box {
-  // display: inline-block;
-  width: 25px;
-  height: 25px;
-  cursor: pointer;
-  border-radius: 50%;
-  border: unset;
-}
 
-.size-boxes-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px;
-  border-radius: 8px;
-  background-color: grey;
-}
+
+
+// centering
+// body {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   height: 100vh;
+// }
