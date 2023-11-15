@@ -3,17 +3,16 @@
 .tools {
   padding: 16px 8px;
   margin-right: 1rem;
-  background-color: rgb(209, 209, 209);
   // display: grid;
   // grid-auto-flow: row;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  height: calc(100vh - 6rem);
-  border-radius: 12px;
+  height: 100%;
   gap: 8px;
   justify-items: center;
+  
   .box {
     // display: inline-block;
     width: 25px;

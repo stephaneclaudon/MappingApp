@@ -3,23 +3,36 @@
 @import 'block/stickers';
 
 .whiteboard {
+  height: 100vh;
   display: flex;
-
-  border-left: 2vw solid $color_primary;
-  border-right: 2vw solid $color_primary;
-  border-top: 2vh solid $color_primary;
-  border-bottom: 10vh solid $color_primary;
-
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 2vw solid $color_primary;
+  transition: all 0.3s ease-in-out;
+  
   .canvas-wrapper {
-    // position: relative;
     display: flex;
 
     .stickers-container{
       width: 64px;
+      height: 100%;
+    }
+
+    .stickers{
+      width: 100%;
     }
     .canvas {
-      border: 1px solid white;
+      background-color: $background_color_main;
+
+      border-bottom-left-radius: 50% 5%;
+      border-bottom-right-radius: 50% 5%;
     }
   }
 }
 
+.bg-primary{
+  background-color: $color_primary;
+}

@@ -1,7 +1,5 @@
 <template>
   <div class="whiteboard">
-    <!-- <h1 style="color: white">{{ message }}</h1> -->
-
     <div class="tools">
       <p>{{ toolsLabel }}</p>
 
@@ -25,10 +23,6 @@
       </div>
       <canvas class="canvas" ref="canvas"></canvas>
     </div>
-
-    <a href="yourImage.png" download="[imageName].png" id="download" style="pointer-events: none; display: none">Click
-      here to download image</a>
-    <canvas></canvas>
   </div>
 </template>
 
@@ -69,10 +63,8 @@ export default {
     // Resize canvas    
     const whiteboard = document.getElementsByClassName('whiteboard')[0]
 
-    console.log(whiteboard)
-
     this.canvas.height = whiteboard.clientHeight
-    this.canvas.width =  whiteboard.clientHeight * (1080/1920)
+    this.canvas.width = this.canvas.height * (1080/1920)
 
 
     this.setDeviceType()
@@ -88,9 +80,8 @@ export default {
 
     window.addEventListener('resize', () => {
       const whiteboard = document.getElementsByClassName('whiteboard')[0]
-      console.log("salut")
-      this.canvas.height = whiteboard.clientHeight * 0.9
-      this.canvas.width =  whiteboard.clientHeight * 0.9 * (1080/1920)
+      this.canvas.height = whiteboard.clientHeight
+      this.canvas.width =  this.canvas.height * (1080/1920)
     })
 
     stickersContainer.classList.add(this.isStickersOn)
