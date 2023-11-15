@@ -145,10 +145,11 @@ html, body {
   background-position: center;
   background-size: fill;
   width: 300px;
-  height: 600px;
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* border: 1px solid red; */
 }
 
 .swiper-slide a {
@@ -163,7 +164,7 @@ html, body {
   height: 100%;
 }
 .slideshow-img {
-  border-radius: 2rem;
+  border-radius: 1rem;
   box-shadow: rgba(255, 255, 255, 0.7) 0px 10px 50px 4px;
 }
 .platform {
@@ -187,7 +188,7 @@ html, body {
   background-color: rgba(218, 239, 255, 1);
   /* -webkit-clip-path: ellipse(50% 8% at 50% 50%);
   clip-path: ellipse(50% 8% at 50% 50%); */
-  /* border: 1px solid red */
+  /*border: 1px solid red */
 }
 
 </style>
