@@ -65,7 +65,7 @@ export default {
       diffCtx: null,
       brushSizes: brushSizes,
       rangeValue: brushSizes.default,
-      brushColor: config.canvas.colors[0]
+      brushColor: config.canvas.colors[0],
       rotateStartAngle: 0,
       rotateCurrentAngle: 0,
     };
