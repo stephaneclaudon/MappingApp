@@ -1,6 +1,5 @@
 <template>
-  <div class="slideshow-container">
-
+  <div class="slideshow-container" :style="{ backgroundImage: `${items[currentIndex].bgImg}`}">
     <swiper-container
       :effect="'coverflow'"
       :grabCursor="true"
@@ -25,9 +24,14 @@
         </router-link>
       </swiper-slide>   
     </swiper-container>
-    <div class="platform">
-      <div style="position: relative; top: 5rem; text-align: center;">
-      <h1 style="font-size: 4.5rem;">COUCOU</h1>
+
+    <div class="platform" :style="{ backgroundColor: `${items[currentIndex].bgColor}`}">
+      <div class="elipsis" :style="{ backgroundColor: `${items[currentIndex].bgColor}`}">
+      </div>
+    </div>
+
+    <div style="position: absolute; bottom: 7rem; text-align: center;">
+      <h1 style="font-size: 4.5rem;">{{ items[currentIndex].title }}</h1>
       <p style="font-size: 1.5rem;">helo helo helo helo helo</p>
     </div>
     </div>
@@ -37,6 +41,7 @@
 <script>
   // Import Swiper Vue.js components
   import { SwiperSlide } from 'swiper/vue';
+  import { ref } from 'vue'
 
   // Import Swiper styles
   import 'swiper/css';
@@ -62,48 +67,82 @@
       const items = [
           {
             path: "/vid/0",
-            imgSrc: "/thumbnails/0.jpg"
+            imgSrc: "/thumbnails/0.jpg",
+            bgColor: "rgba(218, 239, 255, 0.8)",
+            bgImg: "url(/thumbnails/0.jpg)",
+            title: "N",
+            author:  ""
           },
           {
             path: "/vid/1",
-            imgSrc: "/thumbnails/1.jpg"
+            imgSrc: "/thumbnails/1.jpg",
+            bgColor: "brown",
+            bgImg: "url(/thumbnails/1.jpg)",
+            title: "E",
+            author: ""
           },
           {
             path: "/vid/2",
-            imgSrc: "/thumbnails/2.jpg"
+            imgSrc: "/thumbnails/2.jpg",
+            bgColor: "orange",
+            bgImg: "url(/thumbnails/2.jpg)",
+            title: "G",
+            author: ""
           },
           {
             path: "/vid/3",
-            imgSrc: "/thumbnails/3.jpg"
+            imgSrc: "/thumbnails/3.jpg",
+            bgColor: "blue",
+            bgImg: "url(/thumbnails/3.jpg)",
+            title: "R",
+            author: ""
           },
           {
             path: "/vid/4",
-            imgSrc: "/thumbnails/4.jpg"
+            imgSrc: "/thumbnails/4.jpg",
+            bgColor: "purple",
+            bgImg: "url(/thumbnails/4.jpg)",
+            title: "O",
+            author: ""
           },
           {
             path: "/vid/5",
-            imgSrc: "/thumbnails/5.jpg"
+            imgSrc: "/thumbnails/5.jpg",
+            bgColor: "yellow",
+            bgImg: "url(/thumbnails/5.jpg)",
+            title: "CACA",
+            author: ""
           },
           {
             path: "/vid/6",
-            imgSrc: "/thumbnails/6.jpg"
+            imgSrc: "/thumbnails/6.jpg",
+            bgColor: "green",
+            bgImg: "url(/thumbnails/6.jpg)",
+            title: "PROUT",
+            author: ""
           },
           {
             path: "/vid/7",
-            imgSrc: "/thumbnails/7.jpg"
+            imgSrc: "/thumbnails/7.jpg",
+            bgColor: "red",
+            bgImg: "url(/thumbnails/7.jpg)",
+            title: "helo",
+            author: ""
           },
         ]
 
-      let currentIndex = 0
+      const currentIndex = ref(0)
 
       const onSlideChange = () => {
         const swiperEl = document.getElementsByClassName('mySwiper');
-        const oldIndex = currentIndex
+        const oldIndex = currentIndex.value
 
         if(!swiperEl[0].swiper) return
-        currentIndex = swiperEl[0].swiper.realIndex
+        currentIndex.value = swiperEl[0].swiper.realIndex
+
+
         
-        if(oldIndex !== currentIndex){
+        if(oldIndex !== currentIndex.value){
           console.log(swiperEl[0].swiper.realIndex)
         }
       }
@@ -111,7 +150,8 @@
       return {
         onSlideChange,
         modules: [EffectCoverflow, Pagination],
-        items
+        items,
+        currentIndex
       };
     },
   };
@@ -128,7 +168,8 @@ html, body {
   height: 100vh;
   background-image: url("/thumbnails/1.jpg");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: cover; 
+  background-position: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -139,6 +180,7 @@ html, body {
   width: 100%;
   padding-top: 50px;
   padding-bottom: 50px;
+  /* border: 4px solid red; */
 }
 
 .swiper-slide {
@@ -164,7 +206,7 @@ html, body {
 }
 .slideshow-img {
   border-radius: 1rem;
-  box-shadow: rgba(255, 255, 255, 0.7) 0px 10px 50px 4px;
+  box-shadow: rgba(255, 255, 255, 0.7) 0px 0px 35px 4px;
 }
 .platform {
   width: 170vw;
