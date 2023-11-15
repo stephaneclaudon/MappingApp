@@ -53,7 +53,7 @@ export default {
       maxPredictions: 0,
       imageName: "unset",
       drawingTimer: null,
-
+      recognitionCount: 0,
       currentCtx: null,
       prevCtx: null,
       diffCtx: null,
@@ -97,8 +97,14 @@ export default {
     this.prevCanvas = document.createElement('canvas');
     this.prevCanvas.width = this.canvas.width;
     this.prevCanvas.height = this.canvas.height;
-
     this.prevCtx = this.prevCanvas.getContext('2d');
+
+
+    this.prevTwoLastCanvas = document.createElement('canvas');
+    this.prevTwoLastCanvas.width = this.canvas.width;
+    this.prevTwoLastCanvas.height = this.canvas.height;
+
+    this.prevTwoLastCtx = this.prevTwoLastCanvas.getContext('2d');
     this.createDiffCanvas();
     // Mettez à jour la version précédente du dessin initialement
 
@@ -108,6 +114,10 @@ export default {
 
     // Mettez à jour la version précédente du dessin
     updatePrevCanvas() {
+      if (this.recognitionCount === 2) {
+        const prevTwoLastCtx = this.prevTwoLastCanvas.getContext('2d');
+        prevTwoLastCtx.drawImage(this.canvas, 0, 0);
+      }
       const prevCtx = this.prevCanvas.getContext('2d');
       prevCtx.drawImage(this.canvas, 0, 0);
     },
@@ -116,9 +126,32 @@ export default {
       this.diffCanvas.width = this.canvas.width;
       this.diffCanvas.height = this.canvas.height;
       this.diffCtx = this.diffCanvas.getContext('2d');
+      this.diffTwoLastCanvas = document.createElement('canvas');
+      this.diffTwoLastCanvas.width = this.canvas.width;
+      this.diffTwoLastCanvas.height = this.canvas.height;
+      this.diffTwoLastCtx = this.diffTwoLastCanvas.getContext('2d');
     },
     // Comparez le canvas actuel avec la version précédente
     compareCanvases() {
+      if (this.recognitionCount === 2) {
+        this.diffTwoLastCtx.clearRect(0, 0, this.diffTwoLastCanvas.width, this.diffTwoLastCanvas.height);
+        const currentImageData = this.currentCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        const prevTwoLastImageData = this.prevTwoLastCtx.getImageData(0, 0, this.prevTwoLastCanvas.width, this.prevTwoLastCanvas.height);
+        for (let i = 0; i < currentImageData.data.length; i += 4) {
+          if (
+              currentImageData.data[i] !== prevTwoLastImageData.data[i] ||
+              currentImageData.data[i + 1] !== prevTwoLastImageData.data[i + 1] ||
+              currentImageData.data[i + 2] !== prevTwoLastImageData.data[i + 2] ||
+              currentImageData.data[i + 3] !== prevTwoLastImageData.data[i + 3]
+          ) {
+            // Si les pixels sont différents, dessinez-les sur le canvas des différences
+            this.diffTwoLastCtx.fillStyle = `rgba(${currentImageData.data[i]}, ${currentImageData.data[i + 1]}, ${currentImageData.data[i + 2]}, ${currentImageData.data[i + 3] / 255})`;
+            this.diffTwoLastCtx.fillRect((i / 4) % this.canvas.width, Math.floor(i / 4 / this.canvas.width), 1, 1);
+          }
+        }
+      }
+
+
       //todo : faire une recognition sur 1s et sur 2s pour être sûr
       // Effacez le canvas des différences
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height);
@@ -173,7 +206,7 @@ export default {
       // Obtenir le label de la prédiction avec la probabilité la plus élevée
       const predictedLabel = maxPrediction.className;
       const formattedTime = this.getFormattedTime();
-      const imageName = `${formattedTime}_prediction_${predictedLabel}.png`;
+      const imageName = `${formattedTime}_prediction_${predictedLabel}${this.recognitionCount}.png`;
       this.downloadImage(imageName);
       a.href = b;
     },
@@ -199,8 +232,19 @@ export default {
       if (!this.diffCanvas) {
         this.createDiffCanvas();
       }
+      // Incrémentez le compteur de reconnaissances
+      this.recognitionCount++;
       // Enregistrez le résultat de la comparaison dans le troisième canvas
       this.compareCanvases();
+
+      // Effectuez une comparaison toutes les deux reconnaissances
+      if (this.recognitionCount >= 2) {
+        this.updatePrevCanvas();
+        await this.downloadCanvas(this.diffTwoLastCanvas)
+
+        this.recognitionCount = 0;
+
+      }
       // Perform prediction using the Teachable Machine model
       const prediction = await this.teachableMachineModel.predict(this.diffCanvas);
 
@@ -261,6 +305,7 @@ export default {
       return {width: size + 'px!important', height: size + 'px!important'}
     },
     clearCanvas() {
+      this.recognitionCount = 0
       this.downloadCanvas(this.canvas);
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.prevCtx.clearRect(0, 0, this.canvas.width, this.canvas.height)
