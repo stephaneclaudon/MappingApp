@@ -44,6 +44,12 @@
     transform: rotate(-90deg);
     margin-top: 54px;
     margin-bottom: 54px;
+    .slide-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 21px;
+    }
   }
 
   .brush-preview {

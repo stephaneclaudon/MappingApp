@@ -43,6 +43,13 @@
 
   "canvas" : {
     "colors": [
+      "#FFFFFF",
+      "#FF0000",
+      "#00FF00",
+      "#0000FF",
+      "#FFFF00",
+      "#FF00FF",
+      "#00FFFF",
       "#00A5C8",
       "#1BB1A1",
       "#097EB3",
@@ -51,14 +58,7 @@
       "#DCE7F9",
       "#F195BE",
       "#F05141",
-      "#FCB435",
-      "#FFFFFF",
-      "#FF0000",
-      "#00FF00",
-      "#0000FF",
-      "#FFFF00",
-      "#FF00FF",
-      "#00FFFF"
+      "#FCB435"
     ],
     "brushSizes": {
       "min": 1,
