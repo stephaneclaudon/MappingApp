@@ -1,7 +1,5 @@
 <template>
   <div class="whiteboard">
-    <!-- <h1 style="color: white">{{ message }}</h1> -->
-
     <div class="tools">
       <p>{{ toolsLabel }}</p>
 
@@ -25,29 +23,8 @@
       </div>
       <canvas class="canvas" ref="canvas"></canvas>
     </div>
-
-    <a href="yourImage.png" download="[imageName].png" id="download" style="pointer-events: none; display: none">Click
-      here to download image</a>
-    <canvas></canvas>
-    <div class="container mt-1">
-      <div class="digit-demo-container">
-        <div class="flex-two">
-          <div class="canvas_box_wrapper">
-            <div class="col-12">
-              <button class="predict-button" @click="predictDigit">Predict</button>
-            </div>
-          </div>
-          <div id="label-container" class="teachable-machine-labels">
-            <button class="predict-button" @click="predictTeachableMachine">Predict</button>
-            <div v-for="(prediction, index) in maxPredictions" :key="index" class="teachable-machine-label"
-                 :id="'teachableMachineLabel' + index" style="color: white">{{ prediction }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
+  <a id="download"></a>
 </template>
 
 <script>
@@ -56,7 +33,6 @@ import localforage from "localforage";
 import gsap from "gsap";
 import {Draggable} from 'gsap/Draggable';
 import config from '../../config.json';
-import * as tf from '@tensorflow/tfjs';
 import * as tmImage from '@teachablemachine/image';
 
 gsap.registerPlugin(Draggable)
@@ -96,11 +72,8 @@ export default {
     const
         whiteboard = document.getElementsByClassName('whiteboard')[0]
 
-    console.log(whiteboard)
-
     this.canvas.height = whiteboard.clientHeight
-    this.canvas.width = whiteboard.clientHeight * (1080 / 1920)
-
+    this.canvas.width = this.canvas.height * (1080 / 1920)
 
     this.setDeviceType()
     this.setupEventListeners()
@@ -115,9 +88,8 @@ export default {
 
     window.addEventListener('resize', () => {
       const whiteboard = document.getElementsByClassName('whiteboard')[0]
-      console.log("salut")
-      this.canvas.height = whiteboard.clientHeight * 0.9
-      this.canvas.width = whiteboard.clientHeight * 0.9 * (1080 / 1920)
+      this.canvas.height = whiteboard.clientHeight
+      this.canvas.width = this.canvas.height * (1080 / 1920)
     })
 
     stickersContainer.classList.add(this.isStickersOn)
@@ -239,7 +211,7 @@ export default {
       for (let i = 0; i < this.maxPredictions; i++) {
         const classPrediction =
             prediction[i].className + ": " + (prediction[i].probability.toFixed(2) * 100).toFixed(0) + "%";
-        document.getElementById("teachableMachineLabel" + i).innerHTML = classPrediction;
+        // document.getElementById("teachableMachineLabel" + i).innerHTML = classPrediction;
       }
     },
     updateToolsState(isStickersOn) {
