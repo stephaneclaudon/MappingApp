@@ -34,7 +34,7 @@
   }
 
   .brush-size-container {
-    height: 110px;
+    height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,6 +42,8 @@
 
   .slide-range-container{
     transform: rotate(-90deg);
+    margin-top: 54px;
+    margin-bottom: 54px;
   }
 
   .brush-preview {

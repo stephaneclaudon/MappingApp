@@ -7,12 +7,12 @@
       <label for="switch"></label>
 
       <div class="brush-size-container">
-        <div class="brush-preview" :style="{width: `${rangeValue}px`, height: `${rangeValue}px` }"></div>
+        <div class="brush-preview" :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
       </div>
 
       <div class="size-boxes-container slide-range-container">
         <div class="slide-container">
-          <input type="range" min="1" max="48" class="slider" v-model="rangeValue" @change="handleRangeChange">
+          <input type="range" :min="brushSizes.min" :max="brushSizes.max" class="slider" v-model="rangeValue" @change="handleRangeChange">
         </div>
       </div>
 
@@ -41,6 +41,7 @@ import {Draggable} from 'gsap/Draggable';
 import config from '../../config.json';
 import * as tmImage from '@teachablemachine/image';
 
+let brushSizes = config.canvas.brushSizes;
 gsap.registerPlugin(Draggable)
 export default {
   data() {
@@ -62,7 +63,9 @@ export default {
       currentCtx: null,
       prevCtx: null,
       diffCtx: null,
-      rangeValue: 20
+      brushSizes: brushSizes,
+      rangeValue: brushSizes.default,
+      brushColor: config.canvas.colors[0]
     };
   },
   async mounted() {
@@ -88,7 +91,7 @@ export default {
     this.initializeMap();
     this.buildStickers();
     this.changeColor(this.colors[0])
-    this.changeSize(20)
+    this.changeSize(brushSizes.default)
     this.ctx.lineCap = "round"
     let stickersContainer = document.getElementsByClassName('stickers')[0]
 
@@ -302,6 +305,7 @@ export default {
       }
     },
     changeColor(color) {
+      this.brushColor = color
       this.ctx.strokeStyle = color
     },
     getPenColor(color) {
