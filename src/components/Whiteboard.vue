@@ -346,6 +346,9 @@ export default {
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+      this.resetDrawingTimer();
+
+
     },
     initializeMap() {
       this.map = localforage.createInstance({
