@@ -24,7 +24,7 @@ function parseResponse(data) {
 
 async function fetchData() {
   const xhr = new XMLHttpRequest();
-  await xhr.open("GET", config.requestUrl, true);
+  await xhr.open("GET", config.global.requestUrl, true);
   xhr.withCredentials = true;
   xhr.responseType = "json";
 
@@ -46,7 +46,7 @@ function mounted() {
   })
 }
 
-if (config.mode === 1) {
+if (config.global.mode === 1) {
   mounted()
 }
 

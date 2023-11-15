@@ -1,19 +1,29 @@
 # Config.json
 
+### Global
 - mode
 > 1 -> Start app **WITH** url fetch for auto-nav.  
 > 0 -> Start app **WITHOUT** url fetch for auto-nav.
 - requestUrl
 > URL for auto-nav url fetch.
-- sliderImages
-> images sources for slideshow.
-- videos
-> videos sources for slideshow.
-- canvasColors
+
+
+### Projects
+- globalRoute
+> route for video page
+
+#### Projects
+- image
+> images sources for slideshow (used as source).
+- video
+> videos name for slideshow (used as source and route).
+
+### Canvas
+- colors
 > colors for whiteboard brush.
-- canvasBrushSizes
+- brushSizes
 > brush sizes for whiteboard brush.
-- canvasStickers
+- stickers
 > stickers sources for whiteboard stickers.
 # Nomenclature
 

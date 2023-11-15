@@ -7,18 +7,15 @@
   height: 100svh;
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  justify-content: start;
+  align-items: start;
+  margin-top: 1rem;
 
   border: 5vw solid $color_primary;
 
   .canvas-wrapper {
-    position: relative;
+    // position: relative;
     display: flex;
-
-    .stickers-container{
-      width: 64px;
-    }
   }
 
 }
