@@ -194,19 +194,17 @@ export default {
       var a = document.getElementById('download');
       var b = a.href;
       var date = new Date();
-      var current_date = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-      var current_time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-      var date_time = current_date + " " + current_time;
-      this.imageName = date_time.trim()
+
       a.href = canvas.toDataURL();
 
-      const prediction = await this.teachableMachineModel.predict(this.$refs.canvas);
-      const maxPrediction = prediction.reduce((max, current) => (current.probability > max.probability ? current : max));
+
+      const maxPrediction = this.prediction.reduce((max, current) => (current.probability > max.probability ? current : max));
 
       // Obtenir le label de la prédiction avec la probabilité la plus élevée
       const predictedLabel = maxPrediction.className;
       const formattedTime = this.getFormattedTime();
       const imageName = `${formattedTime}_prediction_${predictedLabel}${this.recognitionCount}.png`;
+
       this.downloadImage(imageName);
       a.href = b;
     },
@@ -226,12 +224,17 @@ export default {
     // },
     // Loop function for Teachable Machine webcam
     // Predict function for Teachable Machine webcam
-    async predictTeachableMachine() {
+    async predictTeachableMachine(canvas) {
       // Get image data from the canvas
       const imageData = this.$refs.canvas.toDataURL();
+
+
       if (!this.diffCanvas) {
         this.createDiffCanvas();
+
       }
+
+
       // Incrémentez le compteur de reconnaissances
       this.recognitionCount++;
       // Enregistrez le résultat de la comparaison dans le troisième canvas
@@ -240,23 +243,32 @@ export default {
       // Effectuez une comparaison toutes les deux reconnaissances
       if (this.recognitionCount >= 2) {
         this.updatePrevCanvas();
-        await this.downloadCanvas(this.diffTwoLastCanvas)
+        // this.prediction =await this.teachableMachineModel.predict(canvas);
+        await this.teachableMachineModel.predict(this.diffTwoLastCanvas).then((response) => {
+          this.downloadCanvas(this.diffTwoLastCanvas)
+          this.recognitionCount = 0;
+          this.updatePrevCanvas();
 
-        this.recognitionCount = 0;
+
+        })
+        // const prediction = await this.teachableMachineModel.predict(this.diffTwoLastCanvas);
+
 
       }
+
       // Perform prediction using the Teachable Machine model
-      const prediction = await this.teachableMachineModel.predict(this.diffCanvas);
+      this.prediction = await this.teachableMachineModel.predict(canvas);
+      await this.teachableMachineModel.predict(canvas).then((response) => {
+        this.updatePrevCanvas();
+
+      })
+      // const prediction = await this.teachableMachineModel.predict(canvas);
 
 
       // Mettez à jour la version précédente du dessin
-      this.updatePrevCanvas();
+      // this.updatePrevCanvas();
       // Display predictions in the UI
-      for (let i = 0; i < this.maxPredictions; i++) {
-        const classPrediction =
-            prediction[i].className + ": " + (prediction[i].probability.toFixed(2) * 100).toFixed(0) + "%";
-        // document.getElementById("teachableMachineLabel" + i).innerHTML = classPrediction;
-      }
+
     },
     updateToolsState(isStickersOn) {
       let stickersContainer = document.getElementsByClassName('stickers')[0]
@@ -307,14 +319,20 @@ export default {
     clearCanvas() {
       this.recognitionCount = 0
       this.downloadCanvas(this.canvas);
+
+      this.predictTeachableMachine(this.canvas);
+
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.prevCtx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height)
+      this.diffTwoLastCtx.clearRect(0, 0, this.diffTwoLastCanvas.width, this.diffTwoLastCanvas.height)
+
       let dragged = document.getElementsByClassName('dragged')
       for (let i = dragged.length; i > 0; i = dragged.length) {
         dragged[0].remove()
       }
-      this.predictTeachableMachine();
+      this.recognitionCount = 0
+
     },
     startPainting(e) {
       this.painting = true
@@ -351,8 +369,10 @@ export default {
 
       // Configurez un nouveau minuteur pour déclencher la reconnaissance après 1 seconde
       this.drawingTimer = setTimeout(() => {
-        this.predictTeachableMachine();
-        this.downloadCanvas(this.diffCanvas)
+        // this.predictTeachableMachine(this.diffCanvas);
+        this.predictTeachableMachine(this.diffCanvas).then(() => {
+          this.downloadCanvas(this.diffCanvas)
+        })
 
       }, 1000);
     },
