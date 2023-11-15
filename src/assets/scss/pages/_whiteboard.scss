@@ -5,6 +5,11 @@
 .whiteboard {
   display: flex;
 
+  border-left: 2vw solid $color_primary;
+  border-right: 2vw solid $color_primary;
+  border-top: 2vh solid $color_primary;
+  border-bottom: 10vh solid $color_primary;
+
   .canvas-wrapper {
     // position: relative;
     display: flex;

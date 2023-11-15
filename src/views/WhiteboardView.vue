@@ -3,7 +3,7 @@ import Whiteboard from '@/components/Whiteboard.vue'
 </script>
 
 <template>
-  <div class="whiteboard">
+  <div class="">
     <Whiteboard/>
   </div>
 </template>
