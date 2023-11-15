@@ -11,7 +11,7 @@
       :coverflowEffect="{
         rotate: 50,
         stretch: 0,
-        depth: 100,
+        depth: -200,
         modifier: 1,
         slideShadows: true,
       }"
@@ -19,15 +19,20 @@
       @swiperslidechange="onSlideChange"
       class="mySwiper swiper"
     >
-      <swiper-slide v-for="(item, index) in items" :key="index" style="padding: 2.5rem">
-        <router-link :to="item.path">
-          <img :src="item.imgSrc"  class="slideshow-img"/>
-        </router-link>
+      <swiper-slide v-for="(item, index) in items" :key="index" style="padding: 2.5rem" :class="'img'+index">
+        <!-- <router-link :to="item.path" @click.native="goToVideo(item.path)"> -->
+          <a @click="goToVideo(item.path)">
+            <img :src="item.imgSrc"  class="slideshow-img" />
+          </a>
+        <!-- </router-link> -->
       </swiper-slide>   
     </swiper-container>
     <div class="platform" :style="{ backgroundColor: `${items[currentIndex].bgColor}`}">
     </div>
-
+    <!-- <div class="slider-shadow" style="background-color: color-mix(in srgb, , black)"></div> -->
+    <div class="slider-shadow" :style="{ backgroundColor: `color-mix(in srgb, ${items[currentIndex].bgColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
+    
+    <div class="slider-shadow-v2" :style="{ backgroundColor: `color-mix(in srgb, ${items[currentIndex].bgColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
     <div style="position: absolute; bottom: 7rem; text-align: center;">
       <h1 style="font-size: 4.5rem;">{{ items[currentIndex].title }}</h1>
       <p style="font-size: 1.5rem;">helo helo helo helo helo</p>
@@ -65,7 +70,7 @@
           {
             path: "/vid/0",
             imgSrc: "/thumbnails/0.jpg",
-            bgColor: "rgba(218, 239, 255, 0.8)",
+            bgColor: "rgb(100, 100, 100)",
             bgImg: "url(/thumbnails/0.jpg)",
             title: "N",
             author:  ""
@@ -73,7 +78,7 @@
           {
             path: "/vid/1",
             imgSrc: "/thumbnails/1.jpg",
-            bgColor: "brown",
+            bgColor: "rgb(230, 203, 255)",
             bgImg: "url(/thumbnails/1.jpg)",
             title: "E",
             author: ""
@@ -81,7 +86,7 @@
           {
             path: "/vid/2",
             imgSrc: "/thumbnails/2.jpg",
-            bgColor: "orange",
+            bgColor: "rgb(218, 255, 224)",
             bgImg: "url(/thumbnails/2.jpg)",
             title: "G",
             author: ""
@@ -89,7 +94,7 @@
           {
             path: "/vid/3",
             imgSrc: "/thumbnails/3.jpg",
-            bgColor: "blue",
+            bgColor: "rgb(254, 255, 218)",
             bgImg: "url(/thumbnails/3.jpg)",
             title: "R",
             author: ""
@@ -97,7 +102,7 @@
           {
             path: "/vid/4",
             imgSrc: "/thumbnails/4.jpg",
-            bgColor: "purple",
+            bgColor: "rgb(255, 207, 184)",
             bgImg: "url(/thumbnails/4.jpg)",
             title: "O",
             author: ""
@@ -105,7 +110,7 @@
           {
             path: "/vid/5",
             imgSrc: "/thumbnails/5.jpg",
-            bgColor: "yellow",
+            bgColor: "rgb(100, 100, 100)",
             bgImg: "url(/thumbnails/5.jpg)",
             title: "CACA",
             author: ""
@@ -113,7 +118,7 @@
           {
             path: "/vid/6",
             imgSrc: "/thumbnails/6.jpg",
-            bgColor: "green",
+            bgColor: "rgb(255, 218, 218)",
             bgImg: "url(/thumbnails/6.jpg)",
             title: "PROUT",
             author: ""
@@ -121,7 +126,7 @@
           {
             path: "/vid/7",
             imgSrc: "/thumbnails/7.jpg",
-            bgColor: "red",
+            bgColor: "rgb(255, 240, 218)",
             bgImg: "url(/thumbnails/7.jpg)",
             title: "helo",
             author: ""
@@ -130,9 +135,20 @@
 
       const currentIndex = ref(0)
 
+      const goToVideo = (path) => {
+        const slide = document.getElementsByClassName('img'+currentIndex.value)[0];
+        // console.log(swiperEl[0].swiper)
+        for (let i=0; i<10; i++) {
+          slide.style.height += 10
+          // swiperEl[0].style.height += 10 
+          // console.log(swiperEl[0].swiper.height)
+        }
+      }
+
       const onSlideChange = () => {
         const swiperEl = document.getElementsByClassName('mySwiper');
         const oldIndex = currentIndex.value
+        console.log(swiperEl)
 
         if(!swiperEl[0].swiper) return
         currentIndex.value = swiperEl[0].swiper.realIndex
@@ -146,6 +162,7 @@
 
       return {
         onSlideChange,
+        goToVideo,
         modules: [EffectCoverflow, Pagination],
         items,
         currentIndex
@@ -204,14 +221,41 @@ html, body {
 .slideshow-img {
   border-radius: 1rem;
   box-shadow: rgba(255, 255, 255, 0.7) 0px 0px 35px 4px;
+  /* filter: drop-shadow(50px 10px 4px #44dd72); */
 }
 .platform {
-  width: 200vw;
-  height: 500px;
-  background-color:rgba(218, 239, 255, 0.9);
-  box-shadow: rgba(255, 255, 255, 0.7) 0px 10px 50px 4px;
+  width: 170vw;
+  height: 370px;
+  background-color: rgba(218, 239, 255, 1);
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 30px 4px;
   position: absolute;
-  bottom: -100px;
-  border-radius: 50%;
+  bottom: 0;
+  border-top-right-radius: 50%;
+  border-top-left-radius: 50%;
+}
+.slider-shadow{
+  width: 100%;
+  height: 80px;
+  bottom: 11rem;
+  left: 30rem;
+  border-radius: 100px;
+  transform: rotate(18deg);
+  position: absolute;
+  /* background-color: rgba(0, 0, 0, 0.2); */
+  background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
+  transform-origin: bottom center;
+  filter: blur(20px)
+}
+.slider-shadow-v2 {
+  width: 100%;
+  height: 150px; 
+  bottom: -4rem;
+  left: -12rem;
+  border-radius: 100px;
+  transform: rotate(15deg);
+  position: absolute;
+  background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
+  transform-origin: bottom center;
+  filter: blur(20px)
 }
 </style>
