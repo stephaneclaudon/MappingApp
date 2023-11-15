@@ -77,6 +77,7 @@ export default {
       icons: config.canvas.stickers,
       maxPredictions: 0,
       imageName: "unset",
+      drawingTimer: null,
     };
   },
   async mounted() {
@@ -152,12 +153,12 @@ export default {
       // load the model and metadata
       this.teachableMachineModel = await tmImage.load(modelURL, metadataURL);
       this.maxPredictions = this.teachableMachineModel.getTotalClasses();
-      await this.loopTeachableMachine()
+      // await this.loopTeachableMachine()
     },
-    async loopTeachableMachine() {
-      await this.predictTeachableMachine();
-      window.requestAnimationFrame(this.loopTeachableMachine);
-    },
+    // async loopTeachableMachine() {
+    //   await this.predictTeachableMachine();
+    //   window.requestAnimationFrame(this.loopTeachableMachine);
+    // },
     // Loop function for Teachable Machine webcam
     // Predict function for Teachable Machine webcam
     async predictTeachableMachine() {
@@ -242,6 +243,7 @@ export default {
     finishedPainting() {
       this.painting = false
       this.ctx.beginPath()
+      this.resetDrawingTimer()
 
     },
     draw(e) {
@@ -252,6 +254,19 @@ export default {
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+
+      this.resetDrawingTimer();
+    },
+    resetDrawingTimer() {
+      // Effacez le minuteur existant s'il y en a un
+      if (this.drawingTimer) {
+        clearTimeout(this.drawingTimer);
+      }
+
+      // Configurez un nouveau minuteur pour déclencher la reconnaissance après 1 seconde
+      this.drawingTimer = setTimeout(() => {
+        this.predictTeachableMachine();
+      }, 500);
     },
     mobileDraw(e) {
       if (!this.painting) return
