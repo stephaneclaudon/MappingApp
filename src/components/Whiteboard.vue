@@ -66,6 +66,8 @@ export default {
       brushSizes: brushSizes,
       rangeValue: brushSizes.default,
       brushColor: config.canvas.colors[0]
+      rotateStartAngle: 0,
+      rotateCurrentAngle: 0,
     };
   },
   async mounted() {
@@ -309,11 +311,39 @@ export default {
         this.canvas.addEventListener("touchstart", this.startPainting)
         this.canvas.addEventListener("touchend", this.finishedPainting)
         this.canvas.addEventListener("touchmove", this.mobileDraw)
+
+        this.canvas.addEventListener("gesturechange", this.handleGestureChange);
+
       } else if (this.deviceType === 'mobile') {
         // For mobile touch
         // this.canvas.addEventListener("touchstart", this.startPainting)
         this.canvas.addEventListener("touchend", this.finishedPainting)
-        // this.canvas.addEventListener("touchmove", this.mobileDraw)
+        this.canvas.addEventListener("touchmove", this.mobileDraw)
+        this.canvas.addEventListener("gesturechange", this.handleGestureChange);
+      }
+    },
+    handleGestureChange(e) {
+      if (e.scale !== undefined && e.rotation !== undefined) {
+        // Use e.rotation to get the rotation angle
+        const rotation = e.rotation;
+
+        // Update the rotateStartAngle on the start of the gesture
+        if (e.type === 'gesturestart') {
+          this.rotateStartAngle = rotation;
+        }
+
+        // Calculate the change in rotation
+        const deltaRotation = rotation - this.rotateStartAngle;
+
+        // Update the rotateStartAngle for the next iteration
+        this.rotateStartAngle = rotation;
+
+        // Apply the rotation to the dragged sticker
+        const dragged = document.querySelector(".dragged");
+        if (dragged) {
+          this.rotateCurrentAngle += deltaRotation;
+          gsap.set(dragged, {rotation: this.rotateCurrentAngle});
+        }
       }
     },
     changeColor(color) {
@@ -449,6 +479,8 @@ export default {
             );
             element.classList.add("dragged");
           }
+          this.canvas.addEventListener("gesturechange", this.handleGestureChange);
+
         },
         onPress: () => {
           gsap.to(element, {
@@ -469,6 +501,8 @@ export default {
               y: element.getBoundingClientRect().y,
             });
           }
+          this.canvas.removeEventListener("gesturechange", this.handleGestureChange);
+
         }
       });
     },
