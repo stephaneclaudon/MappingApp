@@ -30,10 +30,11 @@
       <div class="elipsis" :style="{ backgroundColor: `${slides[currentIndex].mainColor}`}">
       </div>
     </div>
-    <!-- <div class="slider-shadow" style="background-color: color-mix(in srgb, , black)"></div> -->
-    <div class="slider-shadow" :style="{ backgroundColor: `color-mix(in srgb, ${items[currentIndex].bgColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
-    
-    <div class="slider-shadow-v2" :style="{ backgroundColor: `color-mix(in srgb, ${items[currentIndex].bgColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
+
+    <div class="slider-shadow" :style="{ backgroundColor: `color-mix(in srgb, ${slides[currentIndex].mainColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
+
+    <div class="slider-shadow-v2" :style="{ backgroundColor: `color-mix(in srgb, ${slides[currentIndex].mainColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
+
     <div style="position: absolute; bottom: 7rem; text-align: center;">
       <h1 style="font-size: 4.5rem;">{{ slides[currentIndex].title }}</h1>
       <p style="font-size: 1.5rem;">{{ slides[currentIndex].author }}</p>
@@ -177,31 +178,6 @@ html, body {
   /* background-color: rgba(0, 0, 0, 0.2); */
   background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
   transform-origin: bottom center;
-  filter: blur(20px)
-}
-.slider-shadow-v2 {
-  width: 100%;
-  height: 150px; 
-  bottom: -4rem;
-  left: -12rem;
-  border-radius: 100px;
-  transform: rotate(15deg);
-  position: absolute;
-  background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
-  transform-origin: bottom center;
-  filter: blur(20px)
-}
-.slider-shadow{
-  width: 100%;
-  height: 80px;
-  bottom: 11rem;
-  left: 30rem;
-  border-radius: 100px;
-  transform: rotate(18deg);
-  position: absolute;
-  /* background-color: rgba(0, 0, 0, 0.2); */
-  background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
-  transform-origin: bottom center;
   filter: blur(20px);
   transition: 0.7s;
 }
@@ -215,6 +191,7 @@ html, body {
   position: absolute;
   background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
   transform-origin: bottom center;
-  filter: blur(20px)
+  filter: blur(20px);
+  transition: 0.7s;
 }
 </style>
