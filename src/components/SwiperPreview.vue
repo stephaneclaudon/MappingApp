@@ -17,46 +17,11 @@
       @swiperslidechange="onSlideChange"
       class="mySwiper swiper"
     >
-      <swiper-slide>
-        <router-link to="/vid/0">
-          <img src="/thumbnails/0.jpg" />
+      <swiper-slide v-for="slide in slides">
+        <router-link :to="route+slide.video">
+          <img :src="slide.image" />
         </router-link>
       </swiper-slide>
-      <swiper-slide>
-        <router-link to="/vid/1">
-          <img src="/thumbnails/1.jpg" />
-        </router-link>
-      </swiper-slide>
-      <swiper-slide>
-        <router-link to="/vid/2">
-          <img src="/thumbnails/2.jpg" />
-        </router-link>
-      </swiper-slide>
-      <swiper-slide>
-        <router-link to="/vid/3">
-          <img src="/thumbnails/3.jpg" />
-        </router-link>
-      </swiper-slide>
-      <swiper-slide>
-        <router-link to="/vid/4">
-          <img src="/thumbnails/4.jpg" />
-        </router-link>
-      </swiper-slide>
-      <swiper-slide>
-        <router-link to="/vid/5">
-          <img src="/thumbnails/5.jpg" />
-        </router-link>
-      </swiper-slide>
-      <swiper-slide >
-        <router-link to="/vid/6">
-          <img src="/thumbnails/6.jpg" />
-        </router-link>
-      </swiper-slide>
-      <swiper-slide>
-        <router-link to="/vid/7">
-          <img src="/thumbnails/7.jpg" />
-        </router-link>
-      </swiper-slide>      
     </swiper-container>
 </template>
 
@@ -72,9 +37,17 @@
   // import required modules
   import { EffectCoverflow, Pagination } from 'swiper/modules';
 
+  import config from '../../config.json';
+
   export default {
     components: {
       SwiperSlide,
+    },
+    data() {
+      return {
+        route: config.projects.globalRoute,
+        slides: config.projects.slides
+      }
     },
     setup() {
       let currentIndex = 0
