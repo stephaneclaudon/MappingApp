@@ -18,7 +18,7 @@
       class="mySwiper swiper"
     >
       <swiper-slide v-for="slide in slides">
-        <router-link :to="slide.route">
+        <router-link :to="route+slide.video">
           <img :src="slide.image" />
         </router-link>
       </swiper-slide>
@@ -45,7 +45,8 @@
     },
     data() {
       return {
-        slides: config.slides
+        route: config.projects.globalRoute,
+        slides: config.projects.slides
       }
     },
     setup() {

@@ -1,68 +1,76 @@
 {
-  "mode": 0,
-  "requestUrl": "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1",
-  "slides": [
-    {
-      "route": "/vid/0",
-      "image": "/thumbnails/0.jpg"
-    },
-    {
-      "route": "/vid/1",
-      "image": "/thumbnails/1.jpg"
-    },
-    {
-      "route": "/vid/2",
-      "image": "/thumbnails/2.jpg"
-    },
-    {
-      "route": "/vid/3",
-      "image": "/thumbnails/3.jpg"
-    },
-    {
-      "route": "/vid/4",
-      "image": "/thumbnails/4.jpg"
-    },
-    {
-      "route": "/vid/5",
-      "image": "/thumbnails/5.jpg"
-    },
-    {
-      "route": "/vid/6",
-      "image": "/thumbnails/6.jpg"
-    },
-    {
-      "route": "/vid/7",
-      "image": "/thumbnails/7.jpg"
-    }
-  ],
-  "canvasColors": [
-    "#FFFFFF",
-    "#FF0000",
-    "#00FF00",
-    "#0000FF",
-    "#FFFF00",
-    "#FF00FF",
-    "#00FFFF"
-  ],
-  "canvasBrushSizes": [
-    12,
-    16,
-    20, 
-    4,
-    28
-  ],
-  "canvasStickers": [
-    "src/assets/Group.png",
-    "src/assets/major.png",
-    "src/assets/cs2.png",
-    "src/assets/Vector.png",
-    "src/assets/Vector-1.png",
-    "https://img.icons8.com/dusk/64/000000/department.png",
-    "https://img.icons8.com/dusk/64/000000/organization.png",
-    "https://img.icons8.com/dusk/64/000000/small-business.png",
-    "https://img.icons8.com/dusk/64/000000/company.png",
-    "https://img.icons8.com/clouds/100/musescore.png",
-    "https://img.icons8.com/color/48/star-trek-xindi-insectoid-olaen-heavy-strike-wing-escort.png",
-    "https://img.icons8.com/3d-fluency/94/3d-fluency-mixer.png"
-  ]
+  "global": {
+    "mode": 0,
+    "requestUrl": "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1"
+  },
+  "projects" : {
+    "globalRoute": "/vid/",
+    "slides": [
+      {
+        "image": "/thumbnails/0.jpg",
+        "video": "video0"
+      },
+      {
+        "image": "/thumbnails/1.jpg",
+        "video": "video1"
+      },
+      {
+        "image": "/thumbnails/2.jpg",
+        "video": "video2"
+      },
+      {
+        "image": "/thumbnails/3.jpg",
+        "video": "video3"
+      },
+      {
+        "image": "/thumbnails/4.jpg",
+        "video": "video4"
+      },
+      {
+        "image": "/thumbnails/5.jpg",
+        "video": "video5"
+      },
+      {
+        "image": "/thumbnails/6.jpg",
+        "video": "video6"
+      },
+      {
+        "image": "/thumbnails/7.jpg",
+        "video": "video7"
+      }
+    ]
+  },
+
+  "canvas" : {
+    "colors": [
+      "#FFFFFF",
+      "#FF0000",
+      "#00FF00",
+      "#0000FF",
+      "#FFFF00",
+      "#FF00FF",
+      "#00FFFF"
+    ],
+    "brushSizes": [
+      12,
+      16,
+      20,
+      24,
+      28
+    ],
+    "stickers": [
+      "src/assets/Group.png",
+      "src/assets/major.png",
+      "src/assets/cs2.png",
+      "src/assets/Vector.png",
+      "src/assets/Vector-1.png",
+      "https://img.icons8.com/dusk/64/000000/department.png",
+      "https://img.icons8.com/dusk/64/000000/organization.png",
+      "https://img.icons8.com/dusk/64/000000/small-business.png",
+      "https://img.icons8.com/dusk/64/000000/company.png",
+      "https://img.icons8.com/clouds/100/musescore.png",
+      "https://img.icons8.com/color/48/star-trek-xindi-insectoid-olaen-heavy-strike-wing-escort.png",
+      "https://img.icons8.com/3d-fluency/94/3d-fluency-mixer.png"
+    ]
+  }
 }

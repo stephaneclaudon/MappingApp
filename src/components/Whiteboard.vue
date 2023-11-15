@@ -36,11 +36,11 @@ export default {
       painting: false,
       canvas: null,
       ctx: null,
-      colors: config.canvasColors,
-      sizes: config.canvasBrushSizes,
+      colors: config.canvas.colors,
+      sizes: config.canvas.brushSizes,
       deviceType: null,
       stickerCounter: 0,
-      icons: config.canvasStickers
+      icons: config.canvas.stickers
     };
   },
   mounted() {

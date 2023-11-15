@@ -2,12 +2,11 @@
     <div class="videoContainer">
         <router-link to="/slideshow">
             <video autoplay loop>
-                <source :src="'/video' + $route.fullPath.split('/')[2] + '.mp4'" type="video/mp4">
+                <source :src="'/' + $route.fullPath.split('/')[2] + '.mp4'" type="video/mp4">
             </video>
         </router-link>
     </div>
 </template>
-
 <style>
 
 .videoContainer{
