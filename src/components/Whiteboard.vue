@@ -26,25 +26,6 @@
       <canvas class="canvas" ref="canvas"></canvas>
     </div>
 
-    <div class="container mt-1">
-      <div class="digit-demo-container">
-        <div class="flex-two">
-          <div class="canvas_box_wrapper">
-            <div class="col-12">
-              <button class="predict-button" @click="predictDigit">Predict</button>
-            </div>
-          </div>
-          <div id="label-container" class="teachable-machine-labels">
-            <button class="predict-button" @click="predictTeachableMachine">Predict</button>
-
-            <div v-for="(prediction, index) in maxPredictions" :key="index" class="teachable-machine-label"
-                 :id="'teachableMachineLabel' + index" style="color: white">{{ prediction }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <a href="yourImage.png" download="[imageName].png" id="download" style="pointer-events: none; display: none">Click
       here to download image</a>
     <canvas></canvas>
@@ -86,9 +67,12 @@ export default {
     // Set default stroke color
 
     // Resize canvas    
+    const whiteboard = document.getElementsByClassName('whiteboard')[0]
 
-    this.canvas.height = window.innerHeight * 0.9
-    this.canvas.width =  window.innerHeight * 0.9 * (1080/1920)
+    console.log(whiteboard)
+
+    this.canvas.height = whiteboard.clientHeight
+    this.canvas.width =  whiteboard.clientHeight * (1080/1920)
 
 
     this.setDeviceType()
@@ -103,9 +87,10 @@ export default {
     let stickersContainer = document.getElementsByClassName('stickers')[0]
 
     window.addEventListener('resize', () => {
+      const whiteboard = document.getElementsByClassName('whiteboard')[0]
       console.log("salut")
-      this.canvas.height = window.innerHeight * 0.9
-      this.canvas.width =  window.innerHeight * 0.9 * (1080/1920)
+      this.canvas.height = whiteboard.clientHeight * 0.9
+      this.canvas.width =  whiteboard.clientHeight * 0.9 * (1080/1920)
     })
 
     stickersContainer.classList.add(this.isStickersOn)
