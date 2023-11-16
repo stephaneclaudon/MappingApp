@@ -554,6 +554,9 @@ export default {
                 element.dataset.type
             );
             element.classList.add("dragged");
+            console.log(element)
+            console.log(document.getElementsByClassName("dragged")[0])
+
           }
         },
         onPress: () => {
