@@ -383,16 +383,17 @@ export default {
 
     },
     startPainting(e) {
-      if (e.touches.length === 2) {
-        this.pinchStartDistance = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-        );
-      }
+
       this.painting = true
       if (this.deviceType === 'desktop') {
         this.draw(e);
       } else if (this.deviceType === 'mobile') {
+        if (e.touches.length === 2) {
+          this.pinchStartDistance = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+          );
+        }
         this.mobileDraw(e)
       }
       e.preventDefault()
@@ -442,6 +443,11 @@ export default {
     },
     mobileDraw(e) {
       if (e.touches.length === 2) {
+        const pinchStartDistance = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+        );
+
         const pinchEndDistance = Math.hypot(
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY
@@ -449,28 +455,29 @@ export default {
 
         const pinchScale = pinchEndDistance / pinchStartDistance;
 
-        // Adjust the sticker scale based on the pinch scale
-        this.stickerScale *= pinchScale;
-
-        // Apply the scale to the dragged sticker
+        // Update the scale of the dragged sticker
         const dragged = document.querySelector(".dragged");
         if (dragged) {
-          gsap.set(dragged, {scale: 1.25 * this.stickerScale});
+          const currentScale = parseFloat(dragged.style.transform.replace("scale(", "").replace(")", ""));
+          const newScale = currentScale * pinchScale;
+
+          // Enforce minimum and maximum dimensions
+          const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
+
+          gsap.set(dragged, {scale: clampedScale});
         }
 
         // Update the start distance for the next pinch event
         this.pinchStartDistance = pinchEndDistance;
-        if (this.isEraserSelected) {
-          this.erase(e.touches[0]);
-        }
-        if (!this.painting) return
-        this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-        this.ctx.stroke()
+      } else if (e.touches.length === 1) {
+        // Handle single touch (drag) logic here
+        // You may want to adjust the existing mobileDraw logic
+        // for dragging the sticker with one finger
 
-        this.ctx.beginPath()
-        this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-        if (!this.isEraserSelected) {
-          this.resetDrawingTimer();
+        // Reset the scale of the dragged sticker to 1
+        const dragged = document.querySelector(".dragged");
+        if (dragged) {
+          gsap.set(dragged, {scale: 1});
         }
       }
     },
@@ -529,7 +536,7 @@ export default {
         },
         onPress: () => {
           gsap.to(element, {
-            scale: 1.25 * this.stickerScale,
+            scale: 1.25,
           })
         },
         onRelease: () => {
@@ -572,7 +579,9 @@ export default {
         this.buildHandleSVG(parent, this.icons[i], i);
       }
     }
-  },
-};
+  }
+  ,
+}
+;
 
 </script>
