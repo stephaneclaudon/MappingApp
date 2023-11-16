@@ -462,7 +462,7 @@ export default {
       } else {
         this.stickersResizer(e)
       }
-      },
+    },
 
     stickersResizer(e) {
 
@@ -484,11 +484,15 @@ export default {
           // Enforce minimum and maximum dimensions
           const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
 
-          gsap.to(dragged, {scale: pinchScale});
+          gsap.to(dragged, {
+            width: dragged.clientWidth * pinchScale,
+            height: dragged.clientHeight * pinchScale
+          });
 
-          console.log("pinchScale ", pinchScale)
-          console.log("pinchStartDistance ", this.pinchStartDistance)
-          console.log("pinchEndDistance ", pinchEndDistance)
+          // console.log("pinchScale ", pinchScale)
+          // console.log("pinchStartDistance ", this.pinchStartDistance)
+          // console.log("pinchEndDistance ", pinchEndDistance)
+          console.log("pinchEndDistance ", dragged)
         }
 
         // Update the start distance for the next pinch event
