@@ -581,7 +581,7 @@ export default {
           const dragged = document.getElementsByClassName('dragged')[0];
           if (dragged) {
             gsap.to(dragged, {
-              rotation: this.rotationAngle,
+              rotation: dragged.style.rotation + this.rotationAngle,
               transformOrigin: '50% 50%',
             });
           }
