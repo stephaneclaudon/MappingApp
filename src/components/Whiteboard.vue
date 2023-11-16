@@ -375,7 +375,7 @@ export default {
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height)
       this.diffTwoLastCtx.clearRect(0, 0, this.diffTwoLastCanvas.width, this.diffTwoLastCanvas.height)
 
-      let dragged = document.getElementsByClassName('dragged')
+      let dragged = document.getElementsByClassName('alreadyDragged')
       for (let i = dragged.length; i > 0; i = dragged.length) {
         dragged[0].remove()
       }
@@ -485,8 +485,8 @@ export default {
           const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
 
           gsap.to(dragged, {
-            width: dragged.width.baseVal.value + dragged.width.baseVal.value * pinchScale,
-            height: dragged.height.baseVal.value + dragged.height.baseVal.value * pinchScale
+            width: dragged.width.baseVal.value * pinchScale,
+            height: dragged.height.baseVal.value * pinchScale
           });
 
           // console.log("pinchScale ", pinchScale)
@@ -559,6 +559,15 @@ export default {
 
           }
         },
+        onMove: () => {
+          if (this.map) {
+            this.map.setItem(element.getAttributeNS(null, "id"), {
+              src: element.getAttributeNS("http://www.w3.org/1999/xlink", "href"),
+              x: element.getBoundingClientRect().x,
+              y: element.getBoundingClientRect().y,
+            });
+          }
+        },
         onPress: () => {
           console.log(document.getElementsByClassName("dragged")[0])
         },
@@ -574,6 +583,7 @@ export default {
             });
             if (element.classList.contains("dragged")) {
               element.classList.remove("dragged");
+              element.classList.add("alreadyDragged");
             }
           }
         }
