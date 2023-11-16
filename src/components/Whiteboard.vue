@@ -80,9 +80,11 @@ export default {
       evCache: [],
       prevDiff: -1,
       rotationAngle: 0,
+      pinchScale: 0,
       pinchStartAngle: 0,
       alreadyDone: false,
       currentRotationAngle: 0,
+      currentScale: 0,
     };
   },
   async mounted() {
@@ -469,6 +471,7 @@ export default {
     },
     finishedPainting() {
       this.currentRotationAngle = this.rotationAngle
+      this.currentScale = this.pinchScale
       this.painting = false
       this.ctx.beginPath()
       if (!this.isEraserSelected) {
@@ -539,21 +542,17 @@ export default {
               e.touches[0].clientX - e.touches[1].clientX,
               e.touches[0].clientY - e.touches[1].clientY
           );
-
-          const pinchScale = pinchEndDistance / this.pinchStartDistance;
+          this.pinchScale = pinchEndDistance / this.pinchStartDistance +  this.currentScale;
 
           // Update the scale of the dragged sticker
           const dragged = document.getElementsByClassName("dragged")[0];
           if (dragged) {
-            const currentScale = parseFloat(dragged.style.transform.replace("scale(", "").replace(")", ""));
-            const newScale = currentScale * pinchScale;
 
             // Enforce minimum and maximum dimensions
-            const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
 
             gsap.to(dragged, {
-              width: dragged.width.baseVal.value * pinchScale,
-              height: dragged.height.baseVal.value * pinchScale,
+              width: dragged.width.baseVal.value * this.pinchScale,
+              height: dragged.height.baseVal.value * this.pinchScale,
             });
           }
         }
@@ -580,12 +579,6 @@ export default {
             // Ajoutez la différence entre l'angle actuel et l'angle de rotation initial
             // Mettez à jour l'angle de rotation actuel
             this.rotationAngle = curAngle - this.pinchStartAngle + this.currentRotationAngle;
-
-
-            console.log(" this.rotationAngle ",  this.rotationAngle)
-            console.log("curAngle ", curAngle)
-            console.log("this.pinchStartAngle ", this.pinchStartAngle)
-            console.log("this.currentRotationAngle ", this.currentRotationAngle)
 
             gsap.to(dragged, {
               rotation: this.rotationAngle,
