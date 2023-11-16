@@ -20,9 +20,11 @@
       class="mySwiper swiper"
     >
       <swiper-slide v-for="(slide, index) in slides" :key="index" style="padding: 2.5rem">
-        <router-link :to="route+slide.video">
-          <img :src="slide.image"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 30px 2px'}`}"/>
-        </router-link>
+        <!-- <router-link :to="route+slide.video"> -->
+          <a @click="goToVideo(route+slide.video, index)">
+            <img :src="slide.image"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 30px 2px'}`}"/>
+          </a>
+        <!-- </router-link> -->
       </swiper-slide>   
     </swiper-container>
 
@@ -39,6 +41,14 @@
       <h1 style="font-size: 4.5rem;">{{ slides[currentIndex].title }}</h1>
       <p style="font-size: 1.5rem;">{{ slides[currentIndex].author }}</p>
     </div>
+
+    <div class="transition-img" style="opacity: 0; z-index: 0;">
+      <img 
+        :src="slides[currentIndex].image"
+        :id="`transition-img-${currentIndex}`"
+        style="height: 420px; z-index: 0"
+      />
+    </div>
   </div>
 </template>
 
@@ -51,6 +61,8 @@
   import 'swiper/css';
   import 'swiper/css/effect-coverflow';
   import 'swiper/css/pagination';
+
+  import { useRouter } from 'vue-router';
 
   // import required modules
   import { EffectCoverflow, Pagination } from 'swiper/modules';
@@ -68,6 +80,8 @@
       }
     },
     setup() {
+      const router = useRouter();
+
       const currentIndex = ref(0)
 
       const goToVideo = (path) => {
@@ -88,11 +102,37 @@
         if(!swiperEl[0].swiper) return
         currentIndex.value = swiperEl[0].swiper.realIndex
 
-
-        
         if(oldIndex !== currentIndex.value){
           console.log(swiperEl[0].swiper.realIndex)
         }
+      }
+
+      const pushRouter = (path) => {
+        router.push(path)
+      }
+
+      const zoom = (index) => {
+        const swiperEl = document.getElementById(`transition-img-${index}`)
+        console.log(swiperEl)
+        const swiperContainer = document.querySelector('.transition-img')
+        swiperContainer.style.zIndex = 1
+        swiperContainer.style.opacity = 1
+
+        const windowHeight = window.outerHeight;
+        const imageHeight = swiperEl.height;
+
+
+        const scaleRatio = windowHeight / (imageHeight);
+
+        swiperEl.style.transform = `scale(${scaleRatio})`
+      }
+
+      const goToVideo = (path, index) => {
+        zoom(index)
+
+        setTimeout(() => {
+          pushRouter(path)
+        }, 1200);
       }
 
       return {
@@ -193,5 +233,20 @@ html, body {
   transform-origin: bottom center;
   filter: blur(20px);
   transition: 0.7s;
+}
+
+.transition-img {
+  width: 100vw;
+  height: 420px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.transition-img img {
+  width: auto;
+  border-radius: 1rem;
+  transition: 1s;
 }
 </style>
