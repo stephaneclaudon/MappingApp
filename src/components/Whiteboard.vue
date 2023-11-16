@@ -468,7 +468,7 @@ export default {
         }
 
         // Update the start distance for the next pinch event
-        this.pinchStartDistance = pinchEndDistance;
+        // this.pinchStartDistance = pinchEndDistance;
       }
     },
     initializeMap() {
