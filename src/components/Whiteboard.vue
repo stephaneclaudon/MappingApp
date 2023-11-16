@@ -542,7 +542,7 @@ export default {
               e.touches[0].clientX - e.touches[1].clientX,
               e.touches[0].clientY - e.touches[1].clientY
           );
-          this.pinchScale = (pinchEndDistance / this.pinchStartDistance) + this.currentScale;
+          this.pinchScale = (pinchEndDistance / this.pinchStartDistance) - 1 + this.currentScale;
 
           console.log("this.pinchScale ", this.pinchScale)
           console.log("pinchEndDistance ", pinchEndDistance)
