@@ -557,7 +557,7 @@ export default {
           }
         },
         onPress: () => {
-
+          console.log(document.getElementsByClassName("dragged")[0])
         },
         onRelease: () => {
         },
