@@ -151,3 +151,15 @@
     },
   };
 </script>
+
+<style scoped>
+.swiper-slide {
+  background-position: center;
+  background-size: fill;
+  width: 300px;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

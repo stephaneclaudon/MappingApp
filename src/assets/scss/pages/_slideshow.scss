@@ -1,8 +1,13 @@
+@import 'slideshow/_shadows';
+@import 'slideshow/_platform';
+@import 'slideshow/_transitionImg';
+
 html, body {
   height: 100vh!important;
   width: 100vw!important;
   overflow: hidden!important;
 }
+
 .slideshow-container {
   width: 100vw;
   height: 100vh;
@@ -17,21 +22,12 @@ html, body {
   background-position: center center;
   transition: 1s;
 }
+
 .swiper {
   width: 100%;
   padding-top: 50px;
   padding-bottom: 50px;
   /* border: 4px solid red; */
-}
-
-.swiper-slide {
-  background-position: center;
-  background-size: fill;
-  width: 300px;
-  height: 500px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .swiper-slide a {
@@ -45,68 +41,7 @@ html, body {
   width: 100%;
   height: 100%;
 }
+
 .slideshow-img {
   border-radius: 1rem;
-}
-.platform {
-  width: 170vw;
-  height: 370px;
-  background-color: rgba(218, 239, 255, 1);
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 30px 4px;
-  position: absolute;
-  bottom: 0;
-  border-top-right-radius: 50%;
-  border-top-left-radius: 50%;
-  transition: 1s;
-}
-.plateform-translate {
-  transform: translateY(25rem);
-  transition: 1s;
-}
-
-.text {
-  transition: 0.3s;
-}
-
-.slider-shadow{
-  width: 100%;
-  height: 80px;
-  bottom: 11rem;
-  left: 30rem;
-  border-radius: 100px;
-  transform: rotate(18deg);
-  position: absolute;
-  /* background-color: rgba(0, 0, 0, 0.2); */
-  background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
-  transform-origin: bottom center;
-  filter: blur(20px);
-  transition: 1s;
-}
-.slider-shadow-v2 {
-  width: 100%;
-  height: 150px; 
-  bottom: -4rem;
-  left: -12rem;
-  border-radius: 100px;
-  transform: rotate(15deg);
-  position: absolute;
-  background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
-  transform-origin: bottom center;
-  filter: blur(20px);
-  transition: 1s;
-}
-
-.transition-img {
-  width: 100vw;
-  height: 420px;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.transition-img img {
-  width: auto;
-  border-radius: 1rem;
-  transition: 1s;
 }
