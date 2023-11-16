@@ -448,37 +448,39 @@ export default {
             e.touches[0].clientY - e.touches[1].clientY
         );
 
+        if (!this.pinchStartDistance) {
+          // Initialize pinchStartDistance if it's not set
+          this.pinchStartDistance = pinchStartDistance;
+          return;
+        }
+
         const pinchEndDistance = Math.hypot(
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY
         );
 
-        const pinchScale = pinchEndDistance / pinchStartDistance;
+        const pinchScale = pinchEndDistance / this.pinchStartDistance;
 
         // Update the scale of the dragged sticker
         const dragged = document.querySelector(".dragged");
         if (dragged) {
           const clampedScale = Math.min(Math.max(pinchScale, 0.5), 5);
-          console.log("pinchScale ",pinchScale)
-          console.log("clampedScale ",clampedScale)
-          gsap.to(dragged, { scale: pinchScale });
+          gsap.to(dragged, { scale: clampedScale });
         }
 
         // Update the start distance for the next pinch event
         this.pinchStartDistance = pinchEndDistance;
+      } else if (e.touches.length === 1) {
+        // Handle single touch (drag) logic here
+        // You may want to adjust the existing mobileDraw logic
+        // for dragging the sticker with one finger
+
+        // Reset the scale of the dragged sticker to 1
+        const dragged = document.querySelector(".dragged");
+        if (dragged) {
+          gsap.to(dragged, { scale: 1 });
+        }
       }
-      // else if (e.touches.length === 1) {
-      //   // Handle single touch (drag) logic here
-      //   // You may want to adjust the existing mobileDraw logic
-      //   // for dragging the sticker with one finger
-      //
-      //   // Reset the scale of the dragged sticker to 1
-      //   const dragged = document.querySelector(".dragged");
-      //   if (dragged) {
-      //     gsap.to(dragged, { scale: 1 });
-      //
-      //   }
-      // }
     },
     initializeMap() {
       this.map = localforage.createInstance({
