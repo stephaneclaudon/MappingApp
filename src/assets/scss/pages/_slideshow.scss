@@ -15,35 +15,21 @@ html, body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   transition: 1s;
 }
-.slideshow-container img {
+.background-image {
   width: 100%;
   height: 100%;
   position: absolute;
-  object-fit: cover;
-  transition: 1s;
+  object-fit: fill;
+  // transition: 1s;
 }
 
 .swiper {
   width: 100%;
   padding-top: 50px;
   padding-bottom: 50px;
-}
-
-.swiper-slide a {
-  display: block;
-  max-width: 100%;
-  width: fit-content;
-  height: 100%;
-}
-.swiper-slide img {
-  display: block;
-  width: 420px;
-  height: auto;
-  margin-top: calc(50% - 210px);
-}
-
-.slideshow-img {
-  border-radius: 1rem;
 }

@@ -1,6 +1,6 @@
 <template>
-  <div class="slideshow-container">
-    <img :src="slides[currentIndex].bgImg">
+  <div class="slideshow-container" :style="{ backgroundImage: `url(${slides[currentIndex].bgImg})` }">
+    <!-- <img :src="slides[currentIndex].bgImg" class="background-image"> -->
 
     <swiper-container
       :effect="'coverflow'"
@@ -45,7 +45,6 @@
         :src="slides[currentIndex].bgImg"
         :id="`transition-img-${currentIndex}`"
         style="width: 420px; z-index: 0"
-        :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"
       />
     </div>
   </div>
@@ -88,7 +87,6 @@
       const onSlideChange = () => {
         const swiperEl = document.getElementsByClassName('mySwiper');
         const oldIndex = currentIndex.value
-        console.log(swiperEl)
 
         if(!swiperEl[0].swiper) return
         currentIndex.value = swiperEl[0].swiper.realIndex
@@ -162,11 +160,25 @@
 .swiper-slide {
   background-position: center;
   background-size: fill;
-  width: 65vw;
-  height: 100px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* border: 4px solid blue; */
+}
+.swiper-slide a {
+  width: 420px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  /* border: 4px solid purple; */
+}
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  margin-top: calc(50% - 210px);
+  border-radius: 1rem;
+  /* border: 4px solid red; */
 }
 </style>
