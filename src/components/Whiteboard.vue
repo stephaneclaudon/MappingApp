@@ -469,7 +469,7 @@ export default {
 
         // Update the start distance for the next pinch event
         this.pinchStartDistance = pinchEndDistance;
-      } 
+      }
     },
     initializeMap() {
       this.map = localforage.createInstance({
@@ -525,9 +525,6 @@ export default {
           }
         },
         onPress: () => {
-          gsap.to(element, {
-            scale: 1.25 * this.stickerScale,
-          })
         },
         onRelease: () => {
           gsap.to(element, {
