@@ -1,13 +1,13 @@
 .platform {
   width: 170vw;
-  height: 370px;
+  height: 420px;
   background-color: rgba(218, 239, 255, 1);
   box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 30px 4px;
   position: absolute;
-  bottom: 0;
+  bottom: -50px;
   border-top-right-radius: 50%;
   border-top-left-radius: 50%;
-  transition: 1s;
+  transition: 1.5s;
 }
 .plateform-translate {
   transform: translateY(25rem);
@@ -18,5 +18,5 @@
   position: absolute;
   bottom: 7rem;
   text-align: center;
-  transition: 0.3s;
+  transition: 0.7s;
 }

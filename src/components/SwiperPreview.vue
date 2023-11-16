@@ -45,6 +45,7 @@
         :src="slides[currentIndex].image"
         :id="`transition-img-${currentIndex}`"
         style="height: 420px; z-index: 0"
+        :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"
       />
     </div>
   </div>
@@ -111,23 +112,37 @@
         router.push(path)
       }
 
-      const zoom = (index) => {
+      const runTransition = (index) => {
         const swiperEl = document.getElementById(`transition-img-${index}`)
-        const swiperContainer = document.querySelector('.transition-img')
+        const transitionImg = document.querySelector('.transition-img')
         const platform = document.querySelector('.platform')
         const shadow1 = document.querySelector('.slider-shadow')
         const shadow2 = document.querySelector('.slider-shadow-v2')
         const text = document.querySelector('.text')
+        const swiperContainer = document.getElementsByClassName('mySwiper');
+        
+        // make the swipper disapear
+        swiperContainer[0].style.opacity = 0
 
-        swiperContainer.style.zIndex = 1
-        swiperContainer.style.opacity = 1
+        // make the transition image appear 
+        transitionImg.style.zIndex = 1
+        transitionImg.style.opacity = 1
 
+        // applying bezier curve to smooth transition
+        swiperEl.style.transitionTimingFunction = 'cubic-bezier(1, -0.3, .8, 0.67)' 
+        platform.style.transitionTimingFunction = 'cubic-bezier(1, -0.3, .8, 0.67)' 
+        shadow1.style.transitionTimingFunction = 'cubic-bezier(1, -0.3, .8, 0.67)' 
+        shadow2.style.transitionTimingFunction = 'cubic-bezier(1, -0.3, .8, 0.67)' 
+
+        // transition for platform & shadows
         platform.style.transform = 'translateY(25rem)'
         shadow1.style.transform = 'translateY(25rem)'
         shadow2.style.transform = 'translateY(25rem)'
         
+        // make text disapear
         text.style.opacity = '0'
 
+        // transition for the transition image
         const windowHeight = window.outerHeight;
         const imageHeight = swiperEl.height;
         const scaleRatio = windowHeight / (imageHeight);
@@ -135,11 +150,12 @@
       }
 
       const goToVideo = (path, index) => {
-        zoom(index)
+
+        runTransition(index)
 
         setTimeout(() => {
           pushRouter(path)
-        }, 1200);
+        }, 1700);
       }
 
       return {
