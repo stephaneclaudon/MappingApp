@@ -443,9 +443,12 @@ export default {
     },
     mobileDraw(e) {
       if (e.touches.length === 2) {
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+
         const pinchStartDistance = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
+            touch1.clientX - touch2.clientX,
+            touch1.clientY - touch2.clientY
         );
 
         if (!this.pinchStartDistance) {
@@ -455,8 +458,8 @@ export default {
         }
 
         const pinchEndDistance = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
+            touch1.clientX - touch2.clientX,
+            touch1.clientY - touch2.clientY
         );
 
         const pinchScale = pinchEndDistance / this.pinchStartDistance;
@@ -464,9 +467,15 @@ export default {
         // Update the scale of the dragged sticker
         const dragged = document.querySelector(".dragged");
         if (dragged) {
-          console.log(pinchScale)
           const clampedScale = Math.min(Math.max(pinchScale, 0.5), 5);
           gsap.to(dragged, { scale: pinchScale });
+
+          // Calculate the midpoint between the two touches
+          const midpointX = (touch1.clientX + touch2.clientX) / 2;
+          const midpointY = (touch1.clientY + touch2.clientY) / 2;
+
+          // Update the position of the dragged sticker to keep it centered
+          gsap.to(dragged, { x: midpointX - (dragged.clientWidth * pinchScale) / 2, y: midpointY - (dragged.clientHeight * pinchScale) / 2 });
         }
 
         // Update the start distance for the next pinch event
