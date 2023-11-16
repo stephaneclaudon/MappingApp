@@ -464,7 +464,8 @@ export default {
           // Enforce minimum and maximum dimensions
           const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
 
-          gsap.set(dragged, {scale: clampedScale});
+          gsap.to(dragged, {scale: clampedScale})
+
         }
 
         // Update the start distance for the next pinch event
@@ -536,12 +537,12 @@ export default {
         },
         onPress: () => {
           gsap.to(element, {
-            scale: 1.25,
+            // scale: 1.25,
           })
         },
         onRelease: () => {
           gsap.to(element, {
-            scale: 1,
+            // scale: 1,
           })
         },
         onDragEnd: () => {
