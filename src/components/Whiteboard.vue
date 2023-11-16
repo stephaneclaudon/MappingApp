@@ -7,12 +7,14 @@
       <label for="switch"></label>
 
       <div class="brush-size-container">
-        <div class="brush-preview" :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
+        <div class="brush-preview"
+             :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
       </div>
 
       <div class="size-boxes-container slide-range-container">
         <div class="slide-container">
-          <input type="range" :min="brushSizes.min" :max="brushSizes.max" class="slider" v-model="rangeValue" @change="handleRangeChange">
+          <input type="range" :min="brushSizes.min" :max="brushSizes.max" class="slider" v-model="rangeValue"
+                 @change="handleRangeChange">
         </div>
       </div>
 
@@ -20,7 +22,13 @@
         <button v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="box"
                 :style="getPenColor(color)"></button>
       </div>
+      <div class="size-boxes-container">
+        <button @click="enableEraser">
+          Eraser
+        </button>
+      </div>
       <img src="../assets/bin.svg" alt="clear" class="clear" @click="clearCanvas"/>
+
     </div>
 
     <div class="canvas-wrapper">
@@ -68,6 +76,7 @@ export default {
       brushColor: config.canvas.colors[0],
       rotateStartAngle: 0,
       rotateCurrentAngle: 0,
+      isEraserSelected: false,
     };
   },
   async mounted() {
@@ -122,7 +131,28 @@ export default {
     this.updatePrevCanvas();
   },
   methods: {
+
+    enableEraser() {
+      this.isEraserSelected = true;
+    },
+    disableEraser() {
+      this.isEraserSelected = false;
+    },
+    erase(e) {
+      if (!this.painting) return;
+
+      // Use 'destination-out' to erase
+      this.ctx.globalCompositeOperation = 'destination-out';
+
+      this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+      this.ctx.stroke()
+
+      this.ctx.beginPath()
+      this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+
+    },
     handleRangeChange(event) {
+
       this.rangeValue = event.target.value;
       this.changeSize(event.target.value);
     },
@@ -166,7 +196,6 @@ export default {
       }
 
 
-      //todo : faire une recognition sur 1s et sur 2s pour être sûr
       // Effacez le canvas des différences
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height);
 
@@ -195,7 +224,7 @@ export default {
     downloadImage(imageName) {
       const link = document.getElementById('download');
       link.download = imageName;
-      // link.click();
+      link.click();
     },
     getFormattedTime() {
       const now = new Date();
@@ -347,6 +376,11 @@ export default {
       }
     },
     changeColor(color) {
+      if (this.isEraserSelected) {
+        // Switch back to default drawing mode
+        this.ctx.globalCompositeOperation = 'source-over';
+        this.disableEraser() // Reset eraser mode
+      }
       this.brushColor = color
       this.ctx.strokeStyle = color
     },
@@ -390,10 +424,17 @@ export default {
     finishedPainting() {
       this.painting = false
       this.ctx.beginPath()
-      this.resetDrawingTimer()
+      if (!this.isEraserSelected) {
+
+        this.resetDrawingTimer()
+      }
+
 
     },
     draw(e) {
+      if (this.isEraserSelected) {
+        this.erase(e);
+      }
       if (!this.painting) return
 
       this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
@@ -402,7 +443,10 @@ export default {
       this.ctx.beginPath()
       this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
 
-      this.resetDrawingTimer();
+      if (!this.isEraserSelected) {
+        this.resetDrawingTimer();
+      }
+
     },
     resetDrawingTimer() {
       // Effacez le minuteur existant s'il y en a un
@@ -420,15 +464,18 @@ export default {
       }, 1000);
     },
     mobileDraw(e) {
+      if (this.isEraserSelected) {
+        this.erase(e.touches[0]);
+      }
       if (!this.painting) return
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      this.resetDrawingTimer();
-
-
+      if (!this.isEraserSelected) {
+        this.resetDrawingTimer();
+      }
     },
     initializeMap() {
       this.map = localforage.createInstance({
