@@ -454,7 +454,6 @@ export default {
         if (!this.pinchStartDistance) {
           // Initialize pinchStartDistance if it's not set
           this.pinchStartDistance = pinchStartDistance;
-          return;
         }
 
         const pinchEndDistance = Math.hypot(
@@ -464,6 +463,9 @@ export default {
 
         const pinchScale = pinchEndDistance / this.pinchStartDistance;
 
+        console.log("pinchScale ", pinchScale)
+        console.log("pinchStartDistance ", pinchStartDistance)
+        console.log("pinchEndDistance ", pinchEndDistance)
         // Update the scale of the dragged sticker
         const dragged = document.querySelector(".dragged");
         if (dragged) {
@@ -471,8 +473,8 @@ export default {
           gsap.to(dragged, { scale: pinchScale });
 
           // Calculate the midpoint between the two touches
-          const midpointX = (touch1.clientX + touch2.clientX) / 2;
-          const midpointY = (touch1.clientY + touch2.clientY) / 2;
+          const midpointX = (touch1.clientX - touch2.clientX) / 2;
+          const midpointY = (touch1.clientY - touch2.clientY) / 2;
 
           // Update the position of the dragged sticker to keep it centered
           gsap.to(dragged, { x: midpointX - (dragged.clientWidth * pinchScale) / 2, y: midpointY - (dragged.clientHeight * pinchScale) / 2 });
