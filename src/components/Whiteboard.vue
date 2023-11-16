@@ -590,8 +590,8 @@ export default {
         }
         if (e.touches.length === 1) {
           // Réinitialisez l'angle de rotation actuel si un seul toucher est détecté
-          this.currentRotationAngle = 0;
-          this.pinchStartAngle = 0;
+          // this.currentRotationAngle = 0;
+          // this.pinchStartAngle = 0;
         }
       }
     },
