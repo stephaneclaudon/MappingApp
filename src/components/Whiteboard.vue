@@ -146,7 +146,6 @@ export default {
       el.onpointerleave = this.pointerup_handler;
     },
     updateListeners(el) {
-    console.log('init', el)
     // Install event handlers for the pointer target
     // var el = document.getElementById("canvas");
     el.onpointerdown = this.pointerdown_handler;
@@ -633,7 +632,6 @@ export default {
           })
         },
         onDragEnd: () => {
-          console.log("onDragEnd")
           // Ensure this.map is initialized before calling setItem
           if (this.map) {
             this.updateListeners(element);
