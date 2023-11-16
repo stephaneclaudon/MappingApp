@@ -190,6 +190,7 @@ export default {
           // console.log(ev)
           ev.target.style.height = ev.target.style.height * curDiff/100;
           ev.target.style.width = ev.target.style.height * curDiff/100;
+          console.log(ev.target, ev.target.style.height, ev.target.style.width);
           // ev.target.style.scale = curDiff/100;
         }
         if (curDiff < this.prevDiff) {
@@ -197,6 +198,7 @@ export default {
           // console.log(ev)
           ev.target.style.height = ev.target.style.height * curDiff/100;
           ev.target.style.width = ev.target.style.height * curDiff/100;
+          console.log(ev.target, ev.target.style.height, ev.target.style.width);
         }
       }
 
