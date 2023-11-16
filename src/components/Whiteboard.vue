@@ -183,16 +183,16 @@ export default {
     if (this.evCache.length == 2) {
       // Calculate the distance between the two pointers
       var curDiff = Math.sqrt(Math.pow(this.evCache[1].clientX - this.evCache[0].clientX, 2) + Math.pow(this.evCache[1].clientY - this.evCache[0].clientY, 2));
-
+      console.log("difference : ", curDiff);
       if (this.prevDiff > 0) {
         if (curDiff > this.prevDiff) {
           // The distance between the two pointers has increased
-          console.log(ev)
+          // console.log(ev)
           ev.target.style.background = "pink";
         }
         if (curDiff < this.prevDiff) {
           // The distance between the two pointers has decreased
-          console.log(ev)
+          // console.log(ev)
           ev.target.style.background = "lightblue";
         }
       }
