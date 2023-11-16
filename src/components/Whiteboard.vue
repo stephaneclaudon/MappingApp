@@ -557,8 +557,8 @@ export default {
             // Enforce minimum and maximum dimensions
 
             gsap.to(dragged, {
-              width: dragged.width.baseVal.value * this.pinchScale,
-              height: dragged.height.baseVal.value * this.pinchScale,
+              width: this.pinchScale,
+              height: this.pinchScale,
             });
           }
         }
