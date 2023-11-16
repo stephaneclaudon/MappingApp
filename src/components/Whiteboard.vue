@@ -492,7 +492,10 @@ export default {
           // console.log("pinchScale ", pinchScale)
           // console.log("pinchStartDistance ", this.pinchStartDistance)
           // console.log("pinchEndDistance ", pinchEndDistance)
-          console.log("pinchEndDistance ", dragged)
+          console.log("dragged ", dragged)
+          console.log("dragged style.width ", dragged.style.width)
+          console.log("dragged clientWidth ", dragged.clientWidth)
+          console.log("dragged scrollWidth ", dragged.scrollWidth)
         }
 
         // Update the start distance for the next pinch event
