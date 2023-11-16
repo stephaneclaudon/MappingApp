@@ -485,8 +485,8 @@ export default {
           const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
 
           gsap.to(dragged, {
-            width: dragged.style.width + dragged.style.width * pinchScale,
-            height: dragged.style.height + dragged.style.height * pinchScale
+            width: dragged.width.baseVal.value + dragged.width.baseVal.value * pinchScale,
+            height: dragged.height.baseVal.value + dragged.height.baseVal.value * pinchScale
           });
 
           // console.log("pinchScale ", pinchScale)
@@ -554,7 +554,7 @@ export default {
                 element.dataset.type
             );
             element.classList.add("dragged");
-            console.log(element.height)
+            console.log(element.height.baseVal.value)
             console.log(document.getElementsByClassName("dragged")[0].height)
 
           }
