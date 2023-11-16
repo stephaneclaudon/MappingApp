@@ -81,6 +81,7 @@ export default {
       prevDiff: -1,
       rotationAngle: 0,
       pinchStartAngle: 0,
+      alreadyDone: false,
     };
   },
   async mounted() {
@@ -442,16 +443,19 @@ export default {
       if (this.deviceType === 'desktop') {
         this.draw(e);
         if (e.touches) {
-          if (e.touches.length === 2) {
-            this.pinchStartDistance = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX,
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            this.pinchStartAngle = Math.atan2(
-                    e.touches[1].clientY - e.touches[0].clientY,
-                    e.touches[1].clientX - e.touches[0].clientX
-                ) *
-                (180 / Math.PI);
+          if (!this.alreadyDone) {
+            if (e.touches.length === 2) {
+              this.pinchStartDistance = Math.hypot(
+                  e.touches[0].clientX - e.touches[1].clientX,
+                  e.touches[0].clientY - e.touches[1].clientY
+              );
+              this.pinchStartAngle = Math.atan2(
+                      e.touches[1].clientY - e.touches[0].clientY,
+                      e.touches[1].clientX - e.touches[0].clientX
+                  ) *
+                  (180 / Math.PI);
+              this.alreadyDone = true
+            }
           }
           this.mobileDraw(e.touches)
         } else {
@@ -570,7 +574,6 @@ export default {
 
           // Update the rotation angle
           this.rotationAngle = curAngle - this.pinchStartAngle;
-          this.rotationAngle = this.rotationAngle % 360;
           console.log("this.pinchStartAngle ", this.pinchStartAngle)
           console.log("this.rotationAngle ", this.rotationAngle)
           console.log("curAngle ", curAngle)
@@ -582,6 +585,9 @@ export default {
               transformOrigin: '50% 50%',
             });
           }
+        }
+        if (e.touches.length === 1) {
+          curAngle=0
         }
       }
     },
