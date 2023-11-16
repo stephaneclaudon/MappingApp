@@ -387,13 +387,17 @@ export default {
       this.painting = true
       if (this.deviceType === 'desktop') {
         this.draw(e);
-        if (e.touches.length === 2) {
-          this.pinchStartDistance = Math.hypot(
-              e.touches[0].clientX - e.touches[1].clientX,
-              e.touches[0].clientY - e.touches[1].clientY
-          );
+        if (e.touches) {
+          if (e.touches.length === 2) {
+            this.pinchStartDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+          }
+          this.mobileDraw(e.touches)
+        } else {
+          this.mobileDraw(e)
         }
-        this.mobileDraw(e)
 
       } else if (this.deviceType === 'mobile') {
 
@@ -448,14 +452,14 @@ export default {
       if (!document.querySelector(".dragged")) {
 
         if (this.isEraserSelected) {
-          this.erase(e.touches[0]);
+          this.erase(e);
         }
         if (!this.painting) return
-        this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+        this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
         this.ctx.stroke()
 
         this.ctx.beginPath()
-        this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+        this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
         if (!this.isEraserSelected) {
           this.resetDrawingTimer();
         }
@@ -486,7 +490,9 @@ export default {
 
           gsap.to(dragged, {
             width: dragged.width.baseVal.value * pinchScale,
-            height: dragged.height.baseVal.value * pinchScale
+            height: dragged.height.baseVal.value * pinchScale,
+            x: dragged.x.baseVal.value + dragged.width.animVal.value,
+            y: dragged.height.baseVal.value + dragged.height.animVal.value
           });
 
           // console.log("pinchScale ", pinchScale)
@@ -539,8 +545,13 @@ export default {
     }
     ,
     createDraggable(element) {
+      let canvasWrapper = document.querySelector(".canvas-wrapper")
+
+      const rect = canvasWrapper.getBoundingClientRect();
+
       Draggable.create(element, {
-        bounds: document.querySelector(".canvas-wrapper"),
+        bounds: canvasWrapper,
+        // {minY:yBoundMin,maxY:0}
         edgeResistance: 1,
         onDragStart: () => {
           if (!element.getAttributeNS(null, "id")) {
@@ -554,9 +565,6 @@ export default {
                 element.dataset.type
             );
             element.classList.add("dragged");
-            console.log(element.height.baseVal.value)
-            console.log(document.getElementsByClassName("dragged")[0].height)
-
           }
         },
         onMove: () => {
