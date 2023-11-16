@@ -22,7 +22,13 @@
         <button v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="box"
                 :style="getPenColor(color)"></button>
       </div>
+      <div class="size-boxes-container">
+        <button @click="enableEraser">
+          Eraser
+        </button>
+      </div>
       <img src="../assets/bin.svg" alt="clear" class="clear" @click="clearCanvas"/>
+
     </div>
 
     <div class="canvas-wrapper">
@@ -69,6 +75,7 @@ export default {
       rangeValue: brushSizes.default,
       brushColor: config.canvas.colors[0],
       pinchStartDistance: 0,
+      isEraserSelected: false,
     };
   },
   async mounted() {
@@ -123,7 +130,28 @@ export default {
     this.updatePrevCanvas();
   },
   methods: {
+
+    enableEraser() {
+      this.isEraserSelected = true;
+    },
+    disableEraser() {
+      this.isEraserSelected = false;
+    },
+    erase(e) {
+      if (!this.painting) return;
+
+      // Use 'destination-out' to erase
+      this.ctx.globalCompositeOperation = 'destination-out';
+
+      this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+      this.ctx.stroke()
+
+      this.ctx.beginPath()
+      this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+
+    },
     handleRangeChange(event) {
+
       this.rangeValue = event.target.value;
       this.changeSize(event.target.value);
     },
@@ -167,7 +195,6 @@ export default {
       }
 
 
-      //todo : faire une recognition sur 1s et sur 2s pour être sûr
       // Effacez le canvas des différences
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height);
 
@@ -196,7 +223,7 @@ export default {
     downloadImage(imageName) {
       const link = document.getElementById('download');
       link.download = imageName;
-      // link.click();
+      link.click();
     },
     getFormattedTime() {
       const now = new Date();
@@ -320,6 +347,11 @@ export default {
       }
     },
     changeColor(color) {
+      if (this.isEraserSelected) {
+        // Switch back to default drawing mode
+        this.ctx.globalCompositeOperation = 'source-over';
+        this.disableEraser() // Reset eraser mode
+      }
       this.brushColor = color
       this.ctx.strokeStyle = color
     },
@@ -369,10 +401,17 @@ export default {
     finishedPainting() {
       this.painting = false
       this.ctx.beginPath()
-      this.resetDrawingTimer()
+      if (!this.isEraserSelected) {
+
+        this.resetDrawingTimer()
+      }
+
 
     },
     draw(e) {
+      if (this.isEraserSelected) {
+        this.erase(e);
+      }
       if (!this.painting) return
 
       this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
@@ -381,7 +420,10 @@ export default {
       this.ctx.beginPath()
       this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
 
-      this.resetDrawingTimer();
+      if (!this.isEraserSelected) {
+        this.resetDrawingTimer();
+      }
+
     },
     resetDrawingTimer() {
       // Effacez le minuteur existant s'il y en a un
@@ -413,116 +455,130 @@ export default {
         // Apply the scale to the dragged sticker
         const dragged = document.querySelector(".dragged");
         if (dragged) {
-          gsap.set(dragged, { scale: 1.25 * this.stickerScale });
+          gsap.set(dragged, {scale: 1.25 * this.stickerScale});
         }
 
         // Update the start distance for the next pinch event
         this.pinchStartDistance = pinchEndDistance;
-      }
-      if (!this.painting) return
-      this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      this.ctx.stroke()
-
-      this.ctx.beginPath()
-      this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      this.resetDrawingTimer();
-
-
-    },
-    initializeMap() {
-      this.map = localforage.createInstance({
-        name: "map"
-      });
-      this.map.iterate((value, key) => {
-        this.buildStickers(key, value.src, value.x, value.y);
-      });
-    },
-    buildHandleSVG(parent, path, i) {
-
-      const sticker = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "image"
-      );
-      sticker.setAttributeNS(null, "height", "48");
-      sticker.setAttributeNS(null, "width", "48");
-      sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", path);
-      sticker.setAttributeNS(null, "x", "0");
-      sticker.setAttributeNS(null, "y", 64 * i);
-      sticker.setAttributeNS(null, "visibility", "visible");
-      sticker.classList.add("sticker");
-      sticker.dataset.type = `sticker-${i}`;
-      parent.appendChild(sticker);
-      this.cloneHandleSVG(parent, `sticker-${i}`);
-
-    },
-    cloneHandleSVG(parent, type) {
-      const source = document.querySelector(`[data-type="${type}"]`);
-      const clone = source.cloneNode(true);
-      parent.appendChild(clone);
-      this.createDraggable(clone);
-    },
-    createDraggable(element) {
-      Draggable.create(element, {
-        bounds: document.querySelector(".canvas-wrapper"),
-        edgeResistance: 1,
-        onDragStart: () => {
-          if (!element.getAttributeNS(null, "id")) {
-            element.setAttributeNS(null, "id", `sticker-${this.stickerCounter}`);
-            element.setAttributeNS(null, "draggable", "false");
-            this.stickerCounter++;
-          }
-          if (!element.classList.contains("dragged")) {
-            this.cloneHandleSVG(
-                document.querySelector(".stickers"),
-                element.dataset.type
-            );
-            element.classList.add("dragged");
-          }
-        },
-        onPress: () => {
-          gsap.to(element, {
-            scale: 1.25*this.stickerScale,
-          })
-        },
-        onRelease: () => {
-          gsap.to(element, {
-            scale: 1,
-          })
-        },
-        onDragEnd: () => {
-          // Ensure this.map is initialized before calling setItem
-          if (this.map) {
-            this.map.setItem(element.getAttributeNS(null, "id"), {
-              src: element.getAttributeNS("http://www.w3.org/1999/xlink", "href"),
-              x: element.getBoundingClientRect().x,
-              y: element.getBoundingClientRect().y,
-            });
-          }
+        if (this.isEraserSelected) {
+          this.erase(e.touches[0]);
         }
-      });
-    },
-    build(wrapper, id, src, x, y) {
-      const sticker = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "image"
-      );
-      sticker.setAttributeNS(null, "id", id);
-      sticker.setAttributeNS(null, "height", "32");
-      sticker.setAttributeNS(null, "width", "32");
-      sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", src);
-      sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(1.05)`);
-      sticker.setAttributeNS(null, "visibility", "visible");
-      sticker.classList.add("sticker");
-      this.createDraggable(sticker);
-      wrapper.appendChild(sticker);
-    },
-    buildStickers() {
-      const parent = document.querySelector(".stickers");
-      for (let i = 0; i < this.icons.length; i++) {
-        this.buildHandleSVG(parent, this.icons[i], i);
+        if (!this.painting) return
+        this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+        this.ctx.stroke()
+
+        this.ctx.beginPath()
+        this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+        if (!this.isEraserSelected) {
+          this.resetDrawingTimer();
+        }
       }
-    }
-  },
-};
+    ,
+      initializeMap()
+      {
+        this.map = localforage.createInstance({
+          name: "map"
+        });
+        this.map.iterate((value, key) => {
+          this.buildStickers(key, value.src, value.x, value.y);
+        });
+      }
+    ,
+      buildHandleSVG(parent, path, i)
+      {
+
+        const sticker = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "image"
+        );
+        sticker.setAttributeNS(null, "height", "48");
+        sticker.setAttributeNS(null, "width", "48");
+        sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", path);
+        sticker.setAttributeNS(null, "x", "0");
+        sticker.setAttributeNS(null, "y", 64 * i);
+        sticker.setAttributeNS(null, "visibility", "visible");
+        sticker.classList.add("sticker");
+        sticker.dataset.type = `sticker-${i}`;
+        parent.appendChild(sticker);
+        this.cloneHandleSVG(parent, `sticker-${i}`);
+
+      }
+    ,
+      cloneHandleSVG(parent, type)
+      {
+        const source = document.querySelector(`[data-type="${type}"]`);
+        const clone = source.cloneNode(true);
+        parent.appendChild(clone);
+        this.createDraggable(clone);
+      }
+    ,
+      createDraggable(element)
+      {
+        Draggable.create(element, {
+          bounds: document.querySelector(".canvas-wrapper"),
+          edgeResistance: 1,
+          onDragStart: () => {
+            if (!element.getAttributeNS(null, "id")) {
+              element.setAttributeNS(null, "id", `sticker-${this.stickerCounter}`);
+              element.setAttributeNS(null, "draggable", "false");
+              this.stickerCounter++;
+            }
+            if (!element.classList.contains("dragged")) {
+              this.cloneHandleSVG(
+                  document.querySelector(".stickers"),
+                  element.dataset.type
+              );
+              element.classList.add("dragged");
+            }
+          },
+          onPress: () => {
+            gsap.to(element, {
+              scale: 1.25 * this.stickerScale,
+            })
+          },
+          onRelease: () => {
+            gsap.to(element, {
+              scale: 1,
+            })
+          },
+          onDragEnd: () => {
+            // Ensure this.map is initialized before calling setItem
+            if (this.map) {
+              this.map.setItem(element.getAttributeNS(null, "id"), {
+                src: element.getAttributeNS("http://www.w3.org/1999/xlink", "href"),
+                x: element.getBoundingClientRect().x,
+                y: element.getBoundingClientRect().y,
+              });
+            }
+          }
+        });
+      }
+    ,
+      build(wrapper, id, src, x, y)
+      {
+        const sticker = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "image"
+        );
+        sticker.setAttributeNS(null, "id", id);
+        sticker.setAttributeNS(null, "height", "32");
+        sticker.setAttributeNS(null, "width", "32");
+        sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", src);
+        sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(1.05)`);
+        sticker.setAttributeNS(null, "visibility", "visible");
+        sticker.classList.add("sticker");
+        this.createDraggable(sticker);
+        wrapper.appendChild(sticker);
+      }
+    ,
+      buildStickers()
+      {
+        const parent = document.querySelector(".stickers");
+        for (let i = 0; i < this.icons.length; i++) {
+          this.buildHandleSVG(parent, this.icons[i], i);
+        }
+      }
+    },
+  };
 
 </script>
