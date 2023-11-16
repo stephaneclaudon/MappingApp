@@ -22,7 +22,7 @@
       <swiper-slide v-for="(slide, index) in slides" :key="index" style="padding: 2.5rem">
         <!-- <router-link :to="route+slide.video"> -->
           <a @click="goToVideo(route+slide.video, index)">
-            <img :src="slide.image"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 30px 2px'}`}"/>
+            <img :src="slide.image"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"/>
           </a>
         <!-- </router-link> -->
       </swiper-slide>   
@@ -37,7 +37,7 @@
 
     <div class="slider-shadow-v2" :style="{ backgroundColor: `color-mix(in srgb, ${slides[currentIndex].mainColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
 
-    <div style="position: absolute; bottom: 7rem; text-align: center;">
+    <div class="text" style="position: absolute; bottom: 7rem; text-align: center;">
       <h1 style="font-size: 4.5rem;">{{ slides[currentIndex].title }}</h1>
       <p style="font-size: 1.5rem;">{{ slides[currentIndex].author }}</p>
     </div>
@@ -113,17 +113,24 @@
 
       const zoom = (index) => {
         const swiperEl = document.getElementById(`transition-img-${index}`)
-        console.log(swiperEl)
         const swiperContainer = document.querySelector('.transition-img')
+        const platform = document.querySelector('.platform')
+        const shadow1 = document.querySelector('.slider-shadow')
+        const shadow2 = document.querySelector('.slider-shadow-v2')
+        const text = document.querySelector('.text')
+
         swiperContainer.style.zIndex = 1
         swiperContainer.style.opacity = 1
 
+        platform.style.transform = 'translateY(25rem)'
+        shadow1.style.transform = 'translateY(25rem)'
+        shadow2.style.transform = 'translateY(25rem)'
+        
+        text.style.opacity = '0'
+
         const windowHeight = window.outerHeight;
         const imageHeight = swiperEl.height;
-
-
         const scaleRatio = windowHeight / (imageHeight);
-
         swiperEl.style.transform = `scale(${scaleRatio})`
       }
 
@@ -163,7 +170,7 @@ html, body {
   justify-content: center;
   align-items: center;
   background-position: center center;
-  transition: 0.7s;
+  transition: 1s;
 }
 .swiper {
   width: 100%;
@@ -200,13 +207,22 @@ html, body {
   width: 170vw;
   height: 370px;
   background-color: rgba(218, 239, 255, 1);
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 30px 4px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 30px 4px;
   position: absolute;
   bottom: 0;
   border-top-right-radius: 50%;
   border-top-left-radius: 50%;
-  transition: 0.7s;
+  transition: 1s;
 }
+.plateform-translate {
+  transform: translateY(25rem);
+  transition: 1s;
+}
+
+.text {
+  transition: 0.3s;
+}
+
 .slider-shadow{
   width: 100%;
   height: 80px;
@@ -219,7 +235,7 @@ html, body {
   background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
   transform-origin: bottom center;
   filter: blur(20px);
-  transition: 0.7s;
+  transition: 1s;
 }
 .slider-shadow-v2 {
   width: 100%;
@@ -232,7 +248,7 @@ html, body {
   background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
   transform-origin: bottom center;
   filter: blur(20px);
-  transition: 0.7s;
+  transition: 1s;
 }
 
 .transition-img {
