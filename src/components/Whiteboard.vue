@@ -80,11 +80,11 @@ export default {
       evCache: [],
       prevDiff: -1,
       rotationAngle: 0,
-      pinchScale: 0,
+      pinchScale:0,
       pinchStartAngle: 0,
       alreadyDone: false,
       currentRotationAngle: 0,
-      currentScale: 0,
+      currentScale: 1,
     };
   },
   async mounted() {
@@ -542,7 +542,7 @@ export default {
               e.touches[0].clientX - e.touches[1].clientX,
               e.touches[0].clientY - e.touches[1].clientY
           );
-          this.pinchScale = pinchEndDistance / this.pinchStartDistance +  this.currentScale;
+          this.pinchScale = pinchEndDistance / this.pinchStartDistance + + this.currentScale;
 
           // Update the scale of the dragged sticker
           const dragged = document.getElementsByClassName("dragged")[0];
@@ -551,8 +551,8 @@ export default {
             // Enforce minimum and maximum dimensions
 
             gsap.to(dragged, {
-              width: dragged.width.baseVal.value * this.pinchScale,
-              height: dragged.height.baseVal.value * this.pinchScale,
+              width: dragged.width.baseVal.value * (this.pinchScale/this.currentScale),
+              height: dragged.height.baseVal.value * (this.pinchScale/this.currentScale),
             });
           }
         }
