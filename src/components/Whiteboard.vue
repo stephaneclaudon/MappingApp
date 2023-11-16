@@ -579,6 +579,8 @@ export default {
           console.log("curAngle ", curAngle)
           // Update the scale and rotation of the dragged sticker
           const dragged = document.getElementsByClassName('dragged')[0];
+          console.log("dragged.style.rotation ",dragged.style.rotation)
+
           if (dragged) {
             gsap.to(dragged, {
               rotation: dragged.style.rotation + this.rotationAngle,
