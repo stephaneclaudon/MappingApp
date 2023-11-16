@@ -443,19 +443,16 @@ export default {
       if (this.deviceType === 'desktop') {
         this.draw(e);
         if (e.touches) {
-          if (!this.alreadyDone) {
-            if (e.touches.length === 2) {
-              this.pinchStartDistance = Math.hypot(
-                  e.touches[0].clientX - e.touches[1].clientX,
-                  e.touches[0].clientY - e.touches[1].clientY
-              );
-              this.pinchStartAngle = Math.atan2(
-                      e.touches[1].clientY - e.touches[0].clientY,
-                      e.touches[1].clientX - e.touches[0].clientX
-                  ) *
-                  (180 / Math.PI);
-              this.alreadyDone = true
-            }
+          if (e.touches.length === 2) {
+            this.pinchStartDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            this.pinchStartAngle = Math.atan2(
+                    e.touches[1].clientY - e.touches[0].clientY,
+                    e.touches[1].clientX - e.touches[0].clientX
+                ) *
+                (180 / Math.PI);
           }
           this.mobileDraw(e.touches)
         } else {
@@ -565,18 +562,7 @@ export default {
     stickersRotate(e) {
       if (e.touches) {
         if (e.touches.length === 2) {
-          var curAngle =
-              Math.atan2(
-                  e.touches[1].clientY - e.touches[0].clientY,
-                  e.touches[1].clientX - e.touches[0].clientX
-              ) *
-              (180 / Math.PI);
 
-          // Update the rotation angle
-          this.rotationAngle = curAngle - this.pinchStartAngle;
-          console.log("this.pinchStartAngle ", this.pinchStartAngle)
-          console.log("this.rotationAngle ", this.rotationAngle)
-          console.log("curAngle ", curAngle)
           // Update the scale and rotation of the dragged sticker
           const dragged = document.getElementsByClassName('dragged')[0];
           var el = dragged
@@ -600,16 +586,30 @@ export default {
           var c = values[2];
           var d = values[3];
 
-          var scale = Math.sqrt(a*a + b*b);
+          var scale = Math.sqrt(a * a + b * b);
 
           console.log('Scale: ' + scale);
 
 // arc sin, convert from radians to degrees, round
-          var sin = b/scale;
+          var sin = b / scale;
 // next line works for 30deg but not 130deg (returns 50);
 // var angle = Math.round(Math.asin(sin) * (180/Math.PI));
-          var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
-
+          var angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
+          if (curAngle==0) {
+            var curAngle =
+                Math.atan2(
+                    e.touches[1].clientY - e.touches[0].clientY,
+                    e.touches[1].clientX - e.touches[0].clientX
+                ) *
+                (180 / Math.PI);
+          } else {
+            curAngle = angle
+          }
+          // Update the rotation angle
+          this.rotationAngle = curAngle - this.pinchStartAngle;
+          console.log("this.pinchStartAngle ", this.pinchStartAngle)
+          console.log("this.rotationAngle ", this.rotationAngle)
+          console.log("curAngle ", curAngle)
           console.log('Rotate: ' + angle + 'deg');
           if (dragged) {
             gsap.to(dragged, {
@@ -619,7 +619,7 @@ export default {
           }
         }
         if (e.touches.length === 1) {
-          curAngle=0
+          curAngle = 0
         }
       }
     },
