@@ -619,8 +619,8 @@ export default {
       if (e.touches.length === 2) {
         var curAngle =
             Math.atan2(
-                this.evCache[1].clientY - this.evCache[0].clientY,
-                this.evCache[1].clientX - this.evCache[0].clientX
+                e.touches[1].clientY - e.touches[0].clientY,
+                e.touches[1].clientX - e.touches[0].clientX
             ) *
             (180 / Math.PI);
 
