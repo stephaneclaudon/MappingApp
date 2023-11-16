@@ -459,23 +459,26 @@ export default {
         const dragged = document.querySelector(".dragged");
         if (dragged) {
           const clampedScale = Math.min(Math.max(pinchScale, 0.5), 5);
-
+          console.log("pinchScale ",pinchScale)
+          console.log("clampedScale ",clampedScale)
           gsap.to(dragged, { scale: pinchScale });
         }
 
         // Update the start distance for the next pinch event
         this.pinchStartDistance = pinchEndDistance;
-      } else if (e.touches.length === 1) {
-        // Handle single touch (drag) logic here
-        // You may want to adjust the existing mobileDraw logic
-        // for dragging the sticker with one finger
-
-        // Reset the scale of the dragged sticker to 1
-        const dragged = document.querySelector(".dragged");
-        if (dragged) {
-          gsap.set(dragged, { scale: 1 });
-        }
       }
+      // else if (e.touches.length === 1) {
+      //   // Handle single touch (drag) logic here
+      //   // You may want to adjust the existing mobileDraw logic
+      //   // for dragging the sticker with one finger
+      //
+      //   // Reset the scale of the dragged sticker to 1
+      //   const dragged = document.querySelector(".dragged");
+      //   if (dragged) {
+      //     gsap.to(dragged, { scale: 1 });
+      //
+      //   }
+      // }
     },
     initializeMap() {
       this.map = localforage.createInstance({
