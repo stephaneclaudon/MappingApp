@@ -61,7 +61,7 @@
       "#FCB435"
     ],
     "brushSizes": {
-      "min": 1,
+      "min": 4,
       "default": 20,
       "max": 48
     },
