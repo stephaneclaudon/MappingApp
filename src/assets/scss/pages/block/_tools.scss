@@ -33,6 +33,15 @@
     background-color: grey;
   }
 
+  .brush-preview-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+  }
+
   .brush-size-container {
     height: 54px;
     display: flex;

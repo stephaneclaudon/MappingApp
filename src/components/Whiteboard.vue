@@ -6,7 +6,8 @@
       <input v-model="isStickersOn" checked type="checkbox" id="switch" @click="updateToolsState(isStickersOn)"/>
       <label for="switch"></label>
 
-      <div class="brush-size-container">
+      <p> Brush preview </p>
+      <div class="size-boxes-container brush-preview-container">
         <div class="brush-preview" :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
       </div>
 
