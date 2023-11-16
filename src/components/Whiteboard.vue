@@ -598,8 +598,6 @@ export default {
           gsap.to(dragged, {
             width: dragged.width.baseVal.value * pinchScale,
             height: dragged.height.baseVal.value * pinchScale,
-            x: dragged.x.baseVal.value + dragged.width.animVal.value,
-            y: dragged.height.baseVal.value + dragged.height.animVal.value
           });
 
           // console.log("pinchScale ", pinchScale)
