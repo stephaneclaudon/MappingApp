@@ -2,8 +2,9 @@
   <div class="slideshow-container">
     <img :src="slides[currentIndex].bgImg">
 
-    <!-- <swiper-container
+    <swiper-container
       :effect="'coverflow'"
+      :direction="'vertical'"
       :grabCursor="true"
       :centeredSlides="true"
       :slidesPerView="1"
@@ -22,10 +23,10 @@
     >
       <swiper-slide v-for="(slide, index) in slides" :key="index" style="padding: 2.5rem">
           <a @click="goToVideo(route+slide.video, index)">
-            <img :src="slide.image"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"/>
+            <img :src="slide.bgImg"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"/>
           </a>
       </swiper-slide>   
-    </swiper-container> -->
+    </swiper-container>
 
     <div class="platform" :style="{ backgroundColor: `${slides[currentIndex].mainColor}`}">
     </div>
@@ -45,7 +46,6 @@
         :id="`transition-img-${currentIndex}`"
         style="width: 420px; z-index: 0"
         :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"
-        @click="goToVideo(route+slides[0].video, 0)"
       />
     </div>
   </div>
@@ -99,7 +99,7 @@
       }
 
       const pushRouter = (path) => {
-        // router.push(path)
+        router.push(path)
       }
 
       const runTransition = (index) => {
@@ -112,7 +112,7 @@
         const swiperContainer = document.getElementsByClassName('mySwiper');
         
         // make the swipper disapear
-        // swiperContainer[0].style.opacity = 0
+        swiperContainer[0].style.opacity = 0
 
         // make the transition image appear 
         transitionImg.style.zIndex = 1
@@ -143,9 +143,9 @@
         console.log("helo")
         runTransition(index)
 
-        // setTimeout(() => {
-        //   pushRouter(path)
-        // }, 1700);
+        setTimeout(() => {
+          pushRouter(path)
+        }, 1700);
       }
 
       return {
@@ -162,9 +162,10 @@
 .swiper-slide {
   background-position: center;
   background-size: fill;
-  width: 300px;
-  height: 500px;
+  width: 65vw;
+  height: 100px;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
 }
