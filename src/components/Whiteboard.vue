@@ -187,12 +187,12 @@ export default {
       if (this.prevDiff > 0) {
         if (curDiff > this.prevDiff) {
           // The distance between the two pointers has increased
-          console.log("Pinch moving OUT -> Zoom in")
+          console.log(ev)
           ev.target.style.background = "pink";
         }
         if (curDiff < this.prevDiff) {
           // The distance between the two pointers has decreased
-          console.log("Pinch moving IN -> Zoom out")
+          console.log(ev)
           ev.target.style.background = "lightblue";
         }
       }
@@ -623,12 +623,12 @@ export default {
         },
         onPress: () => {
           gsap.to(element, {
-            scale: 1.25,
+            scale: 2.25,
           })
         },
         onRelease: () => {
           gsap.to(element, {
-            scale: 1,
+            scale: 2,
           })
         },
         onDragEnd: () => {
@@ -656,7 +656,7 @@ export default {
       sticker.setAttributeNS(null, "height", "32");
       sticker.setAttributeNS(null, "width", "32");
       sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", src);
-      sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(1.05)`);
+      sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(2.05)`);
       sticker.setAttributeNS(null, "visibility", "visible");
       sticker.classList.add("sticker");
       this.updateListeners(sticker);
