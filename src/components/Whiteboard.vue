@@ -595,7 +595,7 @@ export default {
 // next line works for 30deg but not 130deg (returns 50);
 // var angle = Math.round(Math.asin(sin) * (180/Math.PI));
           var angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
-          if (curAngle==0) {
+          if (!curAngle) {
             var curAngle =
                 Math.atan2(
                     e.touches[1].clientY - e.touches[0].clientY,
