@@ -5,6 +5,10 @@ h1,h2,h3,h4,h5,h6{
     color: $color_font;
 }
 
+p {
+    font-family: $ff_1;
+}
+
 h1 {
     font-size:  70px;
     line-height: 75px;

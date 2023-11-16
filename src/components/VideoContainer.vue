@@ -1,7 +1,7 @@
 <template>
     <div class="videoContainer">
         <router-link to="/slideshow">
-            <video autoplay loop>
+            <video autoplay loop class="video-player">
                 <source :src="'/' + $route.fullPath.split('/')[2] + '.mp4'" type="video/mp4">
             </video>
         </router-link>
@@ -12,6 +12,12 @@
 .videoContainer{
     display: flex;
     align-items: center;
+    height: 100vh;
+    position: relative;
+}
+.video-player {
+    width: 100vw;
+    height: 100vh;
 }
 
 .returnButton{

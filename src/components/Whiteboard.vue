@@ -35,7 +35,7 @@
       <div class="stickers-container">
         <svg class="stickers" style=""></svg>
       </div>
-      <canvas class="canvas" ref="canvas"></canvas>
+      <canvas class="canvas" ref="canvas" id="canvas"></canvas>
     </div>
   </div>
   <a id="download"></a>
@@ -74,7 +74,12 @@ export default {
       brushSizes: brushSizes,
       rangeValue: brushSizes.default,
       brushColor: config.canvas.colors[0],
+      pinchStartDistance: 0,
       isEraserSelected: false,
+      evCache: [],
+      prevDiff: -1,
+      rotationAngle: 0,
+      pinchStartAngle: 0,
     };
   },
   async mounted() {
@@ -95,7 +100,7 @@ export default {
 
     this.setDeviceType()
     this.setupEventListeners()
-
+    // this.init()
 
     this.initializeMap();
     this.buildStickers();
@@ -129,7 +134,103 @@ export default {
     this.updatePrevCanvas();
   },
   methods: {
+    init() {
+      var el = document.getElementById("canvas");
+      el.onpointerdown = this.pointerdown_handler;
+      el.onpointermove = this.pointermove_handler;
 
+      // Use same handler for pointer{up,cancel,out,leave} events since
+      // the semantics for these events - in this app - are the same.
+      el.onpointerup = this.pointerup_handler;
+      el.onpointercancel = this.pointerup_handler;
+      el.onpointerout = this.pointerup_handler;
+      el.onpointerleave = this.pointerup_handler;
+    },
+    updateListeners(el) {
+      // Install event handlers for the pointer target
+      // var el = document.getElementById("canvas");
+      el.onpointerdown = this.pointerdown_handler;
+      el.onpointermove = this.pointermove_handler;
+
+      // Use same handler for pointer{up,cancel,out,leave} events since
+      // the semantics for these events - in this app - are the same.
+      el.onpointerup = this.pointerup_handler;
+      el.onpointercancel = this.pointerup_handler;
+      el.onpointerout = this.pointerup_handler;
+      el.onpointerleave = this.pointerup_handler;
+    },
+    pointermove_handler(ev) {
+      // console.log("moved on", ev.target)
+
+      // This function implements a 2-pointer horizontal pinch/zoom gesture.
+      //
+      // If the distance between the two pointers has increased (zoom in),
+      // the taget element's background is changed to "pink" and if the
+      // distance is decreasing (zoom out), the color is changed to "lightblue".
+      //
+      // This function sets the target element's border to "dashed" to visually
+      // indicate the pointer's target received a move event.
+      ev.target.style.border = "dashed";
+
+      // Find this event in the cache and update its record with this event
+      for (var i = 0; i < this.evCache.length; i++) {
+        if (ev.pointerId == this.evCache[i].pointerId) {
+          this.evCache[i] = ev;
+          break;
+        }
+      }
+
+      // If two pointers are down, check for pinch gestures
+      if (this.evCache.length == 2) {
+        // Calculate the distance between the two pointers
+        var curDiff = Math.sqrt(Math.pow(this.evCache[1].clientX - this.evCache[0].clientX, 2) + Math.pow(this.evCache[1].clientY - this.evCache[0].clientY, 2));
+        console.log("difference : ", curDiff);
+        if (this.prevDiff > 0) {
+          if (curDiff > this.prevDiff) {
+            // The distance between the two pointers has increased
+            // console.log(ev)
+            ev.target.style.height = ev.target.style.height * curDiff / 100;
+            ev.target.style.width = ev.target.style.height * curDiff / 100;
+            console.log(ev.target, ev.target.style.height, ev.target.style.width);
+            // ev.target.style.scale = curDiff/100;
+          }
+          if (curDiff < this.prevDiff) {
+            // The distance between the two pointers has decreased
+            // console.log(ev)
+            ev.target.style.height = ev.target.style.height * curDiff / 100;
+            ev.target.style.width = ev.target.style.height * curDiff / 100;
+            console.log(ev.target, ev.target.style.height, ev.target.style.width);
+          }
+        }
+
+        // Cache the distance for the next move event
+        this.prevDiff = curDiff;
+      }
+    },
+    pointerup_handler(ev) {
+      // Remove this pointer from the cache and reset the target's
+      // background and border
+      this.remove_event(ev);
+      ev.target.style.background = "white";
+      ev.target.style.border = "1px solid black";
+
+      // If the number of pointers down is less than two then reset diff tracker
+      if (this.evCache.length < 2) this.prevDiff = -1;
+    },
+    remove_event(ev) {
+      // Remove this event from the target's cache
+      for (var i = 0; i < this.evCache.length; i++) {
+        if (this.evCache[i].pointerId == ev.pointerId) {
+          this.evCache.splice(i, 1);
+          break;
+        }
+      }
+    },
+    pointerdown_handler(ev) {
+      // The pointerdown event signals the start of a touch interaction.
+      // This event is cached to support 2-finger gestures
+      this.evCache.push(ev);
+    },
     enableEraser() {
       this.isEraserSelected = true;
     },
@@ -216,7 +317,7 @@ export default {
 
       // Utilisez le canvas des différences comme nécessaire
       // Par exemple, vous pouvez afficher le canvas des différences dans une image
-      console.log(this.diffCanvas.toDataURL());
+      // console.log(this.diffCanvas.toDataURL());
     },
 
     downloadImage(imageName) {
@@ -340,11 +441,12 @@ export default {
         this.canvas.addEventListener("touchmove", this.mobileDraw)
       } else if (this.deviceType === 'mobile') {
         // For mobile touch
-        // this.canvas.addEventListener("touchstart", this.startPainting)
+        this.canvas.addEventListener("touchstart", this.startPainting)
         this.canvas.addEventListener("touchend", this.finishedPainting)
-        // this.canvas.addEventListener("touchmove", this.mobileDraw)
+        this.canvas.addEventListener("touchmove", this.mobileDraw)
       }
     },
+
     changeColor(color) {
       if (this.isEraserSelected) {
         // Switch back to default drawing mode
@@ -374,7 +476,7 @@ export default {
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height)
       this.diffTwoLastCtx.clearRect(0, 0, this.diffTwoLastCanvas.width, this.diffTwoLastCanvas.height)
 
-      let dragged = document.getElementsByClassName('dragged')
+      let dragged = document.getElementsByClassName('alreadyDragged')
       for (let i = dragged.length; i > 0; i = dragged.length) {
         dragged[0].remove()
       }
@@ -382,10 +484,29 @@ export default {
 
     },
     startPainting(e) {
+
       this.painting = true
       if (this.deviceType === 'desktop') {
         this.draw(e);
+        if (e.touches) {
+          if (e.touches.length === 2) {
+            this.pinchStartDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            this.pinchStartAngle = Math.atan2(
+                    e.touches[1].clientY - e.touches[0].clientY,
+                    e.touches[1].clientX - e.touches[0].clientX
+                ) *
+                (180 / Math.PI);
+          }
+          this.mobileDraw(e.touches)
+        } else {
+          this.mobileDraw(e)
+        }
+
       } else if (this.deviceType === 'mobile') {
+
         this.mobileDraw(e)
       }
       e.preventDefault()
@@ -434,17 +555,87 @@ export default {
       }, 1000);
     },
     mobileDraw(e) {
-      if (this.isEraserSelected) {
-        this.erase(e.touches[0]);
-      }
-      if (!this.painting) return
-      this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      this.ctx.stroke()
+      if (!document.querySelector(".dragged")) {
 
-      this.ctx.beginPath()
-      this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      if (!this.isEraserSelected) {
-        this.resetDrawingTimer();
+        if (this.isEraserSelected) {
+          this.erase(e);
+        }
+        if (!this.painting) return
+        this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+        this.ctx.stroke()
+
+        this.ctx.beginPath()
+        this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+        if (!this.isEraserSelected) {
+          this.resetDrawingTimer();
+        }
+      } else {
+        this.stickersResizer(e)
+        this.stickersRotate(e)
+      }
+    },
+
+    stickersResizer(e) {
+
+      if (e.touches.length === 2) {
+
+        const pinchEndDistance = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+        );
+
+        const pinchScale = pinchEndDistance / this.pinchStartDistance;
+
+        // Update the scale of the dragged sticker
+        const dragged = document.getElementsByClassName("dragged")[0];
+        if (dragged) {
+          const currentScale = parseFloat(dragged.style.transform.replace("scale(", "").replace(")", ""));
+          const newScale = currentScale * pinchScale;
+
+          // Enforce minimum and maximum dimensions
+          const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
+
+          gsap.to(dragged, {
+            width: dragged.width.baseVal.value * pinchScale,
+            height: dragged.height.baseVal.value * pinchScale,
+          });
+
+          // console.log("pinchScale ", pinchScale)
+          // console.log("pinchStartDistance ", this.pinchStartDistance)
+          // console.log("pinchEndDistance ", pinchEndDistance)
+          console.log("dragged ", dragged)
+          console.log("dragged style.width ", dragged.style.width)
+          console.log("dragged clientWidth ", dragged.clientWidth)
+          console.log("dragged scrollWidth ", dragged.scrollWidth)
+        }
+
+        // Update the start distance for the next pinch event
+        // this.pinchStartDistance = pinchEndDistance;
+      }
+    },
+
+
+    stickersRotate(e) {
+      if (e.touches.length === 2) {
+        var curAngle =
+            Math.atan2(
+                this.evCache[1].clientY - this.evCache[0].clientY,
+                this.evCache[1].clientX - this.evCache[0].clientX
+            ) *
+            (180 / Math.PI);
+
+        // Update the rotation angle
+        this.rotationAngle = curAngle - this.pinchStartAngle;
+        this.rotationAngle = this.rotationAngle % 360;
+
+        // Update the scale and rotation of the dragged sticker
+        const dragged = document.getElementsByClassName('dragged')[0];
+        if (dragged) {
+          gsap.to(dragged, {
+            rotation: this.rotationAngle,
+            transformOrigin: '50% 50%',
+          });
+        }
       }
     },
     initializeMap() {
@@ -454,9 +645,9 @@ export default {
       this.map.iterate((value, key) => {
         this.buildStickers(key, value.src, value.x, value.y);
       });
-    },
+    }
+    ,
     buildHandleSVG(parent, path, i) {
-
       const sticker = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "image"
@@ -472,16 +663,23 @@ export default {
       parent.appendChild(sticker);
       this.cloneHandleSVG(parent, `sticker-${i}`);
 
-    },
+    }
+    ,
     cloneHandleSVG(parent, type) {
       const source = document.querySelector(`[data-type="${type}"]`);
       const clone = source.cloneNode(true);
       parent.appendChild(clone);
       this.createDraggable(clone);
-    },
+    }
+    ,
     createDraggable(element) {
+      let canvasWrapper = document.querySelector(".canvas-wrapper")
+
+      const rect = canvasWrapper.getBoundingClientRect();
+
       Draggable.create(element, {
-        bounds: document.querySelector(".canvas-wrapper"),
+        bounds: canvasWrapper,
+        // {minY:yBoundMin,maxY:0}
         edgeResistance: 1,
         onDragStart: () => {
           if (!element.getAttributeNS(null, "id")) {
@@ -496,19 +694,10 @@ export default {
             );
             element.classList.add("dragged");
           }
+          this.canvas.addEventListener("gesturechange", this.handleGestureChange);
+
         },
-        onPress: () => {
-          gsap.to(element, {
-            scale: 1.25,
-          })
-        },
-        onRelease: () => {
-          gsap.to(element, {
-            scale: 1,
-          })
-        },
-        onDragEnd: () => {
-          // Ensure this.map is initialized before calling setItem
+        onMove: () => {
           if (this.map) {
             this.map.setItem(element.getAttributeNS(null, "id"), {
               src: element.getAttributeNS("http://www.w3.org/1999/xlink", "href"),
@@ -516,10 +705,34 @@ export default {
               y: element.getBoundingClientRect().y,
             });
           }
+        },
+        onPress: () => {
+          console.log(document.getElementsByClassName("dragged")[0])
+        },
+        onRelease: () => {
+        },
+        onDragEnd: () => {
+          // Ensure this.map is initialized before calling setItem
+          if (this.map) {
+            this.updateListeners(element);
+            this.map.setItem(element.getAttributeNS(null, "id"), {
+              src: element.getAttributeNS("http://www.w3.org/1999/xlink", "href"),
+              x: element.getBoundingClientRect().x,
+              y: element.getBoundingClientRect().y,
+            });
+            if (element.classList.contains("dragged")) {
+              element.classList.remove("dragged");
+              element.classList.add("alreadyDragged");
+            }
+          }
+          this.canvas.removeEventListener("gesturechange", this.handleGestureChange);
+
         }
       });
-    },
+    }
+    ,
     build(wrapper, id, src, x, y) {
+      console.log("build");
       const sticker = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "image"
@@ -528,19 +741,23 @@ export default {
       sticker.setAttributeNS(null, "height", "32");
       sticker.setAttributeNS(null, "width", "32");
       sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", src);
-      sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(1.05)`);
+      sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(2.05)`);
       sticker.setAttributeNS(null, "visibility", "visible");
       sticker.classList.add("sticker");
+      this.updateListeners(sticker);
       this.createDraggable(sticker);
       wrapper.appendChild(sticker);
-    },
+    }
+    ,
     buildStickers() {
       const parent = document.querySelector(".stickers");
       for (let i = 0; i < this.icons.length; i++) {
         this.buildHandleSVG(parent, this.icons[i], i);
       }
     }
-  },
-};
+  }
+  ,
+}
+;
 
 </script>

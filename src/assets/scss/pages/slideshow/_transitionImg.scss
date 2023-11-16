@@ -1,0 +1,14 @@
+.transition-img {
+  width: 100vw;
+  height: 420px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.transition-img img {
+  width: auto;
+  border-radius: 1rem;
+  transition: 1.5s;
+}
