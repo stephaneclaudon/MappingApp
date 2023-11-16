@@ -387,13 +387,16 @@ export default {
       this.painting = true
       if (this.deviceType === 'desktop') {
         this.draw(e);
-      } else if (this.deviceType === 'mobile') {
         if (e.touches.length === 2) {
           this.pinchStartDistance = Math.hypot(
               e.touches[0].clientX - e.touches[1].clientX,
               e.touches[0].clientY - e.touches[1].clientY
           );
         }
+        this.mobileDraw(e)
+
+      } else if (this.deviceType === 'mobile') {
+
         this.mobileDraw(e)
       }
       e.preventDefault()
