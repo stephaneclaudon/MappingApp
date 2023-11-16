@@ -8,7 +8,8 @@
 
       <p> Brush preview </p>
       <div class="size-boxes-container brush-preview-container">
-        <div class="brush-preview" :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
+        <div class="brush-preview"
+             :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
       </div>
 
       <div class="size-boxes-container slide-range-container">
@@ -528,57 +529,57 @@ export default {
     },
 
     stickersResizer(e) {
+      if (e.touches) {
+        if (e.touches.length === 2) {
 
-      if (e.touches.length === 2) {
+          const pinchEndDistance = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+          );
 
-        const pinchEndDistance = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-        );
+          const pinchScale = pinchEndDistance / this.pinchStartDistance;
 
-        const pinchScale = pinchEndDistance / this.pinchStartDistance;
+          // Update the scale of the dragged sticker
+          const dragged = document.getElementsByClassName("dragged")[0];
+          if (dragged) {
+            const currentScale = parseFloat(dragged.style.transform.replace("scale(", "").replace(")", ""));
+            const newScale = currentScale * pinchScale;
 
-        // Update the scale of the dragged sticker
-        const dragged = document.getElementsByClassName("dragged")[0];
-        if (dragged) {
-          const currentScale = parseFloat(dragged.style.transform.replace("scale(", "").replace(")", ""));
-          const newScale = currentScale * pinchScale;
+            // Enforce minimum and maximum dimensions
+            const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
 
-          // Enforce minimum and maximum dimensions
-          const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
-
-          gsap.to(dragged, {
-            width: dragged.width.baseVal.value * pinchScale,
-            height: dragged.height.baseVal.value * pinchScale,
-          });
+            gsap.to(dragged, {
+              width: dragged.width.baseVal.value * pinchScale,
+              height: dragged.height.baseVal.value * pinchScale,
+            });
+          }
         }
-
-        // Update the start distance for the next pinch event
-        // this.pinchStartDistance = pinchEndDistance;
       }
     },
 
 
     stickersRotate(e) {
-      if (e.touches.length === 2) {
-        var curAngle =
-            Math.atan2(
-                e.touches[1].clientY - e.touches[0].clientY,
-                e.touches[1].clientX - e.touches[0].clientX
-            ) *
-            (180 / Math.PI);
+      if (e.touches) {
+        if (e.touches.length === 2) {
+          var curAngle =
+              Math.atan2(
+                  e.touches[1].clientY - e.touches[0].clientY,
+                  e.touches[1].clientX - e.touches[0].clientX
+              ) *
+              (180 / Math.PI);
 
-        // Update the rotation angle
-        this.rotationAngle = curAngle - this.pinchStartAngle;
-        this.rotationAngle = this.rotationAngle % 360;
+          // Update the rotation angle
+          this.rotationAngle = curAngle - this.pinchStartAngle;
+          this.rotationAngle = this.rotationAngle % 360;
 
-        // Update the scale and rotation of the dragged sticker
-        const dragged = document.getElementsByClassName('dragged')[0];
-        if (dragged) {
-          gsap.to(dragged, {
-            rotation: this.rotationAngle,
-            transformOrigin: '50% 50%',
-          });
+          // Update the scale and rotation of the dragged sticker
+          const dragged = document.getElementsByClassName('dragged')[0];
+          if (dragged) {
+            gsap.to(dragged, {
+              rotation: this.rotationAngle,
+              transformOrigin: '50% 50%',
+            });
+          }
         }
       }
     },
