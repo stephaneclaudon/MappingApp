@@ -160,7 +160,7 @@ export default {
     el.onpointerleave = this.pointerup_handler;
     },
     pointermove_handler(ev) {
-      console.log("moved on", ev.target)
+      // console.log("moved on", ev.target)
       
     // This function implements a 2-pointer horizontal pinch/zoom gesture. 
     //
