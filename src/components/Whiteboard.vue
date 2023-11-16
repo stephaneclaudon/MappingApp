@@ -602,7 +602,7 @@ export default {
                 ) *
                 (180 / Math.PI);
           // Update the rotation angle
-          this.rotationAngle = curAngle;
+          this.rotationAngle = curAngle - this.pinchStartAngle;
           console.log("this.pinchStartAngle ", this.pinchStartAngle)
           console.log("this.rotationAngle ", this.rotationAngle)
           console.log("curAngle ", curAngle)
