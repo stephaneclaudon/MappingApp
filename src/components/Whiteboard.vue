@@ -99,8 +99,7 @@ export default {
 
     this.setDeviceType()
     this.setupEventListeners()
-    this.init()
-
+    // this.init()
 
     this.initializeMap();
     this.buildStickers();
@@ -134,9 +133,22 @@ export default {
     this.updatePrevCanvas();
   },
   methods: {
-    init() {
+    init(){
+      var el = document.getElementById("canvas");
+      el.onpointerdown = this.pointerdown_handler;
+      el.onpointermove = this.pointermove_handler;
+
+      // Use same handler for pointer{up,cancel,out,leave} events since
+      // the semantics for these events - in this app - are the same.
+      el.onpointerup = this.pointerup_handler;
+      el.onpointercancel = this.pointerup_handler;
+      el.onpointerout = this.pointerup_handler;
+      el.onpointerleave = this.pointerup_handler;
+    },
+    updateListeners(el) {
+    console.log('init', el)
     // Install event handlers for the pointer target
-    var el = document.getElementById("canvas");
+    // var el = document.getElementById("canvas");
     el.onpointerdown = this.pointerdown_handler;
     el.onpointermove = this.pointermove_handler;
 
@@ -148,6 +160,7 @@ export default {
     el.onpointerleave = this.pointerup_handler;
     },
     pointermove_handler(ev) {
+      console.log("moved on", ev.target)
       
     // This function implements a 2-pointer horizontal pinch/zoom gesture. 
     //
@@ -567,7 +580,6 @@ export default {
       });
     },
     buildHandleSVG(parent, path, i) {
-
       const sticker = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "image"
@@ -621,8 +633,10 @@ export default {
           })
         },
         onDragEnd: () => {
+          console.log("onDragEnd")
           // Ensure this.map is initialized before calling setItem
           if (this.map) {
+            this.updateListeners(element);
             this.map.setItem(element.getAttributeNS(null, "id"), {
               src: element.getAttributeNS("http://www.w3.org/1999/xlink", "href"),
               x: element.getBoundingClientRect().x,
@@ -635,6 +649,7 @@ export default {
       });
     },
     build(wrapper, id, src, x, y) {
+      console.log("build");
       const sticker = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "image"
@@ -646,6 +661,7 @@ export default {
       sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(1.05)`);
       sticker.setAttributeNS(null, "visibility", "visible");
       sticker.classList.add("sticker");
+      this.updateListeners(sticker);
       this.createDraggable(sticker);
       wrapper.appendChild(sticker);
     },
