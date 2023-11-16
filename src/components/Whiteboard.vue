@@ -476,7 +476,7 @@ export default {
         const pinchScale = pinchEndDistance / this.pinchStartDistance;
 
         // Update the scale of the dragged sticker
-        const dragged = document.querySelector(".dragged");
+        const dragged = document.getElementsByClassName("dragged")[0];
         if (dragged) {
           const currentScale = parseFloat(dragged.style.transform.replace("scale(", "").replace(")", ""));
           const newScale = currentScale * pinchScale;
