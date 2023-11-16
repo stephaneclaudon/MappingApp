@@ -458,14 +458,9 @@ export default {
         // Update the scale of the dragged sticker
         const dragged = document.querySelector(".dragged");
         if (dragged) {
-          const currentScale = parseFloat(dragged.style.transform.replace("scale(", "").replace(")", ""));
-          const newScale = currentScale * pinchScale;
+          const clampedScale = Math.min(Math.max(pinchScale, 0.5), 5);
 
-          // Enforce minimum and maximum dimensions
-          const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
-
-          gsap.to(dragged, {scale: clampedScale})
-
+          gsap.to(dragged, { scale: 5 });
         }
 
         // Update the start distance for the next pinch event
@@ -478,7 +473,7 @@ export default {
         // Reset the scale of the dragged sticker to 1
         const dragged = document.querySelector(".dragged");
         if (dragged) {
-          gsap.set(dragged, {scale: 1});
+          gsap.set(dragged, { scale: 1 });
         }
       }
     },
