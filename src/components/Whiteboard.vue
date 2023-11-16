@@ -573,6 +573,7 @@ export default {
           this.rotationAngle = this.rotationAngle % 360;
           console.log("this.pinchStartAngle ", this.pinchStartAngle)
           console.log("this.rotationAngle ", this.rotationAngle)
+          console.log("curAngle ", curAngle)
           // Update the scale and rotation of the dragged sticker
           const dragged = document.getElementsByClassName('dragged')[0];
           if (dragged) {
