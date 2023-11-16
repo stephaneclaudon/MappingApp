@@ -222,7 +222,7 @@ export default {
     downloadImage(imageName) {
       const link = document.getElementById('download');
       link.download = imageName;
-      link.click();
+      // link.click();
     },
     getFormattedTime() {
       const now = new Date();
