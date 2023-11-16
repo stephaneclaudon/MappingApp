@@ -548,6 +548,7 @@ export default {
           console.log("pinchEndDistance ", pinchEndDistance)
           console.log("this.pinchStartDistance ", this.pinchStartDistance)
           console.log("this.currentScale ", this.currentScale)
+          console.log("=================================")
 
 
           // Update the scale of the dragged sticker
@@ -557,8 +558,8 @@ export default {
             // Enforce minimum and maximum dimensions
 
             gsap.to(dragged, {
-              width: this.pinchScale,
-              height: this.pinchScale,
+              width: dragged.width.baseVal.value * this.pinchScale,
+              height: dragged.height.baseVal.value * this.pinchScale,
             });
           }
         }
