@@ -595,16 +595,12 @@ export default {
 // next line works for 30deg but not 130deg (returns 50);
 // var angle = Math.round(Math.asin(sin) * (180/Math.PI));
           var angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
-          if (!curAngle) {
             var curAngle =
                 Math.atan2(
                     e.touches[1].clientY - e.touches[0].clientY,
                     e.touches[1].clientX - e.touches[0].clientX
                 ) *
                 (180 / Math.PI);
-          } else {
-            curAngle = angle
-          }
           // Update the rotation angle
           this.rotationAngle = curAngle - this.pinchStartAngle;
           console.log("this.pinchStartAngle ", this.pinchStartAngle)
@@ -613,7 +609,7 @@ export default {
           console.log('Rotate: ' + angle + 'deg');
           if (dragged) {
             gsap.to(dragged, {
-              rotation: angle + this.rotationAngle,
+              rotation: this.rotationAngle,
               transformOrigin: '50% 50%',
             });
           }
