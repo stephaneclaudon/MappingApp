@@ -159,54 +159,7 @@ export default {
       el.onpointerout = this.pointerup_handler;
       el.onpointerleave = this.pointerup_handler;
     },
-    pointermove_handler(ev) {
-      // console.log("moved on", ev.target)
 
-      // This function implements a 2-pointer horizontal pinch/zoom gesture.
-      //
-      // If the distance between the two pointers has increased (zoom in),
-      // the taget element's background is changed to "pink" and if the
-      // distance is decreasing (zoom out), the color is changed to "lightblue".
-      //
-      // This function sets the target element's border to "dashed" to visually
-      // indicate the pointer's target received a move event.
-      ev.target.style.border = "dashed";
-
-      // Find this event in the cache and update its record with this event
-      for (var i = 0; i < this.evCache.length; i++) {
-        if (ev.pointerId == this.evCache[i].pointerId) {
-          this.evCache[i] = ev;
-          break;
-        }
-      }
-
-      // If two pointers are down, check for pinch gestures
-      if (this.evCache.length == 2) {
-        // Calculate the distance between the two pointers
-        var curDiff = Math.sqrt(Math.pow(this.evCache[1].clientX - this.evCache[0].clientX, 2) + Math.pow(this.evCache[1].clientY - this.evCache[0].clientY, 2));
-        console.log("difference : ", curDiff);
-        if (this.prevDiff > 0) {
-          if (curDiff > this.prevDiff) {
-            // The distance between the two pointers has increased
-            // console.log(ev)
-            ev.target.style.height = ev.target.style.height * curDiff / 100;
-            ev.target.style.width = ev.target.style.height * curDiff / 100;
-            console.log(ev.target, ev.target.style.height, ev.target.style.width);
-            // ev.target.style.scale = curDiff/100;
-          }
-          if (curDiff < this.prevDiff) {
-            // The distance between the two pointers has decreased
-            // console.log(ev)
-            ev.target.style.height = ev.target.style.height * curDiff / 100;
-            ev.target.style.width = ev.target.style.height * curDiff / 100;
-            console.log(ev.target, ev.target.style.height, ev.target.style.width);
-          }
-        }
-
-        // Cache the distance for the next move event
-        this.prevDiff = curDiff;
-      }
-    },
     pointerup_handler(ev) {
       // Remove this pointer from the cache and reset the target's
       // background and border
@@ -317,7 +270,6 @@ export default {
 
       // Utilisez le canvas des différences comme nécessaire
       // Par exemple, vous pouvez afficher le canvas des différences dans une image
-      // console.log(this.diffCanvas.toDataURL());
     },
 
     downloadImage(imageName) {
@@ -599,14 +551,6 @@ export default {
             width: dragged.width.baseVal.value * pinchScale,
             height: dragged.height.baseVal.value * pinchScale,
           });
-
-          // console.log("pinchScale ", pinchScale)
-          // console.log("pinchStartDistance ", this.pinchStartDistance)
-          // console.log("pinchEndDistance ", pinchEndDistance)
-          console.log("dragged ", dragged)
-          console.log("dragged style.width ", dragged.style.width)
-          console.log("dragged clientWidth ", dragged.clientWidth)
-          console.log("dragged scrollWidth ", dragged.scrollWidth)
         }
 
         // Update the start distance for the next pinch event
@@ -619,8 +563,8 @@ export default {
       if (e.touches.length === 2) {
         var curAngle =
             Math.atan2(
-                this.evCache[1].clientY - this.evCache[0].clientY,
-                this.evCache[1].clientX - this.evCache[0].clientX
+                e.touches[1].clientY - e.touches[0].clientY,
+                e.touches[1].clientX - e.touches[0].clientX
             ) *
             (180 / Math.PI);
 
@@ -707,7 +651,6 @@ export default {
           }
         },
         onPress: () => {
-          console.log(document.getElementsByClassName("dragged")[0])
         },
         onRelease: () => {
         },
@@ -732,7 +675,6 @@ export default {
     }
     ,
     build(wrapper, id, src, x, y) {
-      console.log("build");
       const sticker = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "image"
