@@ -188,12 +188,12 @@ export default {
         if (curDiff > this.prevDiff) {
           // The distance between the two pointers has increased
           // console.log(ev)
-          ev.target.style.background = "pink";
+          ev.target.style.scale = curDiff/100;
         }
         if (curDiff < this.prevDiff) {
           // The distance between the two pointers has decreased
           // console.log(ev)
-          ev.target.style.background = "lightblue";
+          ev.target.style.scale = curDiff/100;
         }
       }
 
