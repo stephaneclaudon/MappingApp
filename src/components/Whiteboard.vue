@@ -445,21 +445,24 @@ export default {
       }, 1000);
     },
     mobileDraw(e) {
+      if (!document.querySelector(".dragged")) {
 
-      if (this.isEraserSelected) {
-        this.erase(e.touches[0]);
-      }
-      if (!this.painting) return
-      this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      this.ctx.stroke()
+        if (this.isEraserSelected) {
+          this.erase(e.touches[0]);
+        }
+        if (!this.painting) return
+        this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+        this.ctx.stroke()
 
-      this.ctx.beginPath()
-      this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      if (!this.isEraserSelected) {
-        this.resetDrawingTimer();
+        this.ctx.beginPath()
+        this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+        if (!this.isEraserSelected) {
+          this.resetDrawingTimer();
+        }
+      } else {
+        this.stickersResizer(e)
       }
-      this.stickersResizer(e)
-    },
+      },
 
     stickersResizer(e) {
 
