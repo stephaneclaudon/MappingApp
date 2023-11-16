@@ -5,7 +5,6 @@
       :grabCursor="true"
       :centeredSlides="true"
       :slidesPerView="1"
-      :slidesPerView="1"
       :loop="true"
       :loopAdditionalSlides="2"
       :coverflowEffect="{
@@ -84,16 +83,6 @@
       const router = useRouter();
 
       const currentIndex = ref(0)
-
-      const goToVideo = (path) => {
-        const slide = document.getElementsByClassName('img'+currentIndex.value)[0];
-        // console.log(swiperEl[0].swiper)
-        for (let i=0; i<10; i++) {
-          slide.style.height += 10
-          // swiperEl[0].style.height += 10 
-          // console.log(swiperEl[0].swiper.height)
-        }
-      }
 
       const onSlideChange = () => {
         const swiperEl = document.getElementsByClassName('mySwiper');
