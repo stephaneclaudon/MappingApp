@@ -468,6 +468,7 @@ export default {
       e.stopPropagation()
     },
     finishedPainting() {
+      this.currentRotationAngle = this.rotationAngle
       this.painting = false
       this.ctx.beginPath()
       if (!this.isEraserSelected) {
@@ -569,7 +570,7 @@ export default {
             const curAngle = Math.atan2(
                 e.touches[1].clientY - e.touches[0].clientY,
                 e.touches[1].clientX - e.touches[0].clientX
-            ) * (180 / Math.PI);
+            ) * (360 / Math.PI);
 
             // Si l'angle de rotation actuel n'est pas encore défini, définissez-le
             if (this.pinchStartAngle === 0) {
