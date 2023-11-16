@@ -10,7 +10,7 @@
         "image": "/thumbnails/0.jpg",
         "video": "video0",
         "mainColor": "rgb(100, 100, 100)",
-        "bgImg": "/thumbnails/0.jpg",
+        "bgImg": "/thumbnails/0rotated.jpg",
         "title": "Slide 0",
         "author":  "Author 0"
       },

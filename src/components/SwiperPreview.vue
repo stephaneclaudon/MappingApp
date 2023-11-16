@@ -1,6 +1,8 @@
 <template>
-  <div class="slideshow-container" :style="{ backgroundImage: `${'url('+slides[currentIndex].bgImg+')'}`}">
-    <swiper-container
+  <div class="slideshow-container">
+    <img :src="slides[currentIndex].bgImg">
+
+    <!-- <swiper-container
       :effect="'coverflow'"
       :grabCursor="true"
       :centeredSlides="true"
@@ -23,7 +25,7 @@
             <img :src="slide.image"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"/>
           </a>
       </swiper-slide>   
-    </swiper-container>
+    </swiper-container> -->
 
     <div class="platform" :style="{ backgroundColor: `${slides[currentIndex].mainColor}`}">
     </div>
@@ -39,10 +41,11 @@
 
     <div class="transition-img" style="opacity: 0; z-index: 0;">
       <img 
-        :src="slides[currentIndex].image"
+        :src="slides[currentIndex].bgImg"
         :id="`transition-img-${currentIndex}`"
-        style="height: 420px; z-index: 0"
+        style="width: 420px; z-index: 0"
         :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"
+        @click="goToVideo(route+slides[0].video, 0)"
       />
     </div>
   </div>
@@ -96,7 +99,7 @@
       }
 
       const pushRouter = (path) => {
-        router.push(path)
+        // router.push(path)
       }
 
       const runTransition = (index) => {
@@ -109,7 +112,7 @@
         const swiperContainer = document.getElementsByClassName('mySwiper');
         
         // make the swipper disapear
-        swiperContainer[0].style.opacity = 0
+        // swiperContainer[0].style.opacity = 0
 
         // make the transition image appear 
         transitionImg.style.zIndex = 1
@@ -122,9 +125,9 @@
         shadow2.style.transitionTimingFunction = 'cubic-bezier(1, -0.3, .8, 0.67)' 
 
         // transition for platform & shadows
-        platform.style.transform = 'translateY(25rem)'
-        shadow1.style.transform = 'translateY(25rem)'
-        shadow2.style.transform = 'translateY(25rem)'
+        platform.style.transform = 'translateX(25rem)'
+        shadow1.style.transform = 'translateX(25rem) rotate(288deg)'
+        shadow2.style.transform = 'translateX(25rem) rotate(295deg)'
         
         // make text disapear
         text.style.opacity = '0'
@@ -137,12 +140,12 @@
       }
 
       const goToVideo = (path, index) => {
-
+        console.log("helo")
         runTransition(index)
 
-        setTimeout(() => {
-          pushRouter(path)
-        }, 1700);
+        // setTimeout(() => {
+        //   pushRouter(path)
+        // }, 1700);
       }
 
       return {

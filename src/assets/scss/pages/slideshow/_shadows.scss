@@ -1,10 +1,10 @@
 .slider-shadow{
-  width: 100%;
+  width: 50%;
   height: 80px;
-  bottom: 11rem;
-  left: 30rem;
+  right: -8rem;
+  bottom: 50rem;
   border-radius: 100px;
-  transform: rotate(18deg);
+  transform: rotate(288deg);
   position: absolute;
   /* background-color: rgba(0, 0, 0, 0.2); */
   background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
@@ -13,12 +13,12 @@
   transition: 1.5s;
 }
 .slider-shadow-v2 {
-  width: 100%;
+  width: 50%;
   height: 150px; 
-  bottom: -4rem;
-  left: -12rem;
+  right: -22rem;
+  bottom: 10rem;
   border-radius: 100px;
-  transform: rotate(15deg);
+  transform: rotate(285deg);
   position: absolute;
   background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
   transform-origin: bottom center;
