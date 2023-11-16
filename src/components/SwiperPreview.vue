@@ -20,11 +20,9 @@
       class="mySwiper swiper"
     >
       <swiper-slide v-for="(slide, index) in slides" :key="index" style="padding: 2.5rem">
-        <!-- <router-link :to="route+slide.video"> -->
           <a @click="goToVideo(route+slide.video, index)">
             <img :src="slide.image"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"/>
           </a>
-        <!-- </router-link> -->
       </swiper-slide>   
     </swiper-container>
 
@@ -56,7 +54,6 @@
   // Import Swiper Vue.js components
   import { SwiperSlide } from 'swiper/vue';
   import { ref } from 'vue'
-
   
   import "../assets/scss/pages/_slideshow.scss"
 
