@@ -26,16 +26,14 @@
     </swiper-container>
 
     <div class="platform" :style="{ backgroundColor: `${slides[currentIndex].mainColor}`}">
-      <div class="elipsis" :style="{ backgroundColor: `${slides[currentIndex].mainColor}`}">
-      </div>
     </div>
 
     <div class="slider-shadow" :style="{ backgroundColor: `color-mix(in srgb, ${slides[currentIndex].mainColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
 
     <div class="slider-shadow-v2" :style="{ backgroundColor: `color-mix(in srgb, ${slides[currentIndex].mainColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
 
-    <div class="text" style="position: absolute; bottom: 7rem; text-align: center;">
-      <h1 style="font-size: 4.5rem;">{{ slides[currentIndex].title }}</h1>
+    <div class="plateform-text">
+      <h1 style="font-size: 4.5rem; color: black;">{{ slides[currentIndex].title }}</h1>
       <p style="font-size: 1.5rem;">{{ slides[currentIndex].author }}</p>
     </div>
 
@@ -107,7 +105,7 @@
         const platform = document.querySelector('.platform')
         const shadow1 = document.querySelector('.slider-shadow')
         const shadow2 = document.querySelector('.slider-shadow-v2')
-        const text = document.querySelector('.text')
+        const text = document.querySelector('.plateform-text')
         const swiperContainer = document.getElementsByClassName('mySwiper');
         
         // make the swipper disapear
