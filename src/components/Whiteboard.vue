@@ -613,7 +613,7 @@ export default {
           console.log('Rotate: ' + angle + 'deg');
           if (dragged) {
             gsap.to(dragged, {
-              rotation: dragged.style.rotation + this.rotationAngle,
+              rotation: angle + this.rotationAngle,
               transformOrigin: '50% 50%',
             });
           }
