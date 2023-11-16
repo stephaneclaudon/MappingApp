@@ -460,7 +460,7 @@ export default {
         if (dragged) {
           const clampedScale = Math.min(Math.max(pinchScale, 0.5), 5);
 
-          gsap.to(dragged, { scale: 5 });
+          gsap.to(dragged, { scale: pinchScale });
         }
 
         // Update the start distance for the next pinch event
