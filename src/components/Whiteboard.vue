@@ -530,9 +530,6 @@ export default {
         onPress: () => {
         },
         onRelease: () => {
-          gsap.to(element, {
-            scale: 1,
-          })
         },
         onDragEnd: () => {
           // Ensure this.map is initialized before calling setItem
@@ -542,6 +539,9 @@ export default {
               x: element.getBoundingClientRect().x,
               y: element.getBoundingClientRect().y,
             });
+            if (element.classList.contains("dragged")) {
+              element.classList.remove("dragged");
+            }
           }
         }
       });
