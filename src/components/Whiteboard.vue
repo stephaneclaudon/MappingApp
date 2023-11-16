@@ -6,15 +6,29 @@
       <input v-model="isStickersOn" checked type="checkbox" id="switch" @click="updateToolsState(isStickersOn)"/>
       <label for="switch"></label>
 
-      <div class="size-boxes-container">
-        <button v-for="(size, index) in sizes" :key="index" @click="changeSize(size)" class="box"
-                :style="getPenSize(size)"></button>
+      <div class="brush-size-container">
+        <div class="brush-preview"
+             :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
       </div>
+
+      <div class="size-boxes-container slide-range-container">
+        <div class="slide-container">
+          <input type="range" :min="brushSizes.min" :max="brushSizes.max" class="slider" v-model="rangeValue"
+                 @change="handleRangeChange">
+        </div>
+      </div>
+
       <div class="size-boxes-container">
         <button v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="box"
                 :style="getPenColor(color)"></button>
       </div>
+      <div class="size-boxes-container">
+        <button @click="enableEraser">
+          Eraser
+        </button>
+      </div>
       <img src="../assets/bin.svg" alt="clear" class="clear" @click="clearCanvas"/>
+
     </div>
 
     <div class="canvas-wrapper">
@@ -35,6 +49,7 @@ import {Draggable} from 'gsap/Draggable';
 import config from '../../config.json';
 import * as tmImage from '@teachablemachine/image';
 
+let brushSizes = config.canvas.brushSizes;
 gsap.registerPlugin(Draggable)
 export default {
   data() {
@@ -46,7 +61,6 @@ export default {
       canvas: null,
       ctx: null,
       colors: config.canvas.colors,
-      sizes: config.canvas.brushSizes,
       deviceType: null,
       stickerCounter: 0,
       icons: config.canvas.stickers,
@@ -57,6 +71,10 @@ export default {
       currentCtx: null,
       prevCtx: null,
       diffCtx: null,
+      brushSizes: brushSizes,
+      rangeValue: brushSizes.default,
+      brushColor: config.canvas.colors[0],
+      isEraserSelected: false,
     };
   },
   async mounted() {
@@ -82,7 +100,7 @@ export default {
     this.initializeMap();
     this.buildStickers();
     this.changeColor(this.colors[0])
-    this.changeSize(this.sizes[0])
+    this.changeSize(brushSizes.default)
     this.ctx.lineCap = "round"
     let stickersContainer = document.getElementsByClassName('stickers')[0]
 
@@ -112,6 +130,30 @@ export default {
   },
   methods: {
 
+    enableEraser() {
+      this.isEraserSelected = true;
+    },
+    disableEraser() {
+      this.isEraserSelected = false;
+    },
+    erase(e) {
+      if (!this.painting) return;
+
+      // Use 'destination-out' to erase
+      this.ctx.globalCompositeOperation = 'destination-out';
+
+      this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+      this.ctx.stroke()
+
+      this.ctx.beginPath()
+      this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+
+    },
+    handleRangeChange(event) {
+
+      this.rangeValue = event.target.value;
+      this.changeSize(event.target.value);
+    },
     // Mettez à jour la version précédente du dessin
     updatePrevCanvas() {
       if (this.recognitionCount === 2) {
@@ -149,7 +191,6 @@ export default {
           }
         }
       }
-      
       // Effacez le canvas des différences
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height);
 
@@ -307,6 +348,12 @@ export default {
       }
     },
     changeColor(color) {
+      if (this.isEraserSelected) {
+        // Switch back to default drawing mode
+        this.ctx.globalCompositeOperation = 'source-over';
+        this.disableEraser() // Reset eraser mode
+      }
+      this.brushColor = color
       this.ctx.strokeStyle = color
     },
     getPenColor(color) {
@@ -349,10 +396,17 @@ export default {
     finishedPainting() {
       this.painting = false
       this.ctx.beginPath()
-      this.resetDrawingTimer()
+      if (!this.isEraserSelected) {
+
+        this.resetDrawingTimer()
+      }
+
 
     },
     draw(e) {
+      if (this.isEraserSelected) {
+        this.erase(e);
+      }
       if (!this.painting) return
 
       this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
@@ -361,7 +415,10 @@ export default {
       this.ctx.beginPath()
       this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
 
-      this.resetDrawingTimer();
+      if (!this.isEraserSelected) {
+        this.resetDrawingTimer();
+      }
+
     },
     resetDrawingTimer() {
       // Effacez le minuteur existant s'il y en a un
@@ -379,15 +436,18 @@ export default {
       }, 1000);
     },
     mobileDraw(e) {
+      if (this.isEraserSelected) {
+        this.erase(e.touches[0]);
+      }
       if (!this.painting) return
       this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
       this.ctx.stroke()
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      this.resetDrawingTimer();
-
-
+      if (!this.isEraserSelected) {
+        this.resetDrawingTimer();
+      }
     },
     initializeMap() {
       this.map = localforage.createInstance({
@@ -483,7 +543,6 @@ export default {
       }
     }
   },
-
-
 };
+
 </script>

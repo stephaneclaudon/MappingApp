@@ -49,15 +49,22 @@
       "#0000FF",
       "#FFFF00",
       "#FF00FF",
-      "#00FFFF"
+      "#00FFFF",
+      "#00A5C8",
+      "#1BB1A1",
+      "#097EB3",
+      "#001830",
+      "#70232F",
+      "#DCE7F9",
+      "#F195BE",
+      "#F05141",
+      "#FCB435"
     ],
-    "brushSizes": [
-      12,
-      16,
-      20,
-      24,
-      28
-    ],
+    "brushSizes": {
+      "min": 1,
+      "default": 20,
+      "max": 48
+    },
     "stickers": [
       "src/assets/Group.png",
       "src/assets/major.png",
