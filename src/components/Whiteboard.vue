@@ -99,6 +99,7 @@ export default {
 
     this.setDeviceType()
     this.setupEventListeners()
+    this.init()
 
 
     this.initializeMap();
@@ -135,18 +136,19 @@ export default {
   methods: {
     init() {
     // Install event handlers for the pointer target
-    var el=document.getElementById("canvas");
-    el.onpointerdown = pointerdown_handler;
-    el.onpointermove = pointermove_handler;
+    var el = document.getElementById("canvas");
+    el.onpointerdown = this.pointerdown_handler;
+    el.onpointermove = this.pointermove_handler;
 
     // Use same handler for pointer{up,cancel,out,leave} events since
     // the semantics for these events - in this app - are the same.
-    el.onpointerup = pointerup_handler;
-    el.onpointercancel = pointerup_handler;
-    el.onpointerout = pointerup_handler;
-    el.onpointerleave = pointerup_handler;
+    el.onpointerup = this.pointerup_handler;
+    el.onpointercancel = this.pointerup_handler;
+    el.onpointerout = this.pointerup_handler;
+    el.onpointerleave = this.pointerup_handler;
     },
     pointermove_handler(ev) {
+      
     // This function implements a 2-pointer horizontal pinch/zoom gesture. 
     //
     // If the distance between the two pointers has increased (zoom in), 
@@ -173,12 +175,12 @@ export default {
       if (this.prevDiff > 0) {
         if (curDiff > this.prevDiff) {
           // The distance between the two pointers has increased
-          log("Pinch moving OUT -> Zoom in", ev);
+          console.log("Pinch moving OUT -> Zoom in")
           ev.target.style.background = "pink";
         }
         if (curDiff < this.prevDiff) {
           // The distance between the two pointers has decreased
-          log("Pinch moving IN -> Zoom out",ev);
+          console.log("Pinch moving IN -> Zoom out")
           ev.target.style.background = "lightblue";
         }
       }
@@ -188,10 +190,9 @@ export default {
     }
     },
     pointerup_handler(ev) {
-      log(ev.type, ev);
       // Remove this pointer from the cache and reset the target's
       // background and border
-      remove_event(ev);
+      this.remove_event(ev);
       ev.target.style.background = "white";
       ev.target.style.border = "1px solid black";
     
