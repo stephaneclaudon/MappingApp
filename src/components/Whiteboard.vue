@@ -485,8 +485,8 @@ export default {
           const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
 
           gsap.to(dragged, {
-            width: dragged.clientWidth * pinchScale,
-            height: dragged.clientHeight * pinchScale
+            width: dragged.style.width * pinchScale,
+            height: dragged.style.height * pinchScale
           });
 
           // console.log("pinchScale ", pinchScale)
