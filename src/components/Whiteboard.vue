@@ -570,7 +570,7 @@ export default {
             const curAngle = Math.atan2(
                 e.touches[1].clientY - e.touches[0].clientY,
                 e.touches[1].clientX - e.touches[0].clientX
-            ) * (360 / Math.PI);
+            ) * (180 / Math.PI);
 
             // Si l'angle de rotation actuel n'est pas encore défini, définissez-le
             if (this.pinchStartAngle === 0) {
@@ -578,10 +578,14 @@ export default {
             }
 
             // Ajoutez la différence entre l'angle actuel et l'angle de rotation initial
-            const adjustedAngle = curAngle - this.pinchStartAngle + this.currentRotationAngle;
-
             // Mettez à jour l'angle de rotation actuel
-            this.rotationAngle = adjustedAngle;
+            this.rotationAngle = curAngle - this.pinchStartAngle + this.currentRotationAngle;
+
+
+            console.log(" this.rotationAngle ",  this.rotationAngle)
+            console.log("curAngle ", curAngle)
+            console.log("this.pinchStartAngle ", this.pinchStartAngle)
+            console.log("this.currentRotationAngle ", this.currentRotationAngle)
 
             gsap.to(dragged, {
               rotation: this.rotationAngle,
