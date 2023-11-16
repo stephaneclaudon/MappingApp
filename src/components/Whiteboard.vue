@@ -7,12 +7,14 @@
       <label for="switch"></label>
 
       <div class="brush-size-container">
-        <div class="brush-preview" :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
+        <div class="brush-preview"
+             :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
       </div>
 
       <div class="size-boxes-container slide-range-container">
         <div class="slide-container">
-          <input type="range" :min="brushSizes.min" :max="brushSizes.max" class="slider" v-model="rangeValue" @change="handleRangeChange">
+          <input type="range" :min="brushSizes.min" :max="brushSizes.max" class="slider" v-model="rangeValue"
+                 @change="handleRangeChange">
         </div>
       </div>
 
@@ -21,7 +23,7 @@
                 :style="getPenColor(color)"></button>
       </div>
       <div class="size-boxes-container">
-        <button @click="enableEraser" class="{ 'eraser-selected': isEraserSelected }">
+        <button @click="enableEraser">
           Eraser
         </button>
       </div>
@@ -140,14 +142,12 @@ export default {
       // Use 'destination-out' to erase
       this.ctx.globalCompositeOperation = 'destination-out';
 
-      const x = e.clientX - this.canvas.offsetLeft;
-      const y = e.clientY - this.canvas.offsetTop;
+      this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+      this.ctx.stroke()
 
-      // Draw the actual eraser path
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, this.rangeValue/2+"px", 0, 2 * Math.PI);
-      this.ctx.fill();
-      this.ctx.stroke();
+      this.ctx.beginPath()
+      this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
+
     },
     handleRangeChange(event) {
 
@@ -194,7 +194,6 @@ export default {
       }
 
 
-      //todo : faire une recognition sur 1s et sur 2s pour être sûr
       // Effacez le canvas des différences
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height);
 
@@ -223,7 +222,7 @@ export default {
     downloadImage(imageName) {
       const link = document.getElementById('download');
       link.download = imageName;
-      // link.click();
+      link.click();
     },
     getFormattedTime() {
       const now = new Date();
@@ -395,7 +394,11 @@ export default {
     finishedPainting() {
       this.painting = false
       this.ctx.beginPath()
-      this.resetDrawingTimer()
+      if (!this.isEraserSelected) {
+
+        this.resetDrawingTimer()
+      }
+
 
     },
     draw(e) {
@@ -410,7 +413,10 @@ export default {
       this.ctx.beginPath()
       this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
 
-      this.resetDrawingTimer();
+      if (!this.isEraserSelected) {
+        this.resetDrawingTimer();
+      }
+
     },
     resetDrawingTimer() {
       // Effacez le minuteur existant s'il y en a un
@@ -437,9 +443,9 @@ export default {
 
       this.ctx.beginPath()
       this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
-      this.resetDrawingTimer();
-
-
+      if (!this.isEraserSelected) {
+        this.resetDrawingTimer();
+      }
     },
     initializeMap() {
       this.map = localforage.createInstance({
