@@ -74,12 +74,12 @@ export default {
       brushSizes: brushSizes,
       rangeValue: brushSizes.default,
       brushColor: config.canvas.colors[0],
-      rotateStartAngle: 0,
-      rotateCurrentAngle: 0,
       pinchStartDistance: 0,
       isEraserSelected: false,
-      evCache: new Array(),
+      evCache: [],
       prevDiff: -1,
+      rotationAngle: 0,
+      pinchStartAngle: 0,
     };
   },
   async mounted() {
@@ -439,41 +439,14 @@ export default {
         this.canvas.addEventListener("touchstart", this.startPainting)
         this.canvas.addEventListener("touchend", this.finishedPainting)
         this.canvas.addEventListener("touchmove", this.mobileDraw)
-
-        this.canvas.addEventListener("gesturechange", this.handleGestureChange);
-
       } else if (this.deviceType === 'mobile') {
         // For mobile touch
         this.canvas.addEventListener("touchstart", this.startPainting)
         this.canvas.addEventListener("touchend", this.finishedPainting)
         this.canvas.addEventListener("touchmove", this.mobileDraw)
-        this.canvas.addEventListener("gesturechange", this.handleGestureChange);
       }
     },
-    handleGestureChange(e) {
-      if (e.scale !== undefined && e.rotation !== undefined) {
-        // Use e.rotation to get the rotation angle
-        const rotation = e.rotation;
 
-        // Update the rotateStartAngle on the start of the gesture
-        if (e.type === 'gesturestart') {
-          this.rotateStartAngle = rotation;
-        }
-
-        // Calculate the change in rotation
-        const deltaRotation = rotation - this.rotateStartAngle;
-
-        // Update the rotateStartAngle for the next iteration
-        this.rotateStartAngle = rotation;
-
-        // Apply the rotation to the dragged sticker
-        const dragged = document.querySelector(".dragged");
-        if (dragged) {
-          this.rotateCurrentAngle += deltaRotation;
-          gsap.set(dragged, {rotation: this.rotateCurrentAngle});
-        }
-      }
-    },
     changeColor(color) {
       if (this.isEraserSelected) {
         // Switch back to default drawing mode
@@ -521,6 +494,11 @@ export default {
                 e.touches[0].clientX - e.touches[1].clientX,
                 e.touches[0].clientY - e.touches[1].clientY
             );
+            this.pinchStartAngle = Math.atan2(
+                    e.touches[1].clientY - e.touches[0].clientY,
+                    e.touches[1].clientX - e.touches[0].clientX
+                ) *
+                (180 / Math.PI);
           }
           this.mobileDraw(e.touches)
         } else {
@@ -593,6 +571,7 @@ export default {
         }
       } else {
         this.stickersResizer(e)
+        this.stickersRotate(e)
       }
     },
 
@@ -637,6 +616,30 @@ export default {
       }
     },
 
+
+    stickersRotate(e) {
+      if (e.touches.length === 2) {
+        var curAngle =
+            Math.atan2(
+                this.evCache[1].clientY - this.evCache[0].clientY,
+                this.evCache[1].clientX - this.evCache[0].clientX
+            ) *
+            (180 / Math.PI);
+
+        // Update the rotation angle
+        this.rotationAngle = curAngle - this.pinchStartAngle;
+        this.rotationAngle = this.rotationAngle % 360;
+
+        // Update the scale and rotation of the dragged sticker
+        const dragged = document.getElementsByClassName('dragged')[0];
+        if (dragged) {
+          gsap.to(dragged, {
+            rotation: this.rotationAngle,
+            transformOrigin: '50% 50%',
+          });
+        }
+      }
+    },
     initializeMap() {
       this.map = localforage.createInstance({
         name: "map"
