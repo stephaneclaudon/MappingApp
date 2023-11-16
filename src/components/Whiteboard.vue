@@ -473,112 +473,106 @@ export default {
           this.resetDrawingTimer();
         }
       }
-    ,
-      initializeMap()
-      {
-        this.map = localforage.createInstance({
-          name: "map"
-        });
-        this.map.iterate((value, key) => {
-          this.buildStickers(key, value.src, value.x, value.y);
-        });
-      }
-    ,
-      buildHandleSVG(parent, path, i)
-      {
-
-        const sticker = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "image"
-        );
-        sticker.setAttributeNS(null, "height", "48");
-        sticker.setAttributeNS(null, "width", "48");
-        sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", path);
-        sticker.setAttributeNS(null, "x", "0");
-        sticker.setAttributeNS(null, "y", 64 * i);
-        sticker.setAttributeNS(null, "visibility", "visible");
-        sticker.classList.add("sticker");
-        sticker.dataset.type = `sticker-${i}`;
-        parent.appendChild(sticker);
-        this.cloneHandleSVG(parent, `sticker-${i}`);
-
-      }
-    ,
-      cloneHandleSVG(parent, type)
-      {
-        const source = document.querySelector(`[data-type="${type}"]`);
-        const clone = source.cloneNode(true);
-        parent.appendChild(clone);
-        this.createDraggable(clone);
-      }
-    ,
-      createDraggable(element)
-      {
-        Draggable.create(element, {
-          bounds: document.querySelector(".canvas-wrapper"),
-          edgeResistance: 1,
-          onDragStart: () => {
-            if (!element.getAttributeNS(null, "id")) {
-              element.setAttributeNS(null, "id", `sticker-${this.stickerCounter}`);
-              element.setAttributeNS(null, "draggable", "false");
-              this.stickerCounter++;
-            }
-            if (!element.classList.contains("dragged")) {
-              this.cloneHandleSVG(
-                  document.querySelector(".stickers"),
-                  element.dataset.type
-              );
-              element.classList.add("dragged");
-            }
-          },
-          onPress: () => {
-            gsap.to(element, {
-              scale: 1.25 * this.stickerScale,
-            })
-          },
-          onRelease: () => {
-            gsap.to(element, {
-              scale: 1,
-            })
-          },
-          onDragEnd: () => {
-            // Ensure this.map is initialized before calling setItem
-            if (this.map) {
-              this.map.setItem(element.getAttributeNS(null, "id"), {
-                src: element.getAttributeNS("http://www.w3.org/1999/xlink", "href"),
-                x: element.getBoundingClientRect().x,
-                y: element.getBoundingClientRect().y,
-              });
-            }
-          }
-        });
-      }
-    ,
-      build(wrapper, id, src, x, y)
-      {
-        const sticker = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "image"
-        );
-        sticker.setAttributeNS(null, "id", id);
-        sticker.setAttributeNS(null, "height", "32");
-        sticker.setAttributeNS(null, "width", "32");
-        sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", src);
-        sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(1.05)`);
-        sticker.setAttributeNS(null, "visibility", "visible");
-        sticker.classList.add("sticker");
-        this.createDraggable(sticker);
-        wrapper.appendChild(sticker);
-      }
-    ,
-      buildStickers()
-      {
-        const parent = document.querySelector(".stickers");
-        for (let i = 0; i < this.icons.length; i++) {
-          this.buildHandleSVG(parent, this.icons[i], i);
-        }
-      }
     },
-  };
+    initializeMap() {
+      this.map = localforage.createInstance({
+        name: "map"
+      });
+      this.map.iterate((value, key) => {
+        this.buildStickers(key, value.src, value.x, value.y);
+      });
+    }
+    ,
+    buildHandleSVG(parent, path, i) {
+
+      const sticker = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "image"
+      );
+      sticker.setAttributeNS(null, "height", "48");
+      sticker.setAttributeNS(null, "width", "48");
+      sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", path);
+      sticker.setAttributeNS(null, "x", "0");
+      sticker.setAttributeNS(null, "y", 64 * i);
+      sticker.setAttributeNS(null, "visibility", "visible");
+      sticker.classList.add("sticker");
+      sticker.dataset.type = `sticker-${i}`;
+      parent.appendChild(sticker);
+      this.cloneHandleSVG(parent, `sticker-${i}`);
+
+    }
+    ,
+    cloneHandleSVG(parent, type) {
+      const source = document.querySelector(`[data-type="${type}"]`);
+      const clone = source.cloneNode(true);
+      parent.appendChild(clone);
+      this.createDraggable(clone);
+    }
+    ,
+    createDraggable(element) {
+      Draggable.create(element, {
+        bounds: document.querySelector(".canvas-wrapper"),
+        edgeResistance: 1,
+        onDragStart: () => {
+          if (!element.getAttributeNS(null, "id")) {
+            element.setAttributeNS(null, "id", `sticker-${this.stickerCounter}`);
+            element.setAttributeNS(null, "draggable", "false");
+            this.stickerCounter++;
+          }
+          if (!element.classList.contains("dragged")) {
+            this.cloneHandleSVG(
+                document.querySelector(".stickers"),
+                element.dataset.type
+            );
+            element.classList.add("dragged");
+          }
+        },
+        onPress: () => {
+          gsap.to(element, {
+            scale: 1.25 * this.stickerScale,
+          })
+        },
+        onRelease: () => {
+          gsap.to(element, {
+            scale: 1,
+          })
+        },
+        onDragEnd: () => {
+          // Ensure this.map is initialized before calling setItem
+          if (this.map) {
+            this.map.setItem(element.getAttributeNS(null, "id"), {
+              src: element.getAttributeNS("http://www.w3.org/1999/xlink", "href"),
+              x: element.getBoundingClientRect().x,
+              y: element.getBoundingClientRect().y,
+            });
+          }
+        }
+      });
+    }
+    ,
+    build(wrapper, id, src, x, y) {
+      const sticker = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "image"
+      );
+      sticker.setAttributeNS(null, "id", id);
+      sticker.setAttributeNS(null, "height", "32");
+      sticker.setAttributeNS(null, "width", "32");
+      sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", src);
+      sticker.setAttributeNS(null, "transform", `matrix(1, 0, 0, 1, ${x}, ${y}), scale(1.05)`);
+      sticker.setAttributeNS(null, "visibility", "visible");
+      sticker.classList.add("sticker");
+      this.createDraggable(sticker);
+      wrapper.appendChild(sticker);
+    }
+    ,
+    buildStickers() {
+      const parent = document.querySelector(".stickers");
+      for (let i = 0; i < this.icons.length; i++) {
+        this.buildHandleSVG(parent, this.icons[i], i);
+      }
+    }
+  },
+};
 
 </script>
