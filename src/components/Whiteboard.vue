@@ -445,6 +445,24 @@ export default {
       }, 1000);
     },
     mobileDraw(e) {
+
+      if (this.isEraserSelected) {
+        this.erase(e.touches[0]);
+      }
+      if (!this.painting) return
+      this.ctx.lineTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+      this.ctx.stroke()
+
+      this.ctx.beginPath()
+      this.ctx.moveTo(e.touches[0].clientX - this.canvas.offsetLeft, e.touches[0].clientY - this.canvas.offsetTop)
+      if (!this.isEraserSelected) {
+        this.resetDrawingTimer();
+      }
+      this.stickersResizer(e)
+    },
+
+    stickersResizer(e) {
+
       if (e.touches.length === 2) {
 
         const pinchEndDistance = Math.hypot(
@@ -465,15 +483,16 @@ export default {
 
           gsap.to(dragged, {scale: pinchScale});
 
-          console.log("pinchScale ",pinchScale)
-          console.log("pinchStartDistance ",this.pinchStartDistance)
-          console.log("pinchEndDistance ",pinchEndDistance)
+          console.log("pinchScale ", pinchScale)
+          console.log("pinchStartDistance ", this.pinchStartDistance)
+          console.log("pinchEndDistance ", pinchEndDistance)
         }
 
         // Update the start distance for the next pinch event
         // this.pinchStartDistance = pinchEndDistance;
       }
     },
+
     initializeMap() {
       this.map = localforage.createInstance({
         name: "map"
@@ -528,6 +547,7 @@ export default {
           }
         },
         onPress: () => {
+
         },
         onRelease: () => {
         },
