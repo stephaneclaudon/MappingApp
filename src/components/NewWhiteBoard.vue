@@ -1,10 +1,17 @@
 <template>
-    <div class="whiteboard" id="whiteboard">
+    <div class="whiteboard" :class="{ landscape: isLandscape, vertical: !isLandscape }" id="whiteboard">
         <div class="canvas-wrapper">
             <canvas class="canvas" ref="canvas" id="canvas"></canvas>
         </div>
         <div class="sidebar" id="sidebar">
-            <p>Salut</p>
+            <div class="col">
+                <div class="box circle">
+                    <i class="pi pi-trash icon-big"></i>
+                </div>
+            </div>
+            <div class="col">
+
+            </div>
         </div>
     </div>
 </template>
@@ -13,6 +20,8 @@
 
 import gsap from "gsap";
 import {Draggable} from 'gsap/Draggable';
+import "../assets/scss/pages/_new-whiteboard.scss"
+import config from '../../config.json';
 
 gsap.registerPlugin(Draggable)
 export default {
@@ -21,18 +30,18 @@ export default {
             canvas: null,
             ctx: null,
             painting: false,
-            originalWidth: 1920, 
-            originalHeight: 1080,
+            aspectRatio: 1.78, 
             toolWidth : null,
             whiteboard : null,
             deviceType: null,
             isEraserSelected: false,
+            isLandscape : config.global.landscapeMode
         }
     },
-    async mounted(){
-        
-        this.canvas = this.$refs.canvas
-        this.ctx = this.canvas.getContext("2d")
+    async mounted(){        
+        this.aspectRatio = this.isLandscape ? 1.78 : 0.5625;
+        this.canvas = this.$refs.canvas;
+        this.ctx = this.canvas.getContext("2d");
 
         this.toolWidth = document.getElementById('sidebar');
         this.whiteboard = document.getElementById('whiteboard');
@@ -50,12 +59,12 @@ export default {
         },
         initListeners() {
             window.addEventListener('resize', this.resizeCanvas);
-            this.canvas.addEventListener("mousedown", this.startPainting)
-            this.canvas.addEventListener("mouseup", this.finishedPainting)
-            this.canvas.addEventListener("mousemove", this.draw)
-            this.canvas.addEventListener("touchstart", this.startPainting)
-            this.canvas.addEventListener("touchend", this.finishedPainting)
-            this.canvas.addEventListener("touchmove", this.mobileDraw)
+            this.canvas.addEventListener("mousedown", this.startPainting);
+            this.canvas.addEventListener("mouseup", this.finishedPainting);
+            this.canvas.addEventListener("mousemove", this.draw);
+            this.canvas.addEventListener("touchstart", this.startPainting);
+            this.canvas.addEventListener("touchend", this.finishedPainting);
+            this.canvas.addEventListener("touchmove", this.mobileDraw);
         },
         removeListeners() {
             window.removeEventListener('resize', this.resizeCanvas);
@@ -79,19 +88,18 @@ export default {
             }
         },
         resizeCanvas(){
-            const toolWidth = this.toolWidth.clientWidth;
+            const toolWidth = this.toolWidth.offsetWidth;
             let whiteboardStyle = window.getComputedStyle(this.whiteboard);
             const whiteboardWidth = this.whiteboard.offsetWidth - parseFloat(whiteboardStyle.paddingLeft) - parseFloat(whiteboardStyle.paddingRight);
 
             const parentElement = this.canvas.parentNode;
-            const aspectRatio = this.originalWidth / this.originalHeight;
 
             let newWidth = whiteboardWidth - toolWidth;
-            let newHeight = newWidth / aspectRatio;
+            let newHeight = newWidth / this.aspectRatio;
             
             if (newHeight > parentElement.clientHeight) {
                 newHeight = parentElement.clientHeight;
-                newWidth = newHeight * aspectRatio;
+                newWidth = newHeight * this.aspectRatio;
             }
             
             this.canvas.width = newWidth;
@@ -183,31 +191,6 @@ export default {
 </script>
 
 <style>
-
-.whiteboard{
-    max-width: 100svw;
-    width: 100%;
-    height: 100svh;
-    background-color: #fff;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    padding: 2rem;
-
-}
-
-.canvas-wrapper{
-    width: auto;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    
-}
-
-.canvas{
-    background-color: red;
-}
-
 
 
 </style>
