@@ -88,7 +88,9 @@ export default {
             this.canvas.addEventListener("mousemove", this.draw);
             this.canvas.addEventListener("touchstart", this.startPainting);
             this.canvas.addEventListener("touchend", this.finishedPainting);
-            this.canvas.addEventListener("touchmove", this.mobileDraw);
+            this.canvas.addEventListener("touchmove", (e) =>{
+                this.mobileDraw(e.touches[0])
+            });
         },
         removeListeners() {
             window.removeEventListener('resize', this.resizeCanvas);
@@ -136,41 +138,20 @@ export default {
         },
         startPainting(e) {
             this.painting = true
-            if (this.deviceType === 'desktop') {
-                this.draw(e);
-                // if (e.touches) {
-                //     if (e.touches.length === 2) {
-                //         this.pinchStartDistance = Math.hypot(
-                //             e.touches[0].clientX - e.touches[1].clientX,
-                //             e.touches[0].clientY - e.touches[1].clientY
-                //         );
-                //         this.pinchStartAngle = Math.atan2(
-                //                 e.touches[1].clientY - e.touches[0].clientY,
-                //                 e.touches[1].clientX - e.touches[0].clientX
-                //             ) *
-                //             (180 / Math.PI);
-                //     }
-                //     this.mobileDraw(e.touches)
-                // } else {
-                //     this.mobileDraw(e)
-                // }
-                this.mobileDraw(e)
-                console.log("dessine")
-
-            } else if (this.deviceType === 'mobile') {
-                this.mobileDraw(e)
-            }
+            
+            this.draw(e); 
+            if(e.touches){
+                this.mobileDraw(e.touches[0])
+            }     
             e.preventDefault()
             e.stopPropagation()
         },
         draw(e) {
             if (this.isEraserSelected) {
                 this.erase(e);
-                console.log('efface')
             }
             if (!this.painting) return
 
-            console.log('passe')
 
             this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
             this.ctx.stroke()
