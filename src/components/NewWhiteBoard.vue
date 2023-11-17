@@ -5,12 +5,28 @@
         </div>
         <div class="sidebar" id="sidebar">
             <div class="col">
-                <div class="box circle" @click="clearCanvas">
+                <div class="box circle pointer" @click="clearCanvas">
                     <i class="pi pi-trash icon-big"></i>
+                </div>
+                <div class="box circle pointer" @click="toogleEraser" :class="{ selected : isEraserSelected }">
+                    <i class="pi pi-eraser icon-big"></i>
+                </div>
+                <div class="box rounded">
+                    <div v-for="(size, index) in brushSizes" 
+                        :key="index" 
+                        @click="changeSize(size)" 
+                        class="ellipse-container"
+                        :class="{selected : size === currentSize}"
+                    >
+                        <div class="ellipse" :style="getPenStyle(size)"></div>
+                    </div>
                 </div>
             </div>
             <div class="col">
-
+                <div class="box rounded color-container">
+                    <div v-for="(color, index) in colors" :key="index" @click="changeColor(color)" class="box"
+                :style="getPenColor(color)"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -31,11 +47,15 @@ export default {
             ctx: null,
             painting: false,
             aspectRatio: 1.78, 
-            toolWidth : null,
+            toolElement : null,
             whiteboard : null,
             deviceType: null,
             isEraserSelected: false,
-            isLandscape : config.global.landscapeMode
+            isLandscape : config.global.landscapeMode,
+            brushSizes: config.canvas.brushSizesArray,
+            currentSize: config.canvas.brushSizesArray[1],
+            colors: config.canvas.colors,
+            brushColor: config.canvas.colors[0],
         }
     },
     async mounted(){        
@@ -43,12 +63,16 @@ export default {
         this.canvas = this.$refs.canvas;
         this.ctx = this.canvas.getContext("2d");
 
-        this.toolWidth = document.getElementById('sidebar');
+        this.ctx.lineCap = "round"
+        this.toolElement = document.getElementById('sidebar');
         this.whiteboard = document.getElementById('whiteboard');
         
         this.initCanvas();
         this.initListeners();
         this.setDeviceType();
+        this.changeColor(this.colors[0])
+        this.changeSize(this.currentSize)
+        this.ctx.lineCap = "round"
     },
     beforeUnmount() {
         this.removeListeners();
@@ -88,7 +112,12 @@ export default {
             }
         },
         resizeCanvas(){
-            const toolWidth = this.toolWidth.offsetWidth;
+            let toolWidth = null
+            if(!this.isLandscape){
+                toolWidth = this.toolElement.offsetHeight
+            } else {
+                toolWidth = this.toolElement.offsetWidth;
+            }
             let whiteboardStyle = window.getComputedStyle(this.whiteboard);
             const whiteboardWidth = this.whiteboard.offsetWidth - parseFloat(whiteboardStyle.paddingLeft) - parseFloat(whiteboardStyle.paddingRight);
 
@@ -137,8 +166,11 @@ export default {
         draw(e) {
             if (this.isEraserSelected) {
                 this.erase(e);
+                console.log('efface')
             }
             if (!this.painting) return
+
+            console.log('passe')
 
             this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
             this.ctx.stroke()
@@ -186,6 +218,35 @@ export default {
         clearCanvas() {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         },
+        toogleEraser() {
+          this.isEraserSelected = !this.isEraserSelected;
+
+          if(!this.isEraserSelected){
+            this.ctx.globalCompositeOperation = 'source-over';
+          }
+        },
+        disableEraser() {
+            this.isEraserSelected = false;
+        },
+        changeColor(color) {
+            if (this.isEraserSelected) {
+                this.ctx.globalCompositeOperation = 'source-over';
+                this.disableEraser()
+            }
+            this.brushColor = color
+            this.ctx.strokeStyle = color
+            console.log(this.brushColor, this.ctx.strokeStyle)
+        },
+        getPenColor(color) {
+            return {backgroundColor: color}
+        },
+        changeSize(size) {
+          this.ctx.lineWidth = size
+          this.currentSize = size
+        },
+        getPenStyle(size) {
+            return {width: size + 'px!important', height: size + 'px!important', backgroundColor : this.brushColor}
+        },  
     }
 }
 
