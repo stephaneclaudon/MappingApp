@@ -5,7 +5,7 @@
         </div>
         <div class="sidebar" id="sidebar">
             <div class="col">
-                <div class="box circle">
+                <div class="box circle" @click="clearCanvas">
                     <i class="pi pi-trash icon-big"></i>
                 </div>
             </div>
@@ -139,7 +139,6 @@ export default {
                 this.erase(e);
             }
             if (!this.painting) return
-            console.log("draw")
 
             this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
             this.ctx.stroke()
@@ -183,6 +182,9 @@ export default {
         finishedPainting() {
             this.painting = false
             this.ctx.beginPath()
+        },
+        clearCanvas() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         },
     }
 }
