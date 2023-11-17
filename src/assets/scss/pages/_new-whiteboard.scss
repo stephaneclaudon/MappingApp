@@ -15,6 +15,7 @@
     height: 100%;
     display: flex;
     align-items: center;
+    // z-index: 100;
     
 }
 
@@ -56,4 +57,41 @@
     .icon-big{
         transform: rotateZ(0deg);
     }
+}
+
+
+.stickers-container-container {
+    width: 100vw;
+    max-height: 100vh;
+    overflow: scroll;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: fit-content;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.stickers-container{
+    pointer-events: all;
+    width: 64px;
+    height: 200vh;
+    min-width: 100px;
+    position: relative;
+    top: 0;
+    left: 0;
+    overflow: visible;
+}
+
+.stickers{
+    width: 100%;
+    overflow: visible;
+
+}
+
+.stickers-whiteboard {
+    overflow: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
 }

@@ -617,7 +617,7 @@ export default {
     }
     ,
     createDraggable(element) {
-      let canvasWrapper = document.querySelector(".canvas-wrapper")
+      let canvasWrapper = document.querySelector(".whiteboard")
 
       const rect = canvasWrapper.getBoundingClientRect();
 
