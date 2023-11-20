@@ -25,3 +25,32 @@
   filter: blur(20px);
   transition: 1.5s;
 }
+
+
+.slider-shadow-ls{
+  width: 50%;
+  height: 80px;
+  right: -8rem;
+  bottom: 50rem;
+  border-radius: 100px;
+  transform: rotate(288deg);
+  position: absolute;
+  /* background-color: rgba(0, 0, 0, 0.2); */
+  background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
+  transform-origin: bottom center;
+  filter: blur(20px);
+  transition: 1.5s;
+}
+.slider-shadow-v2-ls {
+  width: 50%;
+  height: 150px; 
+  right: -22rem;
+  bottom: 10rem;
+  border-radius: 100px;
+  transform: rotate(285deg);
+  position: absolute;
+  background-color: color-mix(in srgb, rgb(230, 203, 255) 50%, rgba(0, 0, 0, 0.2));
+  transform-origin: bottom center;
+  filter: blur(20px);
+  transition: 1.5s;
+}

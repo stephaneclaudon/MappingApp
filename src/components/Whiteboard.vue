@@ -8,7 +8,8 @@
 
       <p> Brush preview </p>
       <div class="size-boxes-container brush-preview-container">
-        <div class="brush-preview" :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
+        <div class="brush-preview"
+             :style="{width: `${rangeValue}px`, height: `${rangeValue}px`, backgroundColor: brushColor}"></div>
       </div>
 
       <div class="size-boxes-container slide-range-container">
@@ -79,7 +80,11 @@ export default {
       evCache: [],
       prevDiff: -1,
       rotationAngle: 0,
+      pinchScale:0,
       pinchStartAngle: 0,
+      alreadyDone: false,
+      currentRotationAngle: 0,
+      currentScale: 1,
     };
   },
   async mounted() {
@@ -465,6 +470,8 @@ export default {
       e.stopPropagation()
     },
     finishedPainting() {
+      this.currentRotationAngle = this.rotationAngle
+      this.currentScale = this.pinchScale
       this.painting = false
       this.ctx.beginPath()
       if (!this.isEraserSelected) {
@@ -528,60 +535,72 @@ export default {
     },
 
     stickersResizer(e) {
+      if (e.touches) {
+        if (e.touches.length === 2) {
 
-      if (e.touches.length === 2) {
+          const pinchEndDistance = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+          );
+          this.pinchScale = (pinchEndDistance / this.pinchStartDistance) - 1 + this.currentScale;
 
-        const pinchEndDistance = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-        );
+          console.log("this.pinchScale ", this.pinchScale)
+          console.log("pinchEndDistance ", pinchEndDistance)
+          console.log("this.pinchStartDistance ", this.pinchStartDistance)
+          console.log("this.currentScale ", this.currentScale)
+          console.log("=================================")
 
-        const pinchScale = pinchEndDistance / this.pinchStartDistance;
 
-        // Update the scale of the dragged sticker
-        const dragged = document.getElementsByClassName("dragged")[0];
-        if (dragged) {
-          const currentScale = parseFloat(dragged.style.transform.replace("scale(", "").replace(")", ""));
-          const newScale = currentScale * pinchScale;
+          // Update the scale of the dragged sticker
+          const dragged = document.getElementsByClassName("dragged")[0];
+          if (dragged) {
 
-          // Enforce minimum and maximum dimensions
-          const clampedScale = Math.min(Math.max(newScale, 0.5), 5);
+            // Enforce minimum and maximum dimensions
 
-          gsap.to(dragged, {
-            width: dragged.width.baseVal.value * pinchScale,
-            height: dragged.height.baseVal.value * pinchScale,
-          });
+            gsap.to(dragged, {
+              width: dragged.width.baseVal.value * this.pinchScale,
+              height: dragged.height.baseVal.value * this.pinchScale,
+            });
+          }
         }
-
-        // Update the start distance for the next pinch event
-        // this.pinchStartDistance = pinchEndDistance;
       }
     },
 
 
     stickersRotate(e) {
-      if (e.touches.length === 2) {
-        var curAngle =
-            Math.atan2(
+      if (e.touches) {
+        if (e.touches.length === 2) {
+          // Update the scale and rotation of the dragged sticker
+          const dragged = document.getElementsByClassName('dragged')[0];
+          if (dragged) {
+            const curAngle = Math.atan2(
                 e.touches[1].clientY - e.touches[0].clientY,
                 e.touches[1].clientX - e.touches[0].clientX
-            ) *
-            (180 / Math.PI);
+            ) * (180 / Math.PI);
 
-        // Update the rotation angle
-        this.rotationAngle = curAngle - this.pinchStartAngle;
-        this.rotationAngle = this.rotationAngle % 360;
+            // Si l'angle de rotation actuel n'est pas encore défini, définissez-le
+            if (this.pinchStartAngle === 0) {
+              this.pinchStartAngle = curAngle;
+            }
 
-        // Update the scale and rotation of the dragged sticker
-        const dragged = document.getElementsByClassName('dragged')[0];
-        if (dragged) {
-          gsap.to(dragged, {
-            rotation: this.rotationAngle,
-            transformOrigin: '50% 50%',
-          });
+            // Ajoutez la différence entre l'angle actuel et l'angle de rotation initial
+            // Mettez à jour l'angle de rotation actuel
+            this.rotationAngle = curAngle - this.pinchStartAngle + this.currentRotationAngle;
+
+            gsap.to(dragged, {
+              rotation: this.rotationAngle,
+              transformOrigin: '50% 50%',
+            });
+          }
+        }
+        if (e.touches.length === 1) {
+          // Réinitialisez l'angle de rotation actuel si un seul toucher est détecté
+          // this.currentRotationAngle = 0;
+          // this.pinchStartAngle = 0;
         }
       }
     },
+
     initializeMap() {
       this.map = localforage.createInstance({
         name: "map"
