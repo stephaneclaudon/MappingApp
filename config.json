@@ -85,12 +85,6 @@
   "canvas" : {
     "colors": [
       "#FFFFFF",
-      "#FF0000",
-      "#00FF00",
-      "#0000FF",
-      "#FFFF00",
-      "#FF00FF",
-      "#00FFFF",
       "#00A5C8",
       "#1BB1A1",
       "#097EB3",
@@ -106,6 +100,7 @@
       "default": 20,
       "max": 48
     },
+    "brushSizesArray": [6, 12, 24, 32, 42 ],
     "stickers": [
       "src/assets/Group.png",
       "src/assets/major.png",
