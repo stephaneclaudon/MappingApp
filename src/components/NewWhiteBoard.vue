@@ -481,6 +481,13 @@ export default {
 
     clearCanvas() {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      let stickers = document.getElementsByClassName("stickers-whiteboard")[0].getElementsByClassName("sticker")
+      console.log(stickers)
+      let length = stickers.length
+      for (let i = 0; i < length; i++) {
+        stickers[0].remove()
+
+      }
     },
     toogleEraser() {
       this.isEraserSelected = !this.isEraserSelected;
