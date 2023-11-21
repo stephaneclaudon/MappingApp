@@ -101,7 +101,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transform: translateY(calc(-100% + 24px));
+    transform: translateY(calc(-100% + 12px));
     transition: transform 500ms ease;
 
     background-color: rgba(#F7F7F7, 0.6);
@@ -204,8 +204,16 @@
   .icon-big {
     transform: rotateZ(-90deg);
   }
-}
+  .sticker {
+    transform: rotate(-90deg);
+  }
 
+}
+.sticker {
+
+  transform-origin: center;
+  transform-box: fill-box;
+}
 .vertical {
 
   writing-mode: vertical-lr;

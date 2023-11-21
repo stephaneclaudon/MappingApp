@@ -2,7 +2,7 @@
   "global": {
     "mode": 0,
     "requestUrl": "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1",
-    "landscapeMode": false
+    "landscapeMode": true
   },
   "projects" : {
     "globalRoute": "/vid/",
@@ -147,10 +147,6 @@
       "https://img.icons8.com/clouds/100/musescore.png",
       "https://img.icons8.com/color/48/star-trek-xindi-insectoid-olaen-heavy-strike-wing-escort.png",
       "https://img.icons8.com/3d-fluency/94/3d-fluency-mixer.png"
-    ],
-    "landscapeStickers": [
-      "src/assets/Group.png"
     ]
-
   }
 }

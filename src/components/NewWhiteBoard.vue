@@ -79,9 +79,6 @@ export default {
     }
   },
   async mounted() {
-    if (this.isLandscape) {
-      this.icons=config.canvas.landscapeStickers
-    }
     this.aspectRatio = this.isLandscape ? 1.78 : 0.5625;
     this.canvas = this.$refs.canvas;
     this.ctx = this.canvas.getContext("2d");
@@ -182,9 +179,12 @@ export default {
             "http://www.w3.org/2000/svg",
             "image"
         );
-        sticker.setAttributeNS(null, "height", "48");
-        sticker.setAttributeNS(null, "width", "48");
-        sticker.setAttributeNS(null, "style", "z-index:200;");
+        let size = Math.floor(Math.random() * (55 - 35 + 1)) + 35;
+        let plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+        let rotate = Math.floor(Math.random() * (90 + 1)) * plusOrMinus;
+        sticker.setAttributeNS(null, "height", size);
+        sticker.setAttributeNS(null, "width", size);
+        sticker.setAttributeNS(null, "style", "z-index:200; rotate:"+rotate+"deg;");
         sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", this.stickerHref);
         sticker.setAttributeNS(null, "x", (e.x - (this.rectTarget.width) / 2));
         sticker.setAttributeNS(null, "y", (e.y - (this.rectTarget.height) / 2));
