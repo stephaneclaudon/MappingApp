@@ -147,6 +147,10 @@
       "https://img.icons8.com/clouds/100/musescore.png",
       "https://img.icons8.com/color/48/star-trek-xindi-insectoid-olaen-heavy-strike-wing-escort.png",
       "https://img.icons8.com/3d-fluency/94/3d-fluency-mixer.png"
+    ],
+    "landscapeStickers": [
+      "src/assets/Group.png"
     ]
+
   }
 }
