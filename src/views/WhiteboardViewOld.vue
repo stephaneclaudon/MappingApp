@@ -1,9 +1,9 @@
 <script setup>
-import NewWhiteBoard from '@/components/NewWhiteBoard.vue'
+import Whiteboard from '@/components/Whiteboard.vue'
 </script>
 
 <template>
   <div class="bg-primary">
-    <NewWhiteBoard/>
+    <Whiteboard/>
   </div>
 </template>
