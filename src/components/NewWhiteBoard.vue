@@ -187,8 +187,8 @@ export default {
         sticker.setAttributeNS(null, "style", "z-index:200; rotate:"+rotate+"deg;");
         sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", this.stickerHref);
         if (e.touches) {
-          sticker.setAttributeNS(null, "x", (e.touches[0].x - (this.rectTarget.width) / 2));
-          sticker.setAttributeNS(null, "y", (e.touches[0].y - (this.rectTarget.height) / 2));
+          sticker.setAttributeNS(null, "x", (e.touches[0].clientX - (this.rectTarget.width) / 2));
+          sticker.setAttributeNS(null, "y", (e.touches[0].clientY - (this.rectTarget.height) / 2));
         }
         else {
           sticker.setAttributeNS(null, "x", (e.x - (this.rectTarget.width) / 2));
