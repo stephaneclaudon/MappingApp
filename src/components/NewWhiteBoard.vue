@@ -373,10 +373,17 @@ export default {
       let whiteboard = document.querySelector(".whiteboard")
 
       const rect = canvasWrapper.getBoundingClientRect();
+
       element.addEventListener("mousedown", (event) => {
         console.log("eventListener", event)
         this.rectTarget = event.target.getBoundingClientRect();
         this.stickerHref = event.target.href.baseVal
+        this.isStickers = true
+      })
+      element.addEventListener("touchstart", (event) => {
+        console.log("eventListener", event)
+        this.rectTarget = event.touches[0].target.getBoundingClientRect();
+        this.stickerHref = event.touches[0].target.href.baseVal
         this.isStickers = true
       })
       // Draggable.create(element, {
