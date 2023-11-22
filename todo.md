@@ -8,10 +8,10 @@
 - [X] Appliquer une taille aléatoire au sticker quand on le pose
 - [x] Appliquer une rotation aléatoire au sticker quand on le pose
 - [X] Revoir l'interface utilisateur pour afficher la taille et la couleur sélectionnées
-- [ ] Examiner et corriger le problème où un simple toucher/clic ne produit aucune action
+- [X] Finir l'UI du canvas
+- [X] Examiner et corriger le problème où un simple toucher/clic ne produit aucune action
 - [ ] Ajouter les vrais stickers dans le projet
 - [ ] Ajouter les vrais videos dans le projet
-- [ ] Finir l'UI du canvas
 - [ ] Effectuer une tâche lors de la reconnaissance de mauvais dessins (penis, insultes...)
 - [ ] Effectuer une tâche lors de la reconnaissance de joli dessins (coeur, soleil...)
 
