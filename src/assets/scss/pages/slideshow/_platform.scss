@@ -1,5 +1,24 @@
 .platform {
-  overflow: hidden;
+  width: 170vw;
+  height: 420px;
+  background-color: rgba(218, 239, 255, 1);
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 30px 4px;
+  position: absolute;
+  bottom: -50px;
+  border-top-right-radius: 50%;
+  border-top-left-radius: 50%;
+  transition: 1.5s;
+}
+
+.platform-text {
+  position: absolute;
+  bottom: 7rem;
+  text-align: center;
+  transition: 0.7s;
+  color: black;
+}
+
+.platform-ls {
   height: 170vh;
   width: 420px;
   background-color: rgba(218, 239, 255, 1);
@@ -10,12 +29,8 @@
   border-top-left-radius: 50%;
   transition: 1.5s;
 }
-.plateform-translate {
-  transform: translateY(25rem);
-  transition: 1s;
-}
 
-.plateform-text {
+.platform-text-ls {
   position: absolute;
   right: 7rem;
   text-align: center;
