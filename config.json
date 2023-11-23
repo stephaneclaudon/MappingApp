@@ -1,7 +1,8 @@
 {
   "global": {
     "mode": 0,
-    "requestUrl": "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1"
+    "requestUrl": "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1",
+    "landscapeMode": true
   },
   "projects" : {
     "globalRoute": "/vid/",
@@ -10,7 +11,8 @@
         "image": "/thumbnails/0.jpg",
         "video": "video0",
         "mainColor": "rgb(100, 100, 100)",
-        "bgImg": "/thumbnails/0rotated.jpg",
+        "bgImg": "/thumbnails/0.jpg",
+        "landscapeBgImg": "/thumbnails/0rotated.jpg",
         "title": "Slide 0",
         "author":  "Author 0"
       },
@@ -18,7 +20,8 @@
         "image": "/thumbnails/1.jpg",
         "video": "video1",
         "mainColor": "rgb(230, 203, 255)",
-        "bgImg": "/thumbnails/1rotated.jpg",
+        "bgImg": "/thumbnails/1.jpg",
+        "landscapeBgImg": "/thumbnails/1rotated.jpg",
         "title": "Slide 1",
         "author":  "Author 1"
       },
@@ -26,7 +29,8 @@
         "image": "/thumbnails/2.jpg",
         "video": "video2",
         "mainColor": "rgb(218, 255, 224)",
-        "bgImg": "/thumbnails/2rotated.jpg",
+        "bgImg": "/thumbnails/2.jpg",
+        "landscapeBgImg": "/thumbnails/2rotated.jpg",
         "title": "Slide 2",
         "author":  "Author 2"
       },
@@ -34,7 +38,8 @@
         "image": "/thumbnails/3.jpg",
         "video": "video3",
         "mainColor": "rgb(254, 255, 218)",
-        "bgImg": "/thumbnails/3rotated.jpg",
+        "bgImg": "/thumbnails/3.jpg",
+        "landscapeBgImg": "/thumbnails/3rotated.jpg",
         "title": "Slide 3",
         "author":  "Author 3"
       },
@@ -42,7 +47,8 @@
         "image": "/thumbnails/4.jpg",
         "video": "video4",
         "mainColor": "rgb(255, 207, 184)",
-        "bgImg": "/thumbnails/4rotated.jpg",
+        "bgImg": "/thumbnails/4.jpg",
+        "landscapeBgImg": "/thumbnails/4rotated.jpg",
         "title": "Slide 4",
         "author":  "Author 4"
       },
@@ -50,7 +56,8 @@
         "image": "/thumbnails/5.jpg",
         "video": "video5",
         "mainColor": "rgb(100, 100, 100)",
-        "bgImg": "/thumbnails/5rotated.jpg",
+        "bgImg": "/thumbnails/5.jpg",
+        "landscapeBgImg": "/thumbnails/5rotated.jpg",
         "title": "Slide 5",
         "author":  "Author 5"
       },
@@ -58,7 +65,8 @@
         "image": "/thumbnails/6.jpg",
         "video": "video6",
         "mainColor": "rgb(255, 218, 218)",
-        "bgImg": "/thumbnails/6rotated.jpg",
+        "bgImg": "/thumbnails/6.jpg",
+        "landscapeBgImg": "/thumbnails/6rotated.jpg",
         "title": "Slide 6",
         "author":  "Author 6"
       },
@@ -66,7 +74,8 @@
         "image": "/thumbnails/7.jpg",
         "video": "video7",
         "mainColor": "rgb(255, 240, 218)",
-        "bgImg": "/thumbnails/7rotated.jpg",
+        "bgImg": "/thumbnails/7.jpg",
+        "landscapeBgImg": "/thumbnails/7rotated.jpg",
         "title": "Slide 7",
         "author":  "Author 7"
       }
@@ -76,12 +85,6 @@
   "canvas" : {
     "colors": [
       "#FFFFFF",
-      "#FF0000",
-      "#00FF00",
-      "#0000FF",
-      "#FFFF00",
-      "#FF00FF",
-      "#00FFFF",
       "#00A5C8",
       "#1BB1A1",
       "#097EB3",
@@ -97,19 +100,31 @@
       "default": 20,
       "max": 48
     },
+    "brushSizesArray": [6, 12, 24, 32, 42 ],
     "stickers": [
-      "src/assets/Group.png",
-      "src/assets/major.png",
-      "src/assets/cs2.png",
-      "src/assets/Vector.png",
-      "src/assets/Vector-1.png",
-      "https://img.icons8.com/dusk/64/000000/department.png",
-      "https://img.icons8.com/dusk/64/000000/organization.png",
-      "https://img.icons8.com/dusk/64/000000/small-business.png",
-      "https://img.icons8.com/dusk/64/000000/company.png",
-      "https://img.icons8.com/clouds/100/musescore.png",
-      "https://img.icons8.com/color/48/star-trek-xindi-insectoid-olaen-heavy-strike-wing-escort.png",
-      "https://img.icons8.com/3d-fluency/94/3d-fluency-mixer.png"
+      "src/assets/stickers/arc_en_ciel.png",
+      "src/assets/stickers/arbre.png",
+      "src/assets/stickers/quille.png",
+      "src/assets/stickers/fenetre_cool.png",
+      "src/assets/stickers/Halloween.png",
+      "src/assets/stickers/CIVISME_LANGLADE_THEO_stickers_1.png",
+      "src/assets/stickers/fleurs_cool.png",
+      "src/assets/stickers/guirlande.png",
+      "src/assets/stickers/CIVISME_LANGLADE_THEO_stickers_3.png",
+      "src/assets/stickers/coeur_cool.png",
+      "src/assets/stickers/Hiver.png",
+      "src/assets/stickers/Japonais.png",
+      "src/assets/stickers/Steakers_tourniquet.png",
+      "src/assets/stickers/sticker_immeuble2.png",
+      "src/assets/stickers/tennis-racket.png",
+      "src/assets/stickers/sticker_lampadaire.png",
+      "src/assets/stickers/Stickers_GrandeRoue.png",
+      "src/assets/stickers/Stikers_Tobbogan.png",
+      "src/assets/stickers/banana_dark.png",
+      "src/assets/stickers/butterfly.png",
+      "src/assets/stickers/CIVISME_LANGLADE_THEO_stickers_2.png",
+      "src/assets/stickers/ivy_light.png",
+      "src/assets/stickers/main.png"
     ]
   }
 }

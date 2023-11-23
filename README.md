@@ -6,17 +6,30 @@
 > 0 -> Start app **WITHOUT** url fetch for auto-nav.
 - requestUrl
 > URL for auto-nav url fetch.
+- landscapeMode
+> true -> to use the app in landscape (if needed)
+> false -> to use app in portrait
 
 
 ### Projects
 - globalRoute
 > route for video page
 
-#### Projects
+#### Slides
 - image
 > images sources for slideshow (used as source).
 - video
 > videos name for slideshow (used as source and route).
+- mainColor
+> main color for slider platform
+- bgImg
+> background image for slider
+- landscapeBgImg
+> landscape background image for slider
+- title
+> title of the project
+- author
+> author of the project
 
 ### Canvas
 - colors
@@ -40,23 +53,14 @@
 ### Fichiers
 > Files names: FileName.ext --> PascalCase
 
-
-# my-vue-app
+# App setup & running
 
 This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
 
 ## Project Setup
 
 ```sh
-npm install
+npm install --force
 ```
 
 ### Compile and Hot-Reload for Development
@@ -70,9 +74,10 @@ npm run dev
 ```sh
 npm run build
 ```
+## Files
 
-### Lint with [ESLint](https://eslint.org/)
+### Slider
 
-```sh
-npm run lint
-```
+For the slider videos, put them in /public .
+Thumbnails goes in /public/thumbnails and backgrounds images goes in /public/slideshowBackgrounds.
+
