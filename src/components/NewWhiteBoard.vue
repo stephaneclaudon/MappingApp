@@ -186,8 +186,14 @@ export default {
         sticker.setAttributeNS(null, "width", size);
         sticker.setAttributeNS(null, "style", "z-index:200; rotate:"+rotate+"deg;");
         sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", this.stickerHref);
-        sticker.setAttributeNS(null, "x", (e.x - (this.rectTarget.width) / 2));
-        sticker.setAttributeNS(null, "y", (e.y - (this.rectTarget.height) / 2));
+        if (e.touches) {
+          sticker.setAttributeNS(null, "x", (e.touches[0].clientX - (this.rectTarget.width) / 2));
+          sticker.setAttributeNS(null, "y", (e.touches[0].clientY - (this.rectTarget.height) / 2));
+        }
+        else {
+          sticker.setAttributeNS(null, "x", (e.x - (this.rectTarget.width) / 2));
+          sticker.setAttributeNS(null, "y", (e.y - (this.rectTarget.height) / 2));
+        }
         sticker.setAttributeNS(null, "visibility", "visible");
         sticker.classList.add("sticker");
         // sticker.dataset.type = mySticker.dataset.type;
@@ -373,10 +379,17 @@ export default {
       let whiteboard = document.querySelector(".whiteboard")
 
       const rect = canvasWrapper.getBoundingClientRect();
+
       element.addEventListener("mousedown", (event) => {
         console.log("eventListener", event)
         this.rectTarget = event.target.getBoundingClientRect();
         this.stickerHref = event.target.href.baseVal
+        this.isStickers = true
+      })
+      element.addEventListener("touchstart", (event) => {
+        console.log("eventListener", event)
+        this.rectTarget = event.touches[0].target.getBoundingClientRect();
+        this.stickerHref = event.touches[0].target.href.baseVal
         this.isStickers = true
       })
       // Draggable.create(element, {
