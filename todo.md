@@ -10,7 +10,9 @@
 - [X] Revoir l'interface utilisateur pour afficher la taille et la couleur sélectionnées
 - [X] Finir l'UI du canvas
 - [X] Examiner et corriger le problème où un simple toucher/clic ne produit aucune action
-- [ ] Ajouter les vrais stickers dans le projet
+- [X] Ajouter les vrais stickers dans le projet
+- [ ] Activer le full screen
+- [ ] Retravailler l'UI des stickers (selected / unselected)
 - [ ] Ajouter les vrais videos dans le projet
 - [ ] Effectuer une tâche lors de la reconnaissance de mauvais dessins (penis, insultes...)
 - [ ] Effectuer une tâche lors de la reconnaissance de joli dessins (coeur, soleil...)
