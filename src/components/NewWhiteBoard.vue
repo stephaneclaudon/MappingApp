@@ -74,7 +74,9 @@ export default {
       deviceType: null,
       isEraserSelected: false,
       isLandscape: config.global.landscapeMode,
+      predictionEnable: config.global.predictionEnable,
       isFullscreenEnable: config.global.FullscreenEnable,
+      datasetGeneratorMode: config.global.datasetGeneratorMode,
       icons: config.canvas.stickers,
       brushSizes: config.canvas.brushSizesArray,
       currentSize: config.canvas.brushSizesArray[1],
@@ -94,7 +96,10 @@ export default {
   },
   async mounted() {
 
-    this.resetDrawingTimer();
+    if (this.predictionEnable) {
+      this.resetDrawingTimer();
+    }
+
     this.aspectRatio = this.isLandscape ? 1.78 : 0.5625;
     this.canvas = this.$refs.canvas;
     this.ctx = this.canvas.getContext("2d");
@@ -118,24 +123,25 @@ export default {
       this.styleObject = 'height: calc(' + this.icons.length + ' * 64px);'
 
     }
-    this.prevCanvas = document.createElement('canvas');
-    this.prevCanvas.width = this.canvas.width;
-    this.prevCanvas.height = this.canvas.height;
-    this.prevCtx = this.prevCanvas.getContext('2d');
+    if (this.predictionEnable) {
+
+      this.prevCanvas = document.createElement('canvas');
+      this.prevCanvas.width = this.canvas.width;
+      this.prevCanvas.height = this.canvas.height;
+      this.prevCtx = this.prevCanvas.getContext('2d');
 
 
-    this.prevTwoLastCanvas = document.createElement('canvas');
-    this.prevTwoLastCanvas.width = this.canvas.width;
-    this.prevTwoLastCanvas.height = this.canvas.height;
+      this.prevTwoLastCanvas = document.createElement('canvas');
+      this.prevTwoLastCanvas.width = this.canvas.width;
+      this.prevTwoLastCanvas.height = this.canvas.height;
 
-    this.prevTwoLastCtx = this.prevTwoLastCanvas.getContext('2d');
-    this.createDiffCanvas();
-    // Mettez à jour la version précédente du dessin initialement
+      this.prevTwoLastCtx = this.prevTwoLastCanvas.getContext('2d');
+      this.createDiffCanvas();
+      // Mettez à jour la version précédente du dessin initialement
 
-    this.updatePrevCanvas();
-
-    await this.initTeachableMachine();
-
+      this.updatePrevCanvas();
+      await this.initTeachableMachine();
+    }
     if (this.isFullscreenEnable) {
       document.addEventListener("mousemove", () => {
             this.toggleFullscreen()
@@ -154,14 +160,16 @@ export default {
     saveCanvasState() {
       // Enregistrez l'état actuel du canvas
       this.previousCanvasState = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    },
+    }
+    ,
 
     restorePreviousCanvasState() {
       // Restaurez l'état du canvas à celui enregistré précédemment
       if (this.previousCanvasState) {
         this.ctx.putImageData(this.previousCanvasState, 0, 0);
       }
-    },
+    }
+    ,
     updatePrevCanvas() {
       if (this.recognitionCount === 2) {
         const prevTwoLastCtx = this.prevTwoLastCanvas.getContext('2d');
@@ -233,7 +241,9 @@ export default {
     downloadImage(imageName) {
       const link = document.getElementById('download');
       link.download = imageName;
-      link.click();
+      if (this.datasetGeneratorMode) {
+        link.click();
+      }
     }
     ,
     getFormattedTime() {
@@ -330,7 +340,6 @@ export default {
       // Display predictions in the UI
 
 
-
       if (predictedLabel === "love") {
         console.log("Coordonnées du dessin :", this.currentDrawing);
         let drawingBoundingBox = this.calculateBoundingBox(this.currentDrawing);
@@ -344,7 +353,8 @@ export default {
       }
 
 
-    },
+    }
+    ,
 
     resetDrawingTimer() {
       // Effacez le minuteur existant s'il y en a un
@@ -359,7 +369,8 @@ export default {
         })
 
       }, 1000);
-    },
+    }
+    ,
     calculateBoundingBox(points) {
       if (points.length === 0) {
         return null;
@@ -381,7 +392,8 @@ export default {
 
       return {minX, minY, maxX, maxY};
 
-    },
+    }
+    ,
     drawBoundingBox(box) {
       if (!box) {
         return;
@@ -592,8 +604,10 @@ export default {
         this.erase(e);
       }
       if (!this.painting) return
-      this.resetDrawingTimer()
+      if (this.predictionEnable) {
+        this.resetDrawingTimer()
 
+      }
 
       this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
       this.ctx.stroke()
@@ -610,8 +624,9 @@ export default {
         this.erase(e);
       }
       if (!this.painting) return
-      this.resetDrawingTimer()
-
+      if (this.predictionEnable) {
+        this.resetDrawingTimer()
+      }
       this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop)
       this.ctx.stroke()
 
@@ -640,7 +655,9 @@ export default {
 
       if (!this.isEraserSelected) {
 
-        this.resetDrawingTimer()
+        if (this.predictionEnable) {
+          this.resetDrawingTimer()
+        }
       }
     }
     ,

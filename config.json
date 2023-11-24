@@ -3,7 +3,9 @@
     "mode": 0,
     "requestUrl": "https://www.dropbox.com/scl/fi/72m58jt4pq2ffgqpglo43/slideshow-opacity.-json?rlkey=1swojrc1aprqibkkchptrxi6y&dl=1",
     "landscapeMode": true,
-    "FullscreenEnable": false
+    "FullscreenEnable": false,
+    "datasetGeneratorMode": false,
+    "predictionEnable": false
   },
   "projects" : {
     "globalRoute": "/vid/",
