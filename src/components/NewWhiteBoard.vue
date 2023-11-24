@@ -6,7 +6,7 @@
 
 
     <div class="sidebar" id="sidebar">
-      <div class="stickers-wrapper"  :class="{active : stickersState }">
+      <div class="stickers-wrapper" :class="{active : stickersState }">
         <div class="stickers-container-container">
           <div class="stickers-container" :style="styleObject">
             <svg class="stickers" style=""></svg>
@@ -16,7 +16,9 @@
         <div class="sitckers-wording" @click="toggleStickers">
           <p>autocollant</p>
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="23" viewBox="0 0 13 23" fill="none">
-            <path d="M2.5269 22.306C2.3492 22.4924 2.10247 22.6167 1.82602 22.6167C1.26342 22.6167 0.838989 22.1714 0.838989 21.5811C0.838989 21.3015 0.937642 21.0323 1.12524 20.8562L11.2133 10.6663L11.2133 11.94L1.12524 1.77073C0.937643 1.58431 0.83899 1.30467 0.83899 1.03543C0.83899 0.445202 1.26342 -6.85971e-05 1.82602 -6.85904e-05C2.10247 -6.85871e-05 2.3393 0.113821 2.5269 0.310529L12.6643 10.5213C12.8716 10.7284 12.9999 11.008 12.9999 11.3083C12.9999 11.6086 12.8815 11.8778 12.6643 12.0953L2.5269 22.306Z" fill="black"/>
+            <path
+                d="M2.5269 22.306C2.3492 22.4924 2.10247 22.6167 1.82602 22.6167C1.26342 22.6167 0.838989 22.1714 0.838989 21.5811C0.838989 21.3015 0.937642 21.0323 1.12524 20.8562L11.2133 10.6663L11.2133 11.94L1.12524 1.77073C0.937643 1.58431 0.83899 1.30467 0.83899 1.03543C0.83899 0.445202 1.26342 -6.85971e-05 1.82602 -6.85904e-05C2.10247 -6.85871e-05 2.3393 0.113821 2.5269 0.310529L12.6643 10.5213C12.8716 10.7284 12.9999 11.008 12.9999 11.3083C12.9999 11.6086 12.8815 11.8778 12.6643 12.0953L2.5269 22.306Z"
+                fill="black"/>
           </svg>
         </div>
       </div>
@@ -69,6 +71,7 @@ export default {
       deviceType: null,
       isEraserSelected: false,
       isLandscape: config.global.landscapeMode,
+      isFullscreenEnable: config.global.FullscreenEnable,
       icons: config.canvas.stickers,
       brushSizes: config.canvas.brushSizesArray,
       currentSize: config.canvas.brushSizesArray[1],
@@ -96,17 +99,30 @@ export default {
     this.ctx.lineCap = "round";
     // this.toggleStickers()
     if (!this.isLandscape) {
-      this.styleObject = 'width: calc('+ this.icons.length+' * 64px);'
+      this.styleObject = 'width: calc(' + this.icons.length + ' * 64px);'
     } else {
-      this.styleObject = 'height: calc('+ this.icons.length+' * 64px);'
+      this.styleObject = 'height: calc(' + this.icons.length + ' * 64px);'
 
     }
-
+    if (this.isFullscreenEnable) {
+      document.addEventListener("mousemove", () => {
+            this.toggleFullscreen()
+          }
+      )
+      document.addEventListener("touchmove", () => {
+            this.toggleFullscreen()
+          }
+      )
+    }
   },
   beforeUnmount() {
     this.removeListeners();
   },
   methods: {
+
+    toggleFullscreen() {
+      document.getElementById('app').requestFullscreen()
+    },
     toggleStickers() {
       this.stickersState = !this.stickersState
       return this.stickersState
@@ -184,13 +200,12 @@ export default {
         let rotate = Math.floor(Math.random() * (90 + 1)) * plusOrMinus;
         sticker.setAttributeNS(null, "height", size);
         sticker.setAttributeNS(null, "width", size);
-        sticker.setAttributeNS(null, "style", "z-index:200; rotate:"+rotate+"deg;");
+        sticker.setAttributeNS(null, "style", "z-index:200; rotate:" + rotate + "deg;");
         sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", this.stickerHref);
         if (e.touches) {
           sticker.setAttributeNS(null, "x", (e.touches[0].clientX - (this.rectTarget.width) / 2));
           sticker.setAttributeNS(null, "y", (e.touches[0].clientY - (this.rectTarget.height) / 2));
-        }
-        else {
+        } else {
           sticker.setAttributeNS(null, "x", (e.x - (this.rectTarget.width) / 2));
           sticker.setAttributeNS(null, "y", (e.y - (this.rectTarget.height) / 2));
         }
@@ -349,14 +364,13 @@ export default {
       sticker.setAttributeNS(null, "height", "48");
       sticker.setAttributeNS(null, "width", "48");
       sticker.setAttributeNS("http://www.w3.org/1999/xlink", "href", path);
-        if (this.isLandscape) {
-      sticker.setAttributeNS(null, "x", "0");
-      sticker.setAttributeNS(null, "y", 64 * i);
-        }
-        else {
-          sticker.setAttributeNS(null, "x", 64 * i);
-          sticker.setAttributeNS(null, "y", "0");
-        }
+      if (this.isLandscape) {
+        sticker.setAttributeNS(null, "x", "0");
+        sticker.setAttributeNS(null, "y", 64 * i);
+      } else {
+        sticker.setAttributeNS(null, "x", 64 * i);
+        sticker.setAttributeNS(null, "y", "0");
+      }
       sticker.setAttributeNS(null, "visibility", "visible");
       sticker.classList.add("sticker");
       sticker.dataset.type = `sticker-${i}`;
