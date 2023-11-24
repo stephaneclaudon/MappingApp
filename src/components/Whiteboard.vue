@@ -224,15 +224,14 @@ export default {
     },
     createDiffCanvas() {
       this.diffCanvas = document.createElement('canvas');
-      this.diffCanvas.width = this.canvas.width;
-      this.diffCanvas.height = this.canvas.height;
+      this.diffCanvas.width = 1239;
+      this.diffCanvas.height = 1239;
       this.diffCtx = this.diffCanvas.getContext('2d');
       this.diffTwoLastCanvas = document.createElement('canvas');
-      this.diffTwoLastCanvas.width = this.canvas.width;
-      this.diffTwoLastCanvas.height = this.canvas.height;
+      this.diffTwoLastCanvas.width = 1239;
+      this.diffTwoLastCanvas.height = 1239;
       this.diffTwoLastCtx = this.diffTwoLastCanvas.getContext('2d');
     },
-    // Comparez le canvas actuel avec la version précédente
     compareCanvases() {
       if (this.recognitionCount === 2) {
         this.diffTwoLastCtx.clearRect(0, 0, this.diffTwoLastCanvas.width, this.diffTwoLastCanvas.height);
@@ -251,8 +250,6 @@ export default {
           }
         }
       }
-
-
       // Effacez le canvas des différences
       this.diffCtx.clearRect(0, 0, this.diffCanvas.width, this.diffCanvas.height);
 
@@ -260,16 +257,21 @@ export default {
       const prevImageData = this.prevCtx.getImageData(0, 0, this.prevCanvas.width, this.prevCanvas.height);
 
       // Parcourez tous les pixels
-      for (let i = 0; i < currentImageData.data.length; i += 4) {
-        if (
-            currentImageData.data[i] !== prevImageData.data[i] ||
-            currentImageData.data[i + 1] !== prevImageData.data[i + 1] ||
-            currentImageData.data[i + 2] !== prevImageData.data[i + 2] ||
-            currentImageData.data[i + 3] !== prevImageData.data[i + 3]
-        ) {
+      for (let i = 0; i < this.canvas.height; i++) {
+        for (let j = 0; j < this.canvas.width; j++) {
+          const index = (i * this.canvas.width + j) * 4;
+
           // Si les pixels sont différents, dessinez-les sur le canvas des différences
-          this.diffCtx.fillStyle = `rgba(${currentImageData.data[i]}, ${currentImageData.data[i + 1]}, ${currentImageData.data[i + 2]}, ${currentImageData.data[i + 3] / 255})`;
-          this.diffCtx.fillRect((i / 4) % this.canvas.width, Math.floor(i / 4 / this.canvas.width), 1, 1);
+          if (
+              currentImageData.data[index] !== prevImageData.data[index] ||
+              currentImageData.data[index + 1] !== prevImageData.data[index + 1] ||
+              currentImageData.data[index + 2] !== prevImageData.data[index + 2] ||
+              currentImageData.data[index + 3] !== prevImageData.data[index + 3]
+          ) {
+            // Si les pixels sont différents, dessinez-les sur le canvas des différences
+            this.diffCtx.fillStyle = `rgba(${currentImageData.data[index]}, ${currentImageData.data[index + 1]}, ${currentImageData.data[index + 2]}, ${currentImageData.data[index + 3] / 255})`;
+            this.diffCtx.fillRect(j, i, 1, 1);
+          }
         }
       }
 
