@@ -8,6 +8,7 @@ const router = createRouter({
   routes: [{
       path: '/',
       name: 'home',
+      redirect: { path: '/slideshow' },
       component: HomeView
     },
     {

@@ -1,18 +1,23 @@
 <template>
     <!-- <div class="video-container" :style="isLandscape ? 'video-container-ls' : ''"> -->
-        <router-link to="/slideshow">
-            <video autoplay loop :style="isLandscape ? getVideoStyle() : getVideoStyle()">
-                <source :src="'/' + $route.fullPath.split('/')[2] + '.mp4'" type="video/mp4">
-            </video>
-        </router-link>
+    <router-link :to="callbackURL">
+        <video autoplay loop :style="isLandscape ? getVideoStyle() : getVideoStyle()">
+            <source :src="currentVideoPath" type="video/mp4">
+        </video>
+    </router-link>
     <!-- </div> -->
 </template>
 
 <script>
 import config from '../../config.json';
+import { useRoute } from "vue-router";
 export default {
     setup() {
         const isLandscape = config.global.landscapeMode
+        const route = useRoute();
+        const currentVideoPath = config.projects.slides[parseInt(route.params.video)].video;
+        const callbackURL = '/slideshow#' + route.params.video;
+        console.log("Loading " + currentVideoPath + "...");
 
         const getVideoStyle = () => {
             if (isLandscape) {
@@ -23,6 +28,8 @@ export default {
         }
 
         return {
+            callbackURL,
+            currentVideoPath,
             isLandscape,
             getVideoStyle
         }

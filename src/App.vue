@@ -1,22 +1,23 @@
 <script setup>
 import { RouterView } from 'vue-router';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import config from '../config.json'
 import { register } from 'swiper/element/bundle';
 register();
 
 const router = useRouter();
+const route = useRoute();
 
 function parseResponse(data) {
-  console.log(data)
   if (data === undefined || data === null) {
     return
   }
 
   const value = data.VALUE[0]
-
+console.log(route.path);
   if (value > 0.5) {
-    router.push({ path: '/' })
+    if (route.path == '/whiteboard')
+      router.push({ path: '/slideshow' })
   } else {
     router.push({ path: '/whiteboard' })
   }

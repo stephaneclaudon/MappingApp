@@ -35,7 +35,7 @@
                @click="changeSize(size)"
                class="ellipse-container"
                :class="{selected : size === currentSize}">
-            <div class="ellipse" :style="getPenStyle(size)"></div>
+            <div class="ellipse" :style="getPenStyle(index, brushSizes.length)"></div>
           </div>
         </div>
       </div>
@@ -831,8 +831,8 @@ export default {
       this.currentSize = size
     }
     ,
-    getPenStyle(size) {
-      return {width: size + 'px!important', height: size + 'px!important', backgroundColor: this.brushColor}
+    getPenStyle(index, count) {
+      return {width: 10 + ((50/count)*index) + 'px!important', height: 10 + ((50/count)*index) + 'px!important', backgroundColor: this.brushColor}
     }
     ,
   }

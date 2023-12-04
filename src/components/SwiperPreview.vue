@@ -1,7 +1,8 @@
 <template>
-  <div class="slideshow-container" :style="isLandscape ? { backgroundImage: `url(${slides[currentIndex].landscapeBgImg})` } : { backgroundImage: `url(${slides[currentIndex].bgImg})` }">
-    <!-- <img :src="slides[currentIndex].bgImg" class="background-image"> -->
+  <div class="slideshow-container" :class="isLandscape ? 'landscape' : 'portrait'">
+    <img :src="slides[currentIndex].bgImg" class="slideshow-container_bg">
     <swiper-container
+      ref="theSwiper"
       :effect="'coverflow'"
       :direction="isLandscape ? 'vertical' : 'horizontal'"
       :grabCursor="true"
@@ -19,15 +20,16 @@
       :modules="modules"
       @swiperslidechange="onSlideChange"
       class="mySwiper swiper"
+      id="swiper"
     >
-      <swiper-slide 
+      <swiper-slide
         v-for="(slide, index) in slides"
         :key="index"
-        style="padding: 2.5rem"
         :class="isLandscape ? 'swiper-slide-ls' : ''"
+        style="padding: 2.5rem"
       >
-          <a @click="goToVideo(route+slide.video, index)">
-            <img :src="isLandscape ? slide.landscapeBgImg : slide.bgImg"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"/>
+          <a @click="goToVideo(index)">
+            <img :src="slide.bgImg"  class="slideshow-img" :style="{ boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}`}"/>
           </a>
       </swiper-slide>   
     </swiper-container>
@@ -39,13 +41,13 @@
     <div id="slider-shadow-v2" :class="isLandscape ? 'slider-shadow-v2-ls' : 'slider-shadow-v2'" :style="{ backgroundColor: `color-mix(in srgb, ${slides[currentIndex].mainColor} 40% , rgba(0, 0, 0, 0.2))` }"></div>
 
     <div id="platform-text" :class="isLandscape ? 'platform-text-ls' : 'platform-text'">
-      <h1 style="font-size: 4.5rem; color: black;">{{ slides[currentIndex].title }}</h1>
+      <!--<h1 style="font-size: 4.5rem; color: black;">{{ slides[currentIndex].title }}</h1>-->
       <p style="font-size: 1.5rem;">{{ slides[currentIndex].author }}</p>
     </div>
 
     <div id="transition-img" :class="isLandscape ? 'transition-img-ls' : 'transition-img'" style="opacity: 0; z-index: 0;">
       <img 
-        :src="isLandscape ? slides[currentIndex].landscapeBgImg : slides[currentIndex].bgImg"
+        :src="slides[currentIndex].bgImg"
         :id="`transition-img-${currentIndex}`"
         style="z-index: 0"
         :style="isLandscape ? {width: '420px', boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}` } : { height: '420px', boxShadow: `${slides[currentIndex].mainColor+' 0px 0px 20px 2px'}` }"
@@ -66,7 +68,7 @@
   import 'swiper/css/effect-coverflow';
   import 'swiper/css/pagination';
 
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
 
   // import required modules
   import { EffectCoverflow, Pagination } from 'swiper/modules';
@@ -85,21 +87,23 @@
     },
     setup() {
       const router = useRouter();
+      const route = useRoute();
 
       const isLandscape = config.global.landscapeMode
 
-      const currentIndex = ref(0)
+      let urlHash = parseInt(route.hash.replace('#',''));
+      urlHash = isNaN(urlHash)?0:urlHash;
+      const defaultIndex = urlHash;
+
+      const currentIndex = ref(0);
+      currentIndex.value = defaultIndex;
+
 
       const onSlideChange = () => {
         const swiperEl = document.getElementsByClassName('mySwiper');
-        const oldIndex = currentIndex.value
-
+        if(swiperEl.length == 0) return
         if(!swiperEl[0].swiper) return
-        currentIndex.value = swiperEl[0].swiper.realIndex
-
-        if(oldIndex !== currentIndex.value){
-          console.log(swiperEl[0].swiper.realIndex)
-        }
+        currentIndex.value = swiperEl[0].swiper.realIndex;
       }
 
       const pushRouter = (path) => {
@@ -133,7 +137,7 @@
           platform.style.transform = 'translateX(25rem)'
           shadow1.style.transform = 'translateX(25rem) rotate(288deg)'
           shadow2.style.transform = 'translateX(25rem) rotate(295deg)'
-        } else {
+        } else {http://localhost:5173/thumbnails/verdure-clivaz_melisse_dessin_1.jpg
           platform.style.transform = 'translateY(25rem)'
           shadow1.style.transform = 'translateY(25rem)'
           shadow2.style.transform = 'translateY(25rem)'
@@ -145,20 +149,20 @@
         // transition for the transition image
         const windowHeight = window.outerHeight;
         const imageHeight = swiperEl.height;
-        const scaleRatio = windowHeight / (imageHeight);
+        const scaleRatio = isLandscape ? window.outerWidth / (imageHeight) : (windowHeight / (imageHeight));
         swiperEl.style.transform = `scale(${scaleRatio})`
       }
 
-      const goToVideo = (path, index) => {
-        console.log("helo")
+      const goToVideo = (index) => {
         runTransition(index)
 
         setTimeout(() => {
-          pushRouter(path)
-        }, 1700);
+          pushRouter(config.projects.globalRoute + index)
+        }, 800);
       }
 
       return {
+        defaultIndex,
         onSlideChange,
         goToVideo,
         modules: [EffectCoverflow, Pagination],
@@ -166,10 +170,15 @@
         isLandscape
       };
     },
+    async mounted() {
+      this.$refs.theSwiper.swiper.slideToLoop(this.defaultIndex, 0, false)
+    }
   };
 </script>
 
 <style scoped>
+
+
 .swiper-slide {
   background-position: center;
   background-size: fill;
@@ -217,4 +226,27 @@
   border-radius: 1rem;
   /* border: 4px solid red; */
 }
+
+.slideshow-container_bg {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+}
+
+.landscape {
+  .slideshow-container_bg {
+    rotate: -90Deg;
+    width: 100vh;
+    height: 100vw;
+  }
+
+  #transition-img {
+    rotate: -90Deg;
+  }
+
+  .swiper-slide-ls img {
+    rotate: -90Deg;
+  }
+}
+
 </style>
