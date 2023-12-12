@@ -93,7 +93,6 @@
       </section>
       
     
-     
 
 </div>
 
@@ -101,6 +100,11 @@
 
 
   
+<div class="illustration">
+            <div class="i-large"></div>
+            <div class="i-medium"></div>
+            <div class="i-small"></div>
+        </div>
       
     
      
@@ -134,7 +138,57 @@
   
   <style>
 
+.illustration {
+    position: absolute;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0.5;	
+}
+ 
+.i-large,
+.i-medium,
+.i-small {
+	position : absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
 
+}
+ 
+.i-large {
+	background: url("src/assets/snow/particules_large.png") repeat 0px 0px;;
+	-webkit-animation: dropFlowParticles 8s linear infinite;
+	     -o-animation: dropFlowParticles 8s linear infinite;
+	        animation: dropFlowParticles 8s linear infinite;
+}
+.i-medium {
+	background: url("src/assets/snow/particules_medium.png") repeat 0px 0px;
+	-webkit-animation: dropFlowParticles 22s linear infinite;
+	     -o-animation: dropFlowParticles 22s linear infinite;
+	        animation: dropFlowParticles 22s linear infinite;
+}
+.i-small {
+	background:url("src/assets/snow/particules_small.png") repeat 0px 0px;
+	-webkit-animation: dropFlowParticles 36s linear infinite;
+	     -o-animation: dropFlowParticles 36s linear infinite;
+	        animation: dropFlowParticles 36s linear infinite;
+}
+.i-large,
+.i-medium,
+.i-small {
+    background-size: contain;
+}
+ 
+@-webkit-keyframes dropFlowParticles {
+	from { background-position: 0 0; }
+	to { background-position: 0 100vw; }
+}
+@keyframes dropFlowParticles {
+	from { background-position: 0 0; }
+	to { background-position: 100vw 0; }
+}
 
 
   #canvasContainer{
