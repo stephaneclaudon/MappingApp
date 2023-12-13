@@ -1,3 +1,6 @@
+
+import { log } from '@tensorflow/tfjs';
+import config from '../config.json';
 export function initializeMiniApp() {
 
 
@@ -16,23 +19,22 @@ export function initializeMiniApp() {
         var currentSize = '';
 		// INITIAL LAUNCH
         
-        var config = '';
-        var origine = '../';
-        fetch(origine+'config.json')
-        .then((response) => response.json())
-        .then((json) =>  init_canvas(json) );        
+        var origine = '../';   
+        init_canvas(config);
      
         function init_canvas(json){
-            console.log(json);
+
+
+
             var ul = document.getElementById('stickersList');
-            for (var i = 0; i < json.canvas.stickers.length; ++i) {
+            /*for (var i = 0; i < json.canvas.stickers.length; ++i) {
                 var li = document.createElement('li');
                 ul.appendChild(li);
-                li.innerHTML = '<img class="sticker elementToFadeInAndOut" src="'+origine+json.canvas.stickers[i]+'" >';
-            }
+                li.innerHTML = '<img class="sticker elementToFadeInAndOut" src="'+json.canvas.stickers[i]+'" >';
+            }*/
             var ul = document.getElementById('colorsSelector');
+            ul.innerHTML = "";
             for (var i = 0; i < json.canvas.colors.length; ++i) {
-                console.log(json.canvas.colors[i]);
                 var li = document.createElement('li'); 
                 ul.appendChild(li);                            
                 li.id = 'color'+(i+1);
@@ -42,8 +44,8 @@ export function initializeMiniApp() {
             }
 
             var ul = document.getElementById('sizeSelector');
+            ul.innerHTML = "";
             for (var i = 0; i < json.canvas.brushSizesArray.length; ++i) {
-                console.log(json.canvas.brushSizesArray[i]);
                 var li = document.createElement('li'); 
                 ul.appendChild(li);  
                 li.id = 'size'+(i+1);
@@ -52,22 +54,62 @@ export function initializeMiniApp() {
                 li.innerHTML = '<div style="height:'+json.canvas.brushSizesArray[i]+'px; width:'+json.canvas.brushSizesArray[i]+'px;"></div>';
                          
             }
+
+
+            document.getElementById('colorsSelector').addEventListener('click', function(e) {
+                if (e.target && e.target.matches("li.item")) {               
+                    var elems = document.querySelector("#colorsSelector .active");
+                    if(elems !==null){
+                        elems.classList.remove("active");
+                    }
+        
+                    e.target.classList.add("active");              
+                  
+                    currentColor = e.target.getAttribute("data-value");
+                }
+            });
+    
+    
+            document.getElementById('sizeSelector').addEventListener('click', function(e) {
+                
+                if (e.target && e.target.matches("li.item div")) {
+                    var elems = document.querySelector("#sizeSelector .active");
+                    if(elems !==null){
+                        elems.classList.remove("active");
+                    }
+        
+                    e.target.parentElement.classList.add("active");              
+                  
+                    currentSize = e.target.parentElement.getAttribute("data-size");
+                }
+                if (e.target && e.target.matches("li.item")) {
+                    var elems = document.querySelector("#sizeSelector .active");
+                    if(elems !==null){
+                        elems.classList.remove("active");
+                    }
+        
+                    e.target.classList.add("active");              
+                  
+                    currentSize = e.target.getAttribute("data-size");
+                }
+            });
+
+
             document.getElementById("color1").click();
             document.getElementById("size1").click();
+
         }
 
         
 
 		// BUTTON EVENT HANDLERS
         document.getElementById('stickersList').addEventListener('click', function(e) {
-            console.log('stickersList', e.target);
             if (e.target.classList.contains('sticker')){
                 var elems = document.querySelector("#stickersList .active");
                 if(elems !==null){
                     elems.classList.remove("active");
                 }
 
-                console.log(e.target.src);  // Check if the element is a LI
                 e.target.parentElement.classList.add("active");
                 currentTool = 'sticker';
                 currentSticker=e.target.src;
@@ -99,7 +141,6 @@ export function initializeMiniApp() {
         canvas.addEventListener('mousedown', function(e) {
             if(currentTool == 'sticker'){
                 var coord = getCursorPosition(canvas, e);
-                console.log(coord);
 
                 var newImage = new Image();
                 newImage.src = currentSticker;
@@ -172,48 +213,7 @@ export function initializeMiniApp() {
 			redraw();
 		});*/
 
-        document.getElementById('colorsSelector').addEventListener('click', function(e) {
-			if (e.target && e.target.matches("li.item")) {               
-                var elems = document.querySelector("#colorsSelector .active");
-                if(elems !==null){
-                    elems.classList.remove("active");
-                }
-    
-                e.target.classList.add("active");              
-              
-                console.log(e.target.getAttribute("data-value"));
-                currentColor = e.target.getAttribute("data-value");
-            }
-		});
-
-
-        document.getElementById('sizeSelector').addEventListener('click', function(e) {
-			
-            if (e.target && e.target.matches("li.item div")) {
-                console.log(e.target);
-                var elems = document.querySelector("#sizeSelector .active");
-                if(elems !==null){
-                    elems.classList.remove("active");
-                }
-    
-                e.target.parentElement.classList.add("active");              
-              
-                console.log(e.target.parentElement.getAttribute("data-size"));
-                currentSize = e.target.parentElement.getAttribute("data-size");
-            }
-            if (e.target && e.target.matches("li.item")) {
-                console.log(e.target);
-                var elems = document.querySelector("#sizeSelector .active");
-                if(elems !==null){
-                    elems.classList.remove("active");
-                }
-    
-                e.target.classList.add("active");              
-              
-                console.log(e.target.getAttribute("data-size"));
-                currentSize = e.target.getAttribute("data-size");
-            }
-		});
+        
 
 		/*document.getElementById('colorpicker').addEventListener('change', function() {
 			currentColor = this.value;
@@ -243,10 +243,8 @@ function stickersPanelSelect(){
     if (currentSticker == ''){
         select_stickers_item = document.querySelector("#stickersList > li > img");
         select_stickers_item.classList.add('active');
-        console.log(select_stickers_item.src);
         currentSticker = select_stickers_item.src;
     }
-    console.log('stickersPanelSelect');
 }
 
 
@@ -262,7 +260,6 @@ function paintPanelSelect(){
         select_first_size_item.classList.add('active');
         currentSize = select_first_size_item.dataset.size;
     }
-    console.log('paintPanelSelect');
 }
 		/*document.getElementById('save').addEventListener('click', save);
 		document.getElementById('load').addEventListener('click', load);
@@ -307,7 +304,6 @@ function paintPanelSelect(){
 			//ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             var canvasContainer = document.getElementById("canvasContainer");
-            console.log('canvasContainer', canvasContainer);
 			canvasContainer.appendChild(canvas);
 		}
 
@@ -323,7 +319,6 @@ function paintPanelSelect(){
 		function save() {
 			localStorage.removeItem("savedCanvas");
 			localStorage.setItem("savedCanvas", JSON.stringify(linesArray));
-			console.log("Saved canvas!");
 		}
 
 		// LOAD FUNCTION
@@ -400,7 +395,6 @@ function paintPanelSelect(){
     canvas.addEventListener('touchend', touchend, false);        
   
 
-    console.log('TEST 2');
     // CREATE CANVAS
 
 
@@ -444,7 +438,6 @@ function paintPanelSelect(){
 		// ON MOUSE MOVE
 
 		function mousemove(canvas, evt) {
-            console.log('move');
             if(currentTool == 'pencil'){
                 if(isMouseDown){
                     var currentPosition = getMousePos(canvas, evt);
@@ -475,10 +468,8 @@ function paintPanelSelect(){
 		}
 
         
-            console.log('DOMContentLoaded');
             // Définir une temporisation avec setTimeout
             window.setTimeout(function() {
-                console.log('show sections');
               var sections = document.querySelectorAll('section');
               sections.forEach(function(section) {
                 section.style.opacity = '1';
@@ -494,7 +485,6 @@ function paintPanelSelect(){
             // Ajouter un gestionnaire d'événements aux éléments avec la classe 'toggle'
             toggles.forEach(function(toggle) {
               toggle.addEventListener('click', function() {
-                console.log('totgless');
                 var sectionDiv = document.querySelector('div.expand');
                 if (sectionDiv.classList.contains('expand')) {
                   sectionDiv.classList.remove('expand');

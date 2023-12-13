@@ -137,7 +137,7 @@
           platform.style.transform = 'translateX(25rem)'
           shadow1.style.transform = 'translateX(25rem) rotate(288deg)'
           shadow2.style.transform = 'translateX(25rem) rotate(295deg)'
-        } else {http://localhost:5173/thumbnails/verdure-clivaz_melisse_dessin_1.jpg
+        } else {
           platform.style.transform = 'translateY(25rem)'
           shadow1.style.transform = 'translateY(25rem)'
           shadow2.style.transform = 'translateY(25rem)'

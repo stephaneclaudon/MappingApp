@@ -16,12 +16,12 @@
         <section>
             <div class="no-toggle">
                 <div class='toggle-content'>
-                    <div id="clear" class='menu_img small' style="background-image: url(src/assets/reload.svg);"></div>
+                    <div id="clear" class='menu_img small'></div>
                 </div>
             </div>
             <div class="toggle expand">
                 <div class='toggle-content'>
-                    <div class='menu_img' id='paintBTN' style="background-image: url(src/assets/paint-brush.svg);"></div>
+                    <div class='menu_img' id='paintBTN'></div>
                     <ul id="toolList" style="list-style: none;">
 
                         <li style="display:none">
@@ -41,14 +41,10 @@
                         </li>
 
                         <li>
-                            <ul id="sizeSelector" style="list-style:none;">
-
-                            </ul>
+                            <ul id="sizeSelector" style="list-style:none;"></ul>
                         </li>
                         <li>
-                            <ul id="colorsSelector">
-
-                            </ul>
+                            <ul id="colorsSelector"> </ul>
                         </li>
 
 
@@ -57,8 +53,11 @@
             </div>
             <div class="toggle">
                 <div class='toggle-content'>
-                    <div class='menu_img' id='stickersBTN' style="background-image: url(src/assets/sticker.svg);"></div>
+                    <div class='menu_img' id='stickersBTN'></div>
                     <ul id="stickersList">
+                        <li v-for="(sticker, index) in stickers" :key="index">
+                            <img class="sticker elementToFadeInAndOut" :src="sticker" />
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -77,7 +76,7 @@
                 <label class="backdrop" for="acc-1"><i class="fa fa-times"></i></label>
                 <article class="acc_cBox">
                     <div class="acc_cImg">
-                        <div class='menu_img' id='paintBTN' style="background-image: url(src/assets/paint-brush.svg);">
+                        <div class='menu_img' id='paintBTN'>
                         </div>
                     </div>
                     <div class="acc_cCont">
@@ -91,17 +90,18 @@
                 <label class="backdrop" for="acc-2"><i class="fa fa-times"></i></label>
                 <article class="acc_cBox">
                     <div class="acc_cImg">
-                        <div class='menu_img' id='stickersBTN' style="background-image: url(src/assets/sticker.svg);  ">
+                        <div class='menu_img' id='stickersBTN'>
                         </div>
                     </div>
                     <div class="acc_cCont">
                         <ul id="stickersList">
+                            <li v-for="(sticker, index) in stickers" :key="index">
+                                <img class="sticker elementToFadeInAndOut" :src="sticker" />
+                            </li>
                         </ul>
                     </div>
                 </article>
             </aside>
-
-
 
         </section>
 
@@ -111,15 +111,27 @@
 </template>
   
 <script>
-import json from '../config.json';
+import config from '../config.json';
 import { initializeMiniApp } from '../WhiteBoardFS/script.js';
 import bootstrap from '../src/assets/bootstrap.min.css?inline';
 
+let inited = false;
 
 export default {
+
+    data() {
+        return {
+            inited: inited,
+            stickers: config.canvas.stickers
+        }
+    },
     mounted() {
         console.log(document.getElementById("canvasContainer"));
-        initializeMiniApp();
+        console.log(this.inited);
+        if (!this.inited)
+            initializeMiniApp();
+
+        this.inited = true;
     }
 }
 
@@ -136,6 +148,19 @@ export default {
 
   
 <style>
+#paintBTN {
+    background-image: url("../src/assets/paint-brush.svg");
+}
+
+#clear {
+    background-image: url("../src/assets/reload.svg");
+}
+
+#stickersBTN {
+    background-image: url("../src/assets/sticker.svg");
+}
+
+
 .illustration {
     position: absolute;
     margin: 0 auto;
@@ -159,22 +184,21 @@ export default {
 }
 
 .i-large {
-    background: url("src/assets/snow/particules_large.png") repeat 0px 0px;
-    ;
+    background: url("../src/assets/snow/particules_large.png") repeat 0px 0px;
     -webkit-animation: dropFlowParticles 8s linear infinite;
     -o-animation: dropFlowParticles 8s linear infinite;
     animation: dropFlowParticles 8s linear infinite;
 }
 
 .i-medium {
-    background: url("src/assets/snow/particules_medium.png") repeat 0px 0px;
+    background: url("../src/assets/snow/particules_medium.png") repeat 0px 0px;
     -webkit-animation: dropFlowParticles 22s linear infinite;
     -o-animation: dropFlowParticles 22s linear infinite;
     animation: dropFlowParticles 22s linear infinite;
 }
 
 .i-small {
-    background: url("src/assets/snow/particules_small.png") repeat 0px 0px;
+    background: url("../src/assets/snow/particules_small.png") repeat 0px 0px;
     -webkit-animation: dropFlowParticles 36s linear infinite;
     -o-animation: dropFlowParticles 36s linear infinite;
     animation: dropFlowParticles 36s linear infinite;
@@ -264,7 +288,7 @@ export default {
 
 
 body {
-    background-color: red !important;
+    background-color: black !important;
     overflow: hidden;
 }
 
@@ -326,6 +350,7 @@ input {
     align-items: center;
     margin: 0 !important;
 }
+
 #stickersList li.active {
     background-color: white;
 }
@@ -341,7 +366,7 @@ input {
 }
 
 #colorsSelector li div {
-    background-color: red;
+    background-color: black;
     border-radius: 100%;
     margin: 5px auto;
 }
@@ -373,9 +398,10 @@ input {
 
 #sizeSelector li.active,
 #colorsSelector li.active {
-    
+
     border: 4px solid white;
 }
+
 #colorsSelector li.active {
     transform: scale(1.4);
 }
@@ -536,4 +562,5 @@ section div.no-toggle {
 
 #appContener {
     /*background: black;*/
-}</style>
+}
+</style>
