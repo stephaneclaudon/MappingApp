@@ -1,6 +1,6 @@
 {
   "global": {
-    "mode": 0,
+    "mode": 1,
     "requestUrl": "http://localhost:5173/slideshow-opacity.json",
     "landscapeMode": true,
     "FullscreenEnable": false,
@@ -89,31 +89,32 @@
     },
     "brushSizesArray": [30,24,16,8,4],
     "stickers": [
-      "src/assets/stickers/arc_en_ciel.png",
-      "src/assets/stickers/arbre.png",
-      "src/assets/stickers/ivy_light.png",
-      "src/assets/stickers/fenetre_cool.png",
-      "src/assets/stickers/banana_dark.png",
-      "src/assets/stickers/butterfly.png",
-      "src/assets/stickers/CIVISME_LANGLADE_THEO_stickers_1.png",
-      "src/assets/stickers/fleurs_cool.png",
-      "src/assets/stickers/guirlande.png",
-      "src/assets/stickers/CIVISME_LANGLADE_THEO_stickers_3.png",
-      "src/assets/stickers/coeur_cool.png",      
-      "src/assets/stickers/Steakers_tourniquet.png",
-      "src/assets/stickers/Stickers_GrandeRoue.png"
+      "src/assets/stickers/resized/arc_en_ciel.png",
+      "src/assets/stickers/resized/arbre.png",
+      "src/assets/stickers/resized/ivy_light.png",
+      "src/assets/stickers/resized/fenetre_cool.png",
+      "src/assets/stickers/resized/banana_dark.png",
+      "src/assets/stickers/resized/butterfly.png",
+      "src/assets/stickers/resized/CIVISME_LANGLADE_THEO_stickers_1.png",
+      "src/assets/stickers/resized/fleurs_cool.png",
+      "src/assets/stickers/resized/guirlande.png",
+      "src/assets/stickers/resized/CIVISME_LANGLADE_THEO_stickers_3.png",
+      "src/assets/stickers/resized/coeur_cool.png",      
+      "src/assets/stickers/resized/Steakers_tourniquet.png",
+      "src/assets/stickers/resized/Stickers_GrandeRoue.png",
+      "src/assets/stickers/resized/quille.png",
+      "src/assets/stickers/resized/sticker_lampadaire.png",
+      "src/assets/stickers/resized/main.png",
+      "src/assets/stickers/resized/sticker_immeuble2.png",      
+      "src/assets/stickers/resized/Stikers_Tobbogan.png",      
+      "src/assets/stickers/resized/CIVISME_LANGLADE_THEO_stickers_2.png",
+      "src/assets/stickers/resized/tennis-racket.png"    
     ],
     "stickers_bad": [
-      "src/assets/stickers/Hiver.png",
-      "src/assets/stickers/quille.png",
-      "src/assets/stickers/Japonais.png",
-      "src/assets/stickers/Halloween.png",
-      "src/assets/stickers/sticker_lampadaire.png",
-      "src/assets/stickers/main.png",
-      "src/assets/stickers/sticker_immeuble2.png",      
-      "src/assets/stickers/Stikers_Tobbogan.png",      
-      "src/assets/stickers/CIVISME_LANGLADE_THEO_stickers_2.png",
-      "src/assets/stickers/tennis-racket.png"    
+
+      "src/assets/stickers/resized/Hiver.png",
+      "src/assets/stickers/resized/Japonais.png",
+      "src/assets/stickers/resized/Halloween.png"
     ]
   }
 }

@@ -68,7 +68,7 @@ export function initializeMiniApp() {
                 }
 
                 console.log(e.target.src);  // Check if the element is a LI
-                e.target.classList.add("active");
+                e.target.parentElement.classList.add("active");
                 currentTool = 'sticker';
                 currentSticker=e.target.src;
             }else{
@@ -106,7 +106,7 @@ export function initializeMiniApp() {
                 newImage.onload = () => {
                     // Draw the image onto the context
                     
-                    var random_scale = getRandomFloat(0.01,0.15,2);
+                    var random_scale = getRandomFloat(0.1,0.4,2);
                     var random_rotate = getRandomFloat(50,-50,0);
                     var w = 125;
                     var h = 104;
@@ -304,7 +304,7 @@ function paintPanelSelect(){
 			/*canvas.style.border = "1px solid";*/
             ctx.fillStyle = "black";
 			/*ctx.fillStyle = currentBg;*/
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			//ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             var canvasContainer = document.getElementById("canvasContainer");
             console.log('canvasContainer', canvasContainer);

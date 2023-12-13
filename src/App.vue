@@ -16,10 +16,10 @@ function parseResponse(data) {
   const value = data.VALUE[0]
 console.log(route.path);
   if (value > 0.5) {
-    if (route.path == '/whiteboard')
+    if (route.path == '/whiteboardfs')
       router.push({ path: '/slideshow' })
   } else {
-    router.push({ path: '/whiteboard' })
+    router.push({ path: '/whiteboardfs' })
   }
 }
 
