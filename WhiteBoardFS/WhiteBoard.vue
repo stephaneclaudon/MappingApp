@@ -234,13 +234,13 @@ export default {
 #canvasContainer {
     /*background: red;*/
     width: 100%;
-    min-height: 90vh;
+    min-height: 87vh;
 }
 
 #sidebarContainer {
     /*background: yellow;*/
     width: 100%;
-    height: 10%
+    height: 10vh;
 }
 
 
@@ -427,7 +427,7 @@ input {
     align-content: center;
     height: 100%;
     justify-content: center;
-    width: 3.4em;
+    width: 2.4em;
 }
 
 #sizeSelector {
@@ -452,7 +452,6 @@ input {
 
 #toolList,
 #stickersList {
-    padding-left: 2em;
 }
 
 
@@ -483,7 +482,7 @@ section {
     position: relative;
     left: 1em;
     min-height: 50vh;
-    width: 90vw;
+    width: 97vw;
     transition: all 200ms ease-in-out 50ms;
     opacity: 0;
 }
@@ -507,6 +506,10 @@ section .toggle.default {
     font-size: 16pt;
     overflow: hidden;
 
+}
+
+section .toggle.expand .menu_img {
+    display: none;
 }
 
 section .toggle.expand {

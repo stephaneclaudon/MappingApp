@@ -1,8 +1,8 @@
 {
   "global": {
     "mode": 1,
-    "requestServer": "http://192.168.101.137:8010",
-    "requestUrl": "/api/surfaces/Quad-1/opacity",
+    "requestServer": "http://192.168.0.1:8010",
+    "requestUrl": "/api/surfaces/Tablet/opacity",
     "landscapeMode": true,
     "FullscreenEnable": false,
     "datasetGeneratorMode": false,
@@ -21,9 +21,9 @@
       },
       {
         "image": "/thumbnails/1.jpg",
-        "video": "/videos/couleurs-grély_clarisse_dessin_1.mp4",
+        "video": "/videos/couleurs-grely_clarisse_dessin_1.mp4",
         "mainColor": "rgb(230, 203, 255)",
-        "bgImg": "/thumbnails/couleurs-grély_clarisse_dessin_1.jpg",
+        "bgImg": "/thumbnails/couleurs-grely_clarisse_dessin_1.jpg",
         "title": "Slide 1",
         "author":  "Grély Clarisse"
       },
